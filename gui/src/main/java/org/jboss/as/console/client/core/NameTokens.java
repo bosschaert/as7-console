@@ -44,6 +44,7 @@ public class NameTokens {
     public static final String MetricsPresenter = "invocation-metrics";
     public static final String ModelBrowserPresenter = "model-browser";
     public static final String OSGiPresenter = "osgi";
+    public static final String OSGiRuntimePresenter = "osgi-console";
     public static final String PropertiesPresenter = "properties";
     public static final String ResourceAdapterPresenter ="resource-adapters";
     public static final String SettingsPresenter = "settings";

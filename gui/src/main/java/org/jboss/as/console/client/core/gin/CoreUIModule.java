@@ -96,6 +96,8 @@ import org.jboss.as.console.client.shared.model.DeploymentStore;
 import org.jboss.as.console.client.shared.model.DeploymentStoreImpl;
 import org.jboss.as.console.client.shared.model.SubsystemStore;
 import org.jboss.as.console.client.shared.model.SubsystemStoreImpl;
+import org.jboss.as.console.client.shared.subsys.deploymentscanner.ScannerPresenter;
+import org.jboss.as.console.client.shared.subsys.deploymentscanner.ScannerView;
 import org.jboss.as.console.client.shared.subsys.ejb.mdb.MessageDrivenBeansPresenter;
 import org.jboss.as.console.client.shared.subsys.ejb.mdb.MessageDrivenBeansView;
 import org.jboss.as.console.client.shared.subsys.ejb.pool.BeanPoolsPresenter;
@@ -120,8 +122,8 @@ import org.jboss.as.console.client.shared.subsys.naming.JndiPresenter;
 import org.jboss.as.console.client.shared.subsys.naming.JndiView;
 import org.jboss.as.console.client.shared.subsys.osgi.OSGiPresenter;
 import org.jboss.as.console.client.shared.subsys.osgi.OSGiSubsystemView;
-import org.jboss.as.console.client.shared.subsys.deploymentscanner.ScannerPresenter;
-import org.jboss.as.console.client.shared.subsys.deploymentscanner.ScannerView;
+import org.jboss.as.console.client.shared.subsys.osgi.runtime.OSGiRuntimePresenter;
+import org.jboss.as.console.client.shared.subsys.osgi.runtime.OSGiRuntimeView;
 import org.jboss.as.console.client.shared.subsys.web.WebPresenter;
 import org.jboss.as.console.client.shared.subsys.web.WebSubsystemView;
 import org.jboss.as.console.client.shared.subsys.ws.DomainEndpointStrategy;
@@ -358,11 +360,16 @@ public class CoreUIModule extends AbstractPresenterModule {
                 ScannerPresenter.MyView.class,
                 ScannerView.class,
                 ScannerPresenter.MyProxy.class);
-        
+
         bindPresenter(OSGiPresenter.class,
                 OSGiPresenter.MyView.class,
                 OSGiSubsystemView.class,
                 OSGiPresenter.MyProxy.class);
+
+        bindPresenter(OSGiRuntimePresenter.class,
+                OSGiRuntimePresenter.MyView.class,
+                OSGiRuntimeView.class,
+                OSGiRuntimePresenter.MyProxy.class);
 
         bindPresenter(SocketBindingPresenter.class,
                 SocketBindingPresenter.MyView.class,

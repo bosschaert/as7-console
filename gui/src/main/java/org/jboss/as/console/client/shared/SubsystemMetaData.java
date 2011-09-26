@@ -21,7 +21,6 @@ package org.jboss.as.console.client.shared;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.jboss.as.console.client.Console;
 import org.jboss.as.console.client.core.NameTokens;
@@ -94,6 +93,7 @@ public class SubsystemMetaData {
         groups.get(CONTAINER).getItems().add(new SubsystemGroupItem("JPA", "jpa",Boolean.TRUE));
 
         groups.get(OSGI).getItems().add(new SubsystemGroupItem("Configuration", "osgi"));
+        groups.get(OSGI).getItems().add(new SubsystemGroupItem("Runtime", "osgi", NameTokens.OSGiRuntimePresenter));
 
         groups.get(OTHER).getItems().add(new SubsystemGroupItem("SAR", "sar",Boolean.TRUE));
         groups.get(OTHER).getItems().add(new SubsystemGroupItem("JMX", "jmx",Boolean.TRUE));
