@@ -19,21 +19,29 @@
 
 package org.jboss.as.console.client.shared.model;
 
-import org.jboss.as.console.client.shared.BeanFactory;
-import org.jboss.as.console.client.shared.dispatch.impl.DMRResponse;
-import org.jboss.as.console.client.shared.jvm.Jvm;
-import org.jboss.as.console.client.shared.properties.PropertyRecord;
-import org.jboss.as.console.client.widgets.forms.PropertyBinding;
-import org.jboss.ballroom.client.widgets.forms.FormItem;
-import org.jboss.dmr.client.ModelNode;
-import org.jboss.dmr.client.Property;
+import static org.jboss.dmr.client.ModelDescriptionConstants.ADDRESS;
+import static org.jboss.dmr.client.ModelDescriptionConstants.COMPOSITE;
+import static org.jboss.dmr.client.ModelDescriptionConstants.NAME;
+import static org.jboss.dmr.client.ModelDescriptionConstants.OP;
+import static org.jboss.dmr.client.ModelDescriptionConstants.OUTCOME;
+import static org.jboss.dmr.client.ModelDescriptionConstants.STEPS;
+import static org.jboss.dmr.client.ModelDescriptionConstants.SUCCESS;
+import static org.jboss.dmr.client.ModelDescriptionConstants.VALUE;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.jboss.dmr.client.ModelDescriptionConstants.*;
+import org.jboss.as.console.client.shared.BeanFactory;
+import org.jboss.as.console.client.shared.dispatch.impl.DMRResponse;
+import org.jboss.as.console.client.shared.jvm.Jvm;
+import org.jboss.as.console.client.shared.properties.PropertyRecord;
+import org.jboss.as.console.client.shared.subsys.Baseadress;
+import org.jboss.as.console.client.widgets.forms.PropertyBinding;
+import org.jboss.ballroom.client.widgets.forms.FormItem;
+import org.jboss.dmr.client.ModelNode;
+import org.jboss.dmr.client.Property;
 
 /**
  * @author Heiko Braun
@@ -48,6 +56,19 @@ public class ModelAdapter {
             model.get(OUTCOME).asString().equals(SUCCESS), model
         );
         return wrapper;
+    }
+
+    public static ModelNode createOperation(String operator, String ... pathElements) {
+        ModelNode operation = new ModelNode();
+        operation.get(OP).set(operator);
+
+        ModelNode address = operation.get(ADDRESS);
+        address.set(Baseadress.get());
+
+        for (int i=0; i < pathElements.length; i++) {
+            address.add(pathElements[i++], pathElements[i]);
+        }
+        return operation;
     }
 
     /**

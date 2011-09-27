@@ -22,7 +22,6 @@ import static org.jboss.dmr.client.ModelDescriptionConstants.ADD;
 import static org.jboss.dmr.client.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.dmr.client.ModelDescriptionConstants.CHILD_TYPE;
 import static org.jboss.dmr.client.ModelDescriptionConstants.NAME;
-import static org.jboss.dmr.client.ModelDescriptionConstants.OP;
 import static org.jboss.dmr.client.ModelDescriptionConstants.READ_CHILDREN_RESOURCES_OPERATION;
 import static org.jboss.dmr.client.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.dmr.client.ModelDescriptionConstants.REMOVE;
@@ -54,8 +53,8 @@ import org.jboss.as.console.client.shared.dispatch.impl.DMRAction;
 import org.jboss.as.console.client.shared.dispatch.impl.DMRResponse;
 import org.jboss.as.console.client.shared.dispatch.impl.SimpleDMRResponseHandler;
 import org.jboss.as.console.client.shared.general.MessageWindow;
+import org.jboss.as.console.client.shared.model.ModelAdapter;
 import org.jboss.as.console.client.shared.properties.PropertyRecord;
-import org.jboss.as.console.client.shared.subsys.Baseadress;
 import org.jboss.as.console.client.shared.subsys.RevealStrategy;
 import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiConfigAdminData;
 import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiPreloadedModule;
@@ -405,11 +404,7 @@ public class OSGiPresenter extends Presenter<OSGiPresenter.MyView, OSGiPresenter
                 }));
     }
 
-    private ModelNode createOperation(String operator) {
-        ModelNode operation = new ModelNode();
-        operation.get(OP).set(operator);
-        operation.get(ADDRESS).set(Baseadress.get());
-        operation.get(ADDRESS).add(SUBSYSTEM, OSGI_SUBSYSTEM);
-        return operation;
+    public static ModelNode createOperation(String operator) {
+        return ModelAdapter.createOperation(operator, SUBSYSTEM, OSGI_SUBSYSTEM);
     }
 }

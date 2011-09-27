@@ -28,13 +28,22 @@ import com.gwtplatform.mvp.client.proxy.Place;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 
 import org.jboss.as.console.client.core.NameTokens;
+import org.jboss.as.console.client.domain.model.SimpleCallback;
+import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
+import org.jboss.as.console.client.shared.dispatch.impl.DMRAction;
+import org.jboss.as.console.client.shared.dispatch.impl.DMRResponse;
+import org.jboss.as.console.client.shared.model.ModelAdapter;
 import org.jboss.as.console.client.shared.subsys.RevealStrategy;
+import org.jboss.as.console.client.shared.subsys.osgi.OSGiPresenter;
+import org.jboss.dmr.client.ModelDescriptionConstants;
+import org.jboss.dmr.client.ModelNode;
 
 /**
  * @author David Bosschaert
  */
 public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView, OSGiRuntimePresenter.MyProxy> {
-    private RevealStrategy revealStrategy;
+    private final RevealStrategy revealStrategy;
+    private final DispatchAsync dispatcher;
 
     @ProxyCodeSplit
     @NameToken(NameTokens.OSGiRuntimePresenter)
@@ -42,17 +51,66 @@ public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView,
     }
 
     public interface MyView extends View {
+        void initFrame(int port, String rootCtx);
+        void notConfigured();
     }
 
     @Inject
-    public OSGiRuntimePresenter(EventBus eventBus, MyView view, MyProxy proxy, RevealStrategy revealStrategy) {
+    public OSGiRuntimePresenter(EventBus eventBus, MyView view, MyProxy proxy,
+            DispatchAsync dispatcher, RevealStrategy revealStrategy) {
         super(eventBus, view, proxy);
 
+        this.dispatcher = dispatcher;
         this.revealStrategy = revealStrategy;
+    }
+
+    @Override
+    protected void onReset() {
+        super.onReset();
+        initConsole();
     }
 
     @Override
     protected void revealInParent() {
         revealStrategy.revealInParent(this);
+    }
+
+    private void initConsole() {
+        ModelNode operation = ModelAdapter.createOperation(ModelDescriptionConstants.READ_RESOURCE_OPERATION,
+            ModelDescriptionConstants.SUBSYSTEM, OSGiPresenter.OSGI_SUBSYSTEM,
+            "configuration", "org.apache.felix.webconsole.internal.servlet.OsgiManager");
+
+        dispatcher.execute(new DMRAction(operation), new SimpleCallback<DMRResponse>() {
+            @Override
+            public void onSuccess(DMRResponse result) {
+                ModelNode response = ModelNode.fromBase64(result.getResponseText());
+                ModelNode model = response.get(ModelDescriptionConstants.RESULT);
+                ModelNode valueNode = model.get("entries").get("manager.root");
+                if (!valueNode.isDefined()) {
+                    getView().notConfigured();
+                    return;
+                }
+                final String root = valueNode.asString();
+                initConsole(root);
+            }
+
+        });
+    }
+
+    private void initConsole(final String root) {
+        ModelNode operation = ModelAdapter.createOperation(ModelDescriptionConstants.READ_ATTRIBUTE_OPERATION,
+            "socket-binding-group", "standard-sockets",
+            "socket-binding", "osgi-http");
+        operation.get(ModelDescriptionConstants.NAME).set("port");
+
+        dispatcher.execute(new DMRAction(operation), new SimpleCallback<DMRResponse>() {
+            @Override
+            public void onSuccess(DMRResponse result) {
+                ModelNode response = ModelNode.fromBase64(result.getResponseText());
+                ModelNode model = response.get(ModelDescriptionConstants.RESULT);
+                int port = model.asInt();
+                getView().initFrame(port, root);
+            }
+        });
     }
 }

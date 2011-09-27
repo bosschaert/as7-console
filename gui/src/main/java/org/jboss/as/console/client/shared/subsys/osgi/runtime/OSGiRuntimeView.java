@@ -18,6 +18,7 @@
  */
 package org.jboss.as.console.client.shared.subsys.osgi.runtime;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -27,13 +28,25 @@ import org.jboss.as.console.client.core.SuspendableViewImpl;
  * @author David Bosschaert
  */
 public class OSGiRuntimeView extends SuspendableViewImpl implements OSGiRuntimePresenter.MyView {
+    private Frame frame;
 
     @Override
-    public Widget createWidget() {
-        Frame frame = new Frame("http://www.google.com");
+    public Widget createWidget()
+    {
+        frame = new Frame();
         frame.setWidth("100%");
         frame.setHeight("100%");
         return frame;
     }
 
+    @Override
+    public void initFrame(int port, String rootContext) {
+        String url = "http://" + Window.Location.getHostName() + ":" + port + "/" + rootContext;
+        frame.setUrl(url);
+    }
+
+    @Override
+    public void notConfigured() {
+        // show not configured
+    }
 }
