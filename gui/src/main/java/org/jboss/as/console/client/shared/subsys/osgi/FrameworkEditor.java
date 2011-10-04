@@ -28,6 +28,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -83,8 +84,20 @@ public class FrameworkEditor {
         form.setFields(activationMode);
         vpanel.add(form.asWidget());
 
-        addProperties(vpanel);
-        addPreLoadedModules(vpanel);
+
+        vpanel.add(new ContentGroupLabel("Framework Configuration"));
+        TabPanel bottomPanel = new TabPanel();
+        bottomPanel.setStyleName("default-tabpanel");
+
+        propertiesTable = new FrameworkPropertiesTable(presenter);
+        bottomPanel.add(propertiesTable.asWidget(), "Properties");
+
+        VerticalPanel panel = new VerticalPanel();
+        addPreLoadedModules(panel);
+        bottomPanel.add(panel, "Capabilities");
+
+        bottomPanel.selectTab(0);
+        vpanel.add(bottomPanel);
 
         layout.add(scroll);
         layout.setWidgetTopHeight(toolStrip, 0, Style.Unit.PX, 26, Style.Unit.PX);
@@ -93,15 +106,7 @@ public class FrameworkEditor {
         return layout;
     }
 
-    private void addProperties(Panel layout) {
-        layout.add(new ContentGroupLabel(Console.CONSTANTS.subsys_osgi_frameworkProperties()));
-
-        propertiesTable = new FrameworkPropertiesTable(presenter);
-        layout.add(propertiesTable.asWidget());
-    }
-
     private void addPreLoadedModules(Panel layout) {
-        layout.add(new ContentGroupLabel(Console.CONSTANTS.subsys_osgi_preloadedModules()));
         ToolStrip toolStrip = new ToolStrip();
         toolStrip.addToolButton(new ToolButton(Console.CONSTANTS.common_label_edit(), new ClickHandler() {
             @Override
