@@ -86,16 +86,16 @@ public class FrameworkEditor {
         vpanel.add(form.asWidget());
 
 
-        vpanel.add(new ContentGroupLabel("Framework Configuration"));
+        vpanel.add(new ContentGroupLabel(Console.CONSTANTS.subsys_osgi_frameworkConfiguration()));
         TabPanel bottomPanel = new TabPanel();
         bottomPanel.setStyleName("default-tabpanel");
 
         propertiesTable = new FrameworkPropertiesTable(presenter);
-        bottomPanel.add(propertiesTable.asWidget(), "Properties");
+        bottomPanel.add(propertiesTable.asWidget(), Console.CONSTANTS.subsys_osgi_properties());
 
         VerticalPanel panel = new VerticalPanel();
         addCapabilities(panel);
-        bottomPanel.add(panel, "Capabilities");
+        bottomPanel.add(panel, Console.CONSTANTS.subsys_osgi_capabilities());
 
         bottomPanel.selectTab(0);
         vpanel.add(bottomPanel);
@@ -139,7 +139,7 @@ public class FrameworkEditor {
         }));
         layout.add(toolStrip);
 
-        StaticHelpPanel helpPanel = new StaticHelpPanel("Capabilities are JBoss Modules or OSGi bundles which are loaded and possibly started on startup of the OSGi subsystem. Their start level indicates if and when they will be started.");
+        StaticHelpPanel helpPanel = new StaticHelpPanel(Console.MESSAGES.subsys_osgi_capabilitiesHelp());
         layout.add(helpPanel.asWidget());
 
         capabilitiesTable = new CapabilitiesTable();
