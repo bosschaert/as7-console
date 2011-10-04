@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import org.jboss.as.console.client.Console;
 import org.jboss.as.console.client.shared.properties.PropertyRecord;
-import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiPreloadedModule;
+import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiCapability;
 import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiSubsystem;
 import org.jboss.ballroom.client.widgets.ContentGroupLabel;
 import org.jboss.ballroom.client.widgets.ContentHeaderLabel;
@@ -51,7 +51,7 @@ public class FrameworkEditor {
     private final OSGiPresenter presenter;
     private Form<OSGiSubsystem> form;
     private FrameworkPropertiesTable propertiesTable;
-    private PreloadedModulesTable preloadedModulesTable;
+    private CapabilitiesTable capabilitiesTable;
 
     FrameworkEditor(OSGiPresenter presenter) {
         this.presenter = presenter;
@@ -93,7 +93,7 @@ public class FrameworkEditor {
         bottomPanel.add(propertiesTable.asWidget(), "Properties");
 
         VerticalPanel panel = new VerticalPanel();
-        addPreLoadedModules(panel);
+        addCapabilities(panel);
         bottomPanel.add(panel, "Capabilities");
 
         bottomPanel.selectTab(0);
@@ -106,26 +106,26 @@ public class FrameworkEditor {
         return layout;
     }
 
-    private void addPreLoadedModules(Panel layout) {
+    private void addCapabilities(Panel layout) {
         ToolStrip toolStrip = new ToolStrip();
         toolStrip.addToolButton(new ToolButton(Console.CONSTANTS.common_label_edit(), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                OSGiPreloadedModule module =  preloadedModulesTable.getSelection();
-                presenter.launchModuleWizard(module);
+                OSGiCapability capability =  capabilitiesTable.getSelection();
+                presenter.launchCapabilityWizard(capability);
             }
         }));
         toolStrip.addToolButton(new ToolButton(Console.CONSTANTS.common_label_delete(), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                final OSGiPreloadedModule module =  preloadedModulesTable.getSelection();
-                Feedback.confirm(Console.MESSAGES.subsys_osgi_removePreloadedModule(),
-                    Console.MESSAGES.subsys_osgi_removePreloadedModuleConfirm(module.getIdentifier()),
+                final OSGiCapability capability =  capabilitiesTable.getSelection();
+                Feedback.confirm(Console.MESSAGES.subsys_osgi_removeCapability(),
+                    Console.MESSAGES.subsys_osgi_removeCapabilityConfirm(capability.getIdentifier()),
                     new Feedback.ConfirmationHandler() {
                         @Override
                         public void onConfirmation(boolean isConfirmed) {
                             if (isConfirmed)
-                                presenter.onDeletePreloadedModule(module.getIdentifier());
+                                presenter.onDeleteCapability(capability.getIdentifier());
                         }
                     });
             }
@@ -133,13 +133,13 @@ public class FrameworkEditor {
         toolStrip.addToolButtonRight(new ToolButton(Console.CONSTANTS.common_label_add(), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                presenter.launchModuleWizard(null);
+                presenter.launchCapabilityWizard(null);
             }
         }));
         layout.add(toolStrip);
 
-        preloadedModulesTable = new PreloadedModulesTable();
-        layout.add(preloadedModulesTable.asWidget());
+        capabilitiesTable = new CapabilitiesTable();
+        layout.add(capabilitiesTable.asWidget());
     }
 
     void setProviderDetails(OSGiSubsystem provider) {
@@ -150,7 +150,7 @@ public class FrameworkEditor {
         propertiesTable.setProperties(properties);
     }
 
-    void updatePreloadedModules(List<OSGiPreloadedModule> modules) {
-        preloadedModulesTable.setModules(modules);
+    void updateCapabilities(List<OSGiCapability> capabilities) {
+        capabilitiesTable.setCapabilities(capabilities);
     }
 }
