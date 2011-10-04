@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import org.jboss.as.console.client.Console;
+import org.jboss.as.console.client.shared.help.StaticHelpPanel;
 import org.jboss.as.console.client.shared.properties.PropertyRecord;
 import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiCapability;
 import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiSubsystem;
@@ -137,6 +138,9 @@ public class FrameworkEditor {
             }
         }));
         layout.add(toolStrip);
+
+        StaticHelpPanel helpPanel = new StaticHelpPanel("Capabilities are JBoss Modules or OSGi bundles which are loaded and possibly started on startup of the OSGi subsystem. Their start level indicates if and when they will be started.");
+        layout.add(helpPanel.asWidget());
 
         capabilitiesTable = new CapabilitiesTable();
         layout.add(capabilitiesTable.asWidget());
