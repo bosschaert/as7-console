@@ -72,6 +72,8 @@ import org.jboss.dmr.client.Property;
 public class OSGiPresenter extends Presenter<OSGiPresenter.MyView, OSGiPresenter.MyProxy> {
     public static final String OSGI_SUBSYSTEM = "osgi";
 
+    private static final String FRAMEWORK_PROPERTY_RESOURCE = "framework-property";
+
     private final DispatchAsync dispatcher;
     private final BeanFactory factory;
     private OSGiSubsystem providerEntity;
@@ -132,7 +134,7 @@ public class OSGiPresenter extends Presenter<OSGiPresenter.MyView, OSGiPresenter
                 Console.schedule(new Command() {
                     @Override
                     public void execute() {
-                        if (model.hasDefined("property"))
+                        if (model.hasDefined(FRAMEWORK_PROPERTY_RESOURCE))
                             loadOSGiPropertyDetails();
 
                         Console.schedule(new Command() {
@@ -160,7 +162,7 @@ public class OSGiPresenter extends Presenter<OSGiPresenter.MyView, OSGiPresenter
 
     private void loadOSGiPropertyDetails() {
         ModelNode operation = createOperation(READ_CHILDREN_RESOURCES_OPERATION);
-        operation.get(CHILD_TYPE).set("property");
+        operation.get(CHILD_TYPE).set(FRAMEWORK_PROPERTY_RESOURCE);
 
         dispatcher.execute(new DMRAction(operation), new SimpleCallback<DMRResponse>() {
             @Override
@@ -312,7 +314,7 @@ public class OSGiPresenter extends Presenter<OSGiPresenter.MyView, OSGiPresenter
 
     public void onAddProperty(final PropertyRecord prop) {
         ModelNode operation = createOperation(ADD);
-        operation.get(ADDRESS).add("property", prop.getKey());
+        operation.get(ADDRESS).add(FRAMEWORK_PROPERTY_RESOURCE, prop.getKey());
         operation.get("value").set(prop.getValue());
 
         dispatcher.execute(new DMRAction(operation),
@@ -327,7 +329,7 @@ public class OSGiPresenter extends Presenter<OSGiPresenter.MyView, OSGiPresenter
 
     public void onDeleteProperty(final PropertyRecord property) {
         ModelNode operation = createOperation(REMOVE);
-        operation.get(ADDRESS).add("property", property.getKey());
+        operation.get(ADDRESS).add(FRAMEWORK_PROPERTY_RESOURCE, property.getKey());
 
         dispatcher.execute(new DMRAction(operation),
             new SimpleDMRResponseHandler(REMOVE, Console.CONSTANTS.subsys_osgi_frameworkProperty(), property.getKey(),
