@@ -44,7 +44,7 @@ import org.jboss.as.console.client.shared.subsys.ejb.mdb.model.MessageDrivenBean
 import org.jboss.as.console.client.shared.subsys.ejb.pool.model.EJBPool;
 import org.jboss.as.console.client.shared.subsys.ejb.service.model.TimerService;
 import org.jboss.as.console.client.shared.subsys.ejb.session.model.SessionBeans;
-import org.jboss.as.console.client.shared.subsys.ejb3.model.Pool;
+import org.jboss.as.console.client.shared.subsys.ejb3.model.StrictMaxBeanPool;
 import org.jboss.as.console.client.shared.subsys.infinispan.model.CacheContainer;
 import org.jboss.as.console.client.shared.subsys.jca.model.DataSource;
 import org.jboss.as.console.client.shared.subsys.jca.model.JDBCDriver;
@@ -101,7 +101,7 @@ public interface BeanFactory extends AutoBeanFactory {
     AutoBean<EJBPool> ejbPool();
     AutoBean<TimerService> timerService();
     // -- remove the above
-    AutoBean<Pool> strictMaxBeanPool();
+    AutoBean<StrictMaxBeanPool> strictMaxBeanPool();
 
     AutoBean<LoggingHandler> loggingHandler();
     AutoBean<LoggerConfig> loggerConfig();

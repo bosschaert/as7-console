@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
-import org.jboss.as.console.client.shared.subsys.ejb3.model.Pool;
+import org.jboss.as.console.client.shared.subsys.ejb3.model.StrictMaxBeanPool;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
@@ -23,15 +23,15 @@ import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 import org.jboss.ballroom.client.widgets.tools.ToolStrip;
 
-public class EJB3View extends AbstractEntityView<Pool> implements EJB3Presenter.MyView {
+public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements EJB3Presenter.MyView {
     private final FormMetaData formMetaData;
-    private final EntityToDmrBridge<Pool> bridge;
+    private final EntityToDmrBridge<StrictMaxBeanPool> bridge;
 
     @Inject
     public EJB3View(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
-        super(Pool.class);
-        formMetaData = propertyMetaData.getBeanMetaData(Pool.class).getFormMetaData();
-        bridge = new EntityToDmrBridgeImpl<Pool>(propertyMetaData, Pool.class, this, dispatcher);
+        super(StrictMaxBeanPool.class);
+        formMetaData = propertyMetaData.getBeanMetaData(StrictMaxBeanPool.class).getFormMetaData();
+        bridge = new EntityToDmrBridgeImpl<StrictMaxBeanPool>(propertyMetaData, StrictMaxBeanPool.class, this, dispatcher);
     }
 
 
@@ -75,21 +75,21 @@ public class EJB3View extends AbstractEntityView<Pool> implements EJB3Presenter.
     }
 
     @Override
-    protected FormAdapter<Pool> makeAddEntityForm() {
-        Form<Pool> form = new Form<Pool>(Pool.class);
+    protected FormAdapter<StrictMaxBeanPool> makeAddEntityForm() {
+        Form<StrictMaxBeanPool> form = new Form<StrictMaxBeanPool>(StrictMaxBeanPool.class);
         form.setNumColumns(1);
         form.setFields(getFormMetaData().findAttribute("name").getFormItemForAdd());
         return form;
     }
 
     @Override
-    protected EntityToDmrBridge<Pool> getEntityBridge() {
+    protected EntityToDmrBridge<StrictMaxBeanPool> getEntityBridge() {
         return bridge;
     }
 
     @Override
-    protected DefaultCellTable<Pool> makeEntityTable() {
-        DefaultCellTable<Pool> table = new DefaultCellTable<Pool>(10);
+    protected DefaultCellTable<StrictMaxBeanPool> makeEntityTable() {
+        DefaultCellTable<StrictMaxBeanPool> table = new DefaultCellTable<StrictMaxBeanPool>(10);
 
         table.addColumn(new Columns.NameColumn(), Columns.NameColumn.LABEL);
 

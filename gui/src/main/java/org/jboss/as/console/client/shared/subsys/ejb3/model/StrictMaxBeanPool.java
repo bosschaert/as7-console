@@ -6,7 +6,7 @@ import org.jboss.as.console.client.widgets.forms.Binding;
 import org.jboss.as.console.client.widgets.forms.FormItem;
 
 @Address("/subsystem=ejb3/strict-max-bean-instance-pool={0}")
-public interface Pool extends NamedEntity {
+public interface StrictMaxBeanPool extends NamedEntity {
     @Override
     @Binding(detypedName="name", key=true)
     @FormItem(defaultValue="",
