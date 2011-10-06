@@ -19,7 +19,7 @@ public interface Pool extends NamedEntity {
     public void setName(String name);
 
     @Binding(detypedName="max-pool-size")
-    @FormItem(defaultValue="",
+    @FormItem(defaultValue="20",
               label="Max Pool Size",
               required=true,
               formItemTypeForEdit="NUMBER_BOX",
