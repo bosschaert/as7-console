@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
+import org.jboss.as.console.client.shared.subsys.ejb3.model.EJB3Subsystem;
 import org.jboss.as.console.client.shared.subsys.ejb3.model.StrictMaxBeanPool;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns;
@@ -16,16 +17,16 @@ import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridgeImpl;
 import org.jboss.as.console.client.widgets.forms.FormMetaData;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
-import org.jboss.ballroom.client.widgets.ContentGroupLabel;
-import org.jboss.ballroom.client.widgets.ContentHeaderLabel;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 import org.jboss.ballroom.client.widgets.tools.ToolStrip;
 
 public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements EJB3Presenter.MyView {
-    private final FormMetaData formMetaData;
     private final EntityToDmrBridge<StrictMaxBeanPool> bridge;
+    private final FormMetaData formMetaData;
+    private EJB3Presenter presenter;
+    private EJB3SubsystemEditor subsystemEditor;
 
     @Inject
     public EJB3View(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
@@ -33,8 +34,6 @@ public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements E
         formMetaData = propertyMetaData.getBeanMetaData(StrictMaxBeanPool.class).getFormMetaData();
         bridge = new EntityToDmrBridgeImpl<StrictMaxBeanPool>(propertyMetaData, StrictMaxBeanPool.class, this, dispatcher);
     }
-
-
 
     @Override
     public Widget createWidget() {
@@ -51,9 +50,8 @@ public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements E
         layout.setWidgetTopHeight(toolStrip, 0, Style.Unit.PX, 26, Style.Unit.PX);
         layout.setWidgetTopHeight(scroll, 26, Style.Unit.PX, 100, Style.Unit.PCT);
 
-        vpanel.add(new ContentHeaderLabel("Default Pools"));
-        vpanel.add(new ContentGroupLabel("Stateless Session Beans"));
-        vpanel.add(new ContentGroupLabel("Message Driven Beans"));
+        subsystemEditor = new EJB3SubsystemEditor(presenter);
+        vpanel.add(subsystemEditor.asWidget());
 
         entityEditor = makeEntityEditor();
         entityEditor.asWidget(vpanel);
@@ -67,6 +65,11 @@ public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements E
         tabLayoutPanel.selectTab(0);
 
         return tabLayoutPanel;
+    }
+
+    @Override
+    public void setPresenter(EJB3Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -99,5 +102,10 @@ public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements E
     @Override
     protected String getPluralEntityName() {
         return "EJB Pools"; // TODO i18n // is this one used at all?
+    }
+
+    @Override
+    public void updateSubsystem(EJB3Subsystem subsystem) {
+        subsystemEditor.setProviderDetails(subsystem);
     }
 }
