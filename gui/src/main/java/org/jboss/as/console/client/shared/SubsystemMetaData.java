@@ -21,7 +21,6 @@ package org.jboss.as.console.client.shared;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.jboss.as.console.client.Console;
 import org.jboss.as.console.client.core.NameTokens;
@@ -45,7 +44,7 @@ public class SubsystemMetaData {
     private static final String EJB = "EJB";
 
     private static final String OSGI = "OSGi";
-    
+
     private static final String INFINISPAN = "Infinispan";
 
     private static final String SECURITY = "Security";
@@ -74,10 +73,13 @@ public class SubsystemMetaData {
         groups.get(CONNECTOR).getItems().add(new SubsystemGroupItem("Resource Adapter", "resource-adapters"));
         groups.get(CONNECTOR).getItems().add(new SubsystemGroupItem("Connector", "connector",Boolean.TRUE));
 
+        groups.get(EJB).getItems().add(new SubsystemGroupItem("EJB 3", "ejb3"));
+        /* remove
         groups.get(EJB).getItems().add(new SubsystemGroupItem("Session Beans", "ejb3", NameTokens.SessionBeanPresenter));
         groups.get(EJB).getItems().add(new SubsystemGroupItem("Message Driven Beans", "ejb3", NameTokens.MessageDrivenBeanPresenter));
         groups.get(EJB).getItems().add(new SubsystemGroupItem("Pools", "ejb3", NameTokens.BeanPoolsPresenter));
         groups.get(EJB).getItems().add(new SubsystemGroupItem("Services", "ejb3", NameTokens.BeanServicesPresenter));
+        */
 
         groups.get(WEB).getItems().add(new SubsystemGroupItem("Servlet", "web"));
         groups.get(WEB).getItems().add(new SubsystemGroupItem("Web Services", "webservices"));
@@ -98,7 +100,7 @@ public class SubsystemMetaData {
         groups.get(CONTAINER).getItems().add(new SubsystemGroupItem("JPA", "jpa",Boolean.TRUE));
 
         groups.get(OSGI).getItems().add(new SubsystemGroupItem("Configuration", "osgi"));
-        
+
         groups.get(INFINISPAN).getItems().add(new SubsystemGroupItem("Cache Containers", NameTokens.CacheContainerPresenter));
 
         groups.get(OTHER).getItems().add(new SubsystemGroupItem("SAR", "sar",Boolean.TRUE));
