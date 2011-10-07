@@ -39,11 +39,13 @@ import org.jboss.as.console.client.shared.jvm.model.ThreadMetric;
 import org.jboss.as.console.client.shared.model.DeploymentRecord;
 import org.jboss.as.console.client.shared.model.SubsystemRecord;
 import org.jboss.as.console.client.shared.properties.PropertyRecord;
+import org.jboss.as.console.client.shared.subsys.deploymentscanner.model.DeploymentScanner;
 import org.jboss.as.console.client.shared.subsys.ejb.mdb.model.MessageDrivenBeans;
 import org.jboss.as.console.client.shared.subsys.ejb.pool.model.EJBPool;
-import org.jboss.as.console.client.shared.subsys.ejb.service.model.TimerService;
 import org.jboss.as.console.client.shared.subsys.ejb.session.model.SessionBeans;
-import org.jboss.as.console.client.shared.subsys.deploymentscanner.model.DeploymentScanner;
+import org.jboss.as.console.client.shared.subsys.ejb3.model.EJB3Subsystem;
+import org.jboss.as.console.client.shared.subsys.ejb3.model.StrictMaxBeanPool;
+import org.jboss.as.console.client.shared.subsys.ejb3.model.TimerService;
 import org.jboss.as.console.client.shared.subsys.infinispan.model.CacheContainer;
 import org.jboss.as.console.client.shared.subsys.jca.model.DataSource;
 import org.jboss.as.console.client.shared.subsys.jca.model.JDBCDriver;
@@ -54,13 +56,12 @@ import org.jboss.as.console.client.shared.subsys.logging.model.LoggerConfig;
 import org.jboss.as.console.client.shared.subsys.logging.model.LoggingHandler;
 import org.jboss.as.console.client.shared.subsys.messaging.model.AddressingPattern;
 import org.jboss.as.console.client.shared.subsys.messaging.model.ConnectionFactory;
-import org.jboss.as.console.client.shared.subsys.messaging.model.JMSEndpoint;
 import org.jboss.as.console.client.shared.subsys.messaging.model.MessagingProvider;
 import org.jboss.as.console.client.shared.subsys.messaging.model.Queue;
 import org.jboss.as.console.client.shared.subsys.messaging.model.SecurityPattern;
 import org.jboss.as.console.client.shared.subsys.messaging.model.Topic;
-import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiConfigAdminData;
 import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiCapability;
+import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiConfigAdminData;
 import org.jboss.as.console.client.shared.subsys.osgi.model.OSGiSubsystem;
 import org.jboss.as.console.client.shared.subsys.threads.model.BoundedQueueThreadPool;
 import org.jboss.as.console.client.shared.subsys.web.model.HttpConnector;
@@ -95,9 +96,14 @@ public interface BeanFactory extends AutoBeanFactory {
     AutoBean<Topic> topic();
     AutoBean<ConnectionFactory> connectionFactory();
 
+    // -- remove bewlo
     AutoBean<SessionBeans> sessionBeans();
     AutoBean<MessageDrivenBeans> messageDrivenBeans();
     AutoBean<EJBPool> ejbPool();
+    AutoBean<org.jboss.as.console.client.shared.subsys.ejb.service.model.TimerService> timerServiceOld();
+    // -- remove the above
+    AutoBean<EJB3Subsystem> ejb3Subsystem();
+    AutoBean<StrictMaxBeanPool> strictMaxBeanPool();
     AutoBean<TimerService> timerService();
 
     AutoBean<LoggingHandler> loggingHandler();

@@ -67,10 +67,12 @@ import org.jboss.as.console.client.shared.help.HelpSystem;
 import org.jboss.as.console.client.shared.jvm.VMMetricsPresenter;
 import org.jboss.as.console.client.shared.model.DeploymentStore;
 import org.jboss.as.console.client.shared.model.SubsystemStore;
+import org.jboss.as.console.client.shared.subsys.deploymentscanner.ScannerPresenter;
 import org.jboss.as.console.client.shared.subsys.ejb.mdb.MessageDrivenBeansPresenter;
 import org.jboss.as.console.client.shared.subsys.ejb.pool.BeanPoolsPresenter;
 import org.jboss.as.console.client.shared.subsys.ejb.service.EJBServicesPresenter;
 import org.jboss.as.console.client.shared.subsys.ejb.session.SessionBeansPresenter;
+import org.jboss.as.console.client.shared.subsys.ejb3.EJB3Presenter;
 import org.jboss.as.console.client.shared.subsys.infinispan.CacheContainerPresenter;
 import org.jboss.as.console.client.shared.subsys.jca.DataSourcePresenter;
 import org.jboss.as.console.client.shared.subsys.jca.ResourceAdapterPresenter;
@@ -82,7 +84,6 @@ import org.jboss.as.console.client.shared.subsys.logging.LoggingPresenter;
 import org.jboss.as.console.client.shared.subsys.messaging.MessagingPresenter;
 import org.jboss.as.console.client.shared.subsys.naming.JndiPresenter;
 import org.jboss.as.console.client.shared.subsys.osgi.OSGiPresenter;
-import org.jboss.as.console.client.shared.subsys.deploymentscanner.ScannerPresenter;
 import org.jboss.as.console.client.shared.subsys.threads.BoundedQueueThreadPoolPresenter;
 import org.jboss.as.console.client.shared.subsys.web.WebPresenter;
 import org.jboss.as.console.client.shared.subsys.ws.DomainEndpointStrategy;
@@ -182,10 +183,13 @@ public interface CoreUI extends Ginjector {
     StandaloneDriverStrategy getStandloneDriverStrategy();
     DriverRegistry getDriverRegistry();
 
+    // -- remove below
     AsyncProvider<SessionBeansPresenter> getSessionBeanPresenter();
     AsyncProvider<MessageDrivenBeansPresenter> getMessageDrivenBeanPresenter();
     AsyncProvider<BeanPoolsPresenter> getBeanPoolsPresenter();
     AsyncProvider<EJBServicesPresenter> getBeanServicesPresenter();
+    // -- remove above
+    AsyncProvider<EJB3Presenter> getEJB3Presenter();
 
     AsyncProvider<MessagingPresenter> getMessagingPresenter();
     AsyncProvider<LoggingPresenter> getLoggingPresenter();
@@ -195,7 +199,7 @@ public interface CoreUI extends Ginjector {
     AsyncProvider<SocketBindingPresenter> getSocketBindingPresenter();
 
     AsyncProvider<BoundedQueueThreadPoolPresenter> getBoundedQueueThreadPoolPresenter();
-    
+
     AsyncProvider<WebPresenter> getWebPresenter();
 
     AsyncProvider<InterfacePresenter> getInterfacePresenter();
