@@ -2,7 +2,9 @@ package org.jboss.as.console.client.shared.subsys.ejb3;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import org.jboss.as.console.client.Console;
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.dispatch.impl.DMRAction;
 import org.jboss.as.console.client.shared.subsys.Baseadress;
@@ -88,7 +90,26 @@ public class SingleEntityToDmrBridgeImpl<T> implements EntityToDmrBridge<T> {
     @Override
     public void onSaveDetails(FormAdapter<T> form) {
         view.setEditingEnabled(false);
-        // TODO
+
+        ModelNode resourceAddress = address.asResource(Baseadress.get());
+        Map<String, Object> changedValues = form.getChangedValues();
+        if (changedValues.isEmpty())
+            return;
+
+        ModelNode batch = entityAdapter.fromChangeset(changedValues, resourceAddress);
+        dispatcher.execute(new DMRAction(batch), new DmrCallback() {
+            @Override
+            public void onDmrSuccess(ModelNode response) {
+                Console.info("Success: updated Timer Service");
+                loadEntities(null);
+            }
+
+            @Override
+            public void onDmrFailure(ModelNode response) {
+                super.onDmrFailure(response);
+                loadEntities(null);
+            }
+        });
     }
 
     @Override
