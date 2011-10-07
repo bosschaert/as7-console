@@ -14,9 +14,9 @@ public interface StrictMaxBeanPool extends NamedEntity {
               required=true,
               formItemTypeForEdit="TEXT",
               formItemTypeForAdd="TEXT_BOX")
-    public String getName();
+    String getName();
     @Override
-    public void setName(String name);
+    void setName(String name);
 
     @Binding(detypedName="max-pool-size")
     @FormItem(defaultValue="20",
@@ -24,6 +24,6 @@ public interface StrictMaxBeanPool extends NamedEntity {
               required=true,
               formItemTypeForEdit="NUMBER_BOX",
               formItemTypeForAdd="NUMBER_BOX")
-    public int getMaxPoolSize();
-    public void setMaxPoolSize(int maxSize);
+    int getMaxPoolSize();
+    void setMaxPoolSize(int maxSize);
 }

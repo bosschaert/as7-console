@@ -27,12 +27,15 @@ public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements E
     private final FormMetaData formMetaData;
     private EJB3Presenter presenter;
     private EJB3SubsystemEditor subsystemEditor;
+    private TimerServiceView timerServiceView;
 
     @Inject
     public EJB3View(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(StrictMaxBeanPool.class);
         formMetaData = propertyMetaData.getBeanMetaData(StrictMaxBeanPool.class).getFormMetaData();
         bridge = new EntityToDmrBridgeImpl<StrictMaxBeanPool>(propertyMetaData, StrictMaxBeanPool.class, this, dispatcher);
+
+        timerServiceView = new TimerServiceView(propertyMetaData, dispatcher);
     }
 
     @Override
@@ -54,14 +57,13 @@ public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements E
         vpanel.add(subsystemEditor.asWidget());
 
         entityEditor = makeEntityEditor();
-        entityEditor.asWidget(vpanel);
+        entityEditor.addWidgetToPanel(vpanel);
 
         TabLayoutPanel tabLayoutPanel = new TabLayoutPanel(25, Style.Unit.PX);
         tabLayoutPanel.addStyleName("default-tabpanel");
 
         tabLayoutPanel.add(layout, "Pools");
-        tabLayoutPanel.add(new VerticalPanel(), "Services");
-
+        tabLayoutPanel.add(timerServiceView.asWidget(), "Services");
         tabLayoutPanel.selectTab(0);
 
         return tabLayoutPanel;
@@ -102,6 +104,11 @@ public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements E
     @Override
     protected String getPluralEntityName() {
         return "EJB Pools"; // TODO i18n // is this one used at all?
+    }
+
+    @Override
+    public void loadTimerService() {
+        timerServiceView.initialLoad();
     }
 
     @Override

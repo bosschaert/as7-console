@@ -6,10 +6,10 @@ import org.jboss.as.console.client.widgets.forms.Binding;
 @Address("/subsystem=ejb3")
 public interface EJB3Subsystem {
     @Binding(detypedName="default-slsb-instance-pool")
-    public String getDefaultSLSBPool();
-    public void setDefaultSLSBPool(String name);
+    String getDefaultSLSBPool();
+    void setDefaultSLSBPool(String name);
 
     @Binding(detypedName="default-mdb-instance-pool")
-    public String getDefaultMDBPool();
-    public void setDefaultMDBPool(String name);
+    String getDefaultMDBPool();
+    void setDefaultMDBPool(String name);
 }

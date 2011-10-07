@@ -79,11 +79,11 @@ public class EntityEditor<T> {
         panel.add(scroll);
         panel.setWidgetTopHeight(scroll, 26, Style.Unit.PX, 100, Style.Unit.PCT);
 
-        asWidget(layout);
+        addWidgetToPanel(layout);
         return panel;
     }
 
-    public void asWidget(VerticalPanel layout) {
+    public void addWidgetToPanel(VerticalPanel layout) {
         final ToolStrip toolStrip = new ToolStrip();
         toolStrip.addToolButtonRight(new ToolButton(Console.CONSTANTS.common_label_add(), new ClickHandler() {
             @Override

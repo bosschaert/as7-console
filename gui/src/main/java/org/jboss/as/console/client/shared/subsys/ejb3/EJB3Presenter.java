@@ -36,6 +36,7 @@ public class EJB3Presenter extends Presenter<EJB3Presenter.MyView, EJB3Presenter
     }
 
     public interface MyView extends FrameworkView {
+        void loadTimerService();
         void setPresenter(EJB3Presenter presenter);
         void updateSubsystem(EJB3Subsystem subsystem);
     }
@@ -62,6 +63,8 @@ public class EJB3Presenter extends Presenter<EJB3Presenter.MyView, EJB3Presenter
         super.onReset();
         loadSubsystem();
         getView().initialLoad();
+        // TODO maybe async?
+        getView().loadTimerService();
     }
 
     @Override
