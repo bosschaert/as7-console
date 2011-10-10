@@ -53,7 +53,6 @@ public class TimerServiceView extends AbstractEntityView<TimerService> {
     @Override
     protected DefaultCellTable<TimerService> makeEntityTable() {
         DefaultCellTable<TimerService> table = new DefaultCellTable<TimerService>(5);
-//        table.addColumn(new Columns.NameColumn(), Columns.NameColumn.LABEL);
         table.setVisible(false);
         return table;
     }
