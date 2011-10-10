@@ -18,8 +18,10 @@ import org.jboss.as.console.client.shared.viewframework.EntityDetails;
 import org.jboss.as.console.client.shared.viewframework.EntityEditor;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.FrameworkButton;
+import org.jboss.as.console.client.shared.viewframework.ObservableFormItem;
 import org.jboss.as.console.client.widgets.forms.FormMetaData;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
+import org.jboss.ballroom.client.widgets.forms.ComboBoxItem;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
@@ -29,6 +31,7 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
     private final FormMetaData formMetaData;
     private final PoolsSection poolsSection;
     private final TimerServiceView timerServiceView;
+    private EJB3Presenter presenter;
 
     @Inject
     public EJB3View(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
@@ -41,10 +44,18 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
         timerServiceView = new TimerServiceView(propertyMetaData, dispatcher);
     }
 
-//    @Override
-//    public void itemAction(Action action, ObservableFormItem item) {
-//        if (item.getPropertyBinding().getJavaName())
-//    }
+    @Override
+    public void itemAction(Action action, ObservableFormItem item) {
+        if (action != Action.CREATED)
+            return;
+
+        String javaName = item.getPropertyBinding().getJavaName();
+        if (javaName.equals("defaultSLSBPool") || javaName.equals("defaultMDBPool")) {
+            ComboBoxItem cb = (ComboBoxItem) item.getWrapped();
+            String [] poolNames = presenter.getPoolNames();
+            cb.setValueMap(poolNames);
+        }
+    }
 
     @Override
     public Widget createWidget() {
@@ -110,6 +121,11 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
     @Override
     protected String getPluralEntityName() {
         return "EJB3 Subsystem"; // TODO i18n // is this one used at all?
+    }
+
+    @Override
+    public void setPresenter(EJB3Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override

@@ -31,6 +31,7 @@ public class EJB3Presenter extends Presenter<EJB3Presenter.MyView, EJB3Presenter
     public interface MyView extends View, FrameworkView {
         void loadPools();
         void loadTimerService();
+        void setPresenter(EJB3Presenter ejb3Presenter);
     }
 
     @Inject
@@ -42,6 +43,11 @@ public class EJB3Presenter extends Presenter<EJB3Presenter.MyView, EJB3Presenter
         this.propertyMetaData = propertyMetaData;
         this.revealStrategy = revealStrategy;
         this.ejb3MetaData = propertyMetaData.getBeanMetaData(EJB3Subsystem.class);
+    }
+
+    protected void onBind() {
+        super.onBind();
+        getView().setPresenter(this);
     }
 
     @Override
@@ -56,6 +62,10 @@ public class EJB3Presenter extends Presenter<EJB3Presenter.MyView, EJB3Presenter
     @Override
     protected void revealInParent() {
         revealStrategy.revealInParent(this);
+    }
+
+    public String[] getPoolNames() {
+        return new String [] {"mdb-strict-max-pool", "slsb-strict-max-pool"};
     }
 
     /*

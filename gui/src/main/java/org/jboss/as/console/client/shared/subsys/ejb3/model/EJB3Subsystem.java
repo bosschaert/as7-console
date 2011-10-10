@@ -7,12 +7,14 @@ import org.jboss.as.console.client.widgets.forms.FormItem;
 @Address("/subsystem=ejb3")
 public interface EJB3Subsystem {
     @Binding(detypedName="default-slsb-instance-pool")
-    @FormItem(label="Default Stateless Session Bean Pool")
+    @FormItem(label="Default Stateless Session Bean Pool",
+              formItemTypeForEdit="COMBO_BOX")
     String getDefaultSLSBPool();
     void setDefaultSLSBPool(String name);
 
     @Binding(detypedName="default-mdb-instance-pool")
-    @FormItem(label="Default Message Driven Bean Pool")
+    @FormItem(label="Default Message Driven Bean Pool",
+              formItemTypeForEdit="COMBO_BOX")
     String getDefaultMDBPool();
     void setDefaultMDBPool(String name);
 }
