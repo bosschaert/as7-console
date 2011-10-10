@@ -1,6 +1,7 @@
 package org.jboss.as.console.client.shared.subsys.ejb3;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -31,7 +32,7 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
     private final FormMetaData formMetaData;
     private final PoolsSection poolsSection;
     private final TimerServiceView timerServiceView;
-    private EJB3Presenter presenter;
+    private ComboBoxItem defaultSLSBPoolItem, defaultMDBPoolItem;
 
     @Inject
     public EJB3View(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
@@ -50,11 +51,10 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
             return;
 
         String javaName = item.getPropertyBinding().getJavaName();
-        if (javaName.equals("defaultSLSBPool") || javaName.equals("defaultMDBPool")) {
-            ComboBoxItem cb = (ComboBoxItem) item.getWrapped();
-            String [] poolNames = presenter.getPoolNames();
-            cb.setValueMap(poolNames);
-        }
+        if (javaName.equals("defaultSLSBPool"))
+            defaultSLSBPoolItem = (ComboBoxItem) item.getWrapped();
+        else if (javaName.equals("defaultMDBPool"))
+            defaultMDBPoolItem = (ComboBoxItem) item.getWrapped();
     }
 
     @Override
@@ -124,8 +124,11 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
     }
 
     @Override
-    public void setPresenter(EJB3Presenter presenter) {
-        this.presenter = presenter;
+    public void setPoolNames(List<String> poolNames) {
+        if (defaultMDBPoolItem != null)
+            defaultMDBPoolItem.setValueMap(poolNames);
+        if (defaultSLSBPoolItem != null)
+            defaultSLSBPoolItem.setValueMap(poolNames);
     }
 
     @Override
