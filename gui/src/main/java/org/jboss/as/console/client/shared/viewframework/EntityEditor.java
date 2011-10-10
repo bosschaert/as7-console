@@ -123,7 +123,8 @@ public class EntityEditor<T> {
 
         pager = new DefaultPager();
         pager.setDisplay(table);
-        layout.add(pager);
+        if (table.isVisible())
+            layout.add(pager);
 
         details.bind(table);
         layout.add(new ContentGroupLabel(Console.CONSTANTS.common_label_details()));

@@ -69,6 +69,11 @@ public class EJB3View extends AbstractEntityView<StrictMaxBeanPool> implements E
         return tabLayoutPanel;
     }
 
+//    @Override
+//    public void itemAction(Action action, ObservableFormItem item) {
+//        if (item.getPropertyBinding().getJavaName())
+//    }
+
     @Override
     public void setPresenter(EJB3Presenter presenter) {
         this.presenter = presenter;

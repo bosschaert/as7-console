@@ -10,7 +10,8 @@ public interface TimerService {
     @FormItem(defaultValue="0",
               label="Core Threads",
               required=true,
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              order=10)
     int getCoreThreads();
     void setCoreThreads(int threads);
 
@@ -18,18 +19,21 @@ public interface TimerService {
     @FormItem(defaultValue="4",
               label="Max Threads",
               required=true,
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              order=15)
     int getMaxThreads();
     void setMaxThreads(int threads);
 
     @FormItem(label="Path",
-              required=true)
+              required=true,
+              order=20)
     String getPath();
     void setPath(String path);
 
     @Binding(detypedName="relative-to")
     @FormItem(label="Relative To",
-              required=true)
+              required=true,
+              order=25)
     String getRelativeTo();
     void setRelativeTo(String location);
 }

@@ -46,7 +46,7 @@ public abstract class AbstractEntityView<T> extends SuspendableViewImpl implemen
 
     protected EntityEditor<T> entityEditor;
     protected Class<?> beanType;
-    protected EnumSet hideButtons;
+    protected EnumSet<FrameworkButton> hideButtons;
 
     public AbstractEntityView(Class<?> beanType) {
         this(beanType, EnumSet.noneOf(FrameworkButton.class));

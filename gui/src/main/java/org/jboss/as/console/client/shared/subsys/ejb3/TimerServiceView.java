@@ -8,7 +8,8 @@ import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.subsys.ejb3.model.StrictMaxBeanPool;
 import org.jboss.as.console.client.shared.subsys.ejb3.model.TimerService;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
-import org.jboss.as.console.client.shared.viewframework.Columns;
+import org.jboss.as.console.client.shared.viewframework.EntityDetails;
+import org.jboss.as.console.client.shared.viewframework.EntityEditor;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.FrameworkButton;
 import org.jboss.as.console.client.widgets.forms.FormMetaData;
@@ -34,6 +35,12 @@ public class TimerServiceView extends AbstractEntityView<TimerService> {
     }
 
     @Override
+    protected EntityEditor<TimerService> makeEntityEditor() {
+        EntityDetails<TimerService> details = new EntityDetails<TimerService>(getPluralEntityName(), makeEditEntityDetailsForm(), getEntityBridge(), hideButtons);
+        return new EntityEditor<TimerService>(getPluralEntityName(), null, makeEntityTable(), details, hideButtons);
+    }
+
+    @Override
     protected FormMetaData getFormMetaData() {
         return formMetaData;
     }
@@ -46,7 +53,8 @@ public class TimerServiceView extends AbstractEntityView<TimerService> {
     @Override
     protected DefaultCellTable<TimerService> makeEntityTable() {
         DefaultCellTable<TimerService> table = new DefaultCellTable<TimerService>(5);
-        table.addColumn(new Columns.NameColumn(), Columns.NameColumn.LABEL);
+//        table.addColumn(new Columns.NameColumn(), Columns.NameColumn.LABEL);
+        table.setVisible(false);
         return table;
     }
 
