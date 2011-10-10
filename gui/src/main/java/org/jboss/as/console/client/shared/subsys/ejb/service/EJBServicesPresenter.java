@@ -97,7 +97,7 @@ public class EJBServicesPresenter extends Presenter<EJBServicesPresenter.MyView,
                 ModelNode response = ModelNode.fromBase64(result.getResponseText());
                 ModelNode model = response.get(ModelDescriptionConstants.RESULT);
 
-                TimerService ts = factory.timerService().as();
+                TimerService ts = factory.timerServiceOld().as();
                 ts.setCoreThreads(model.get("core-threads").asInt());
                 ts.setMaxThreads(model.get("max-threads").asInt());
                 ts.setPath(model.get("path").asString());

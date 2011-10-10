@@ -32,6 +32,7 @@ public class NameTokens {
     public static final String BoundedQueueThreadPoolPresenter = "threads";
     public static final String DataSourcePresenter = "datasources";
     public static final String DebugToolsPresenter = "debug-tools";
+    public static final String EJB3Presenter = "ejb3";
     public static final String HostInterfacesPresenter = "host-interfaces";
     public static final String HostJVMPresenter = "host-jvms";
     public static final String HostPropertiesPresenter = "host-properties";
