@@ -21,9 +21,20 @@ public interface StrictMaxBeanPool extends NamedEntity {
     @Binding(detypedName="max-pool-size")
     @FormItem(defaultValue="20",
               label="Max Pool Size",
-              required=true,
               formItemTypeForEdit="NUMBER_BOX",
               formItemTypeForAdd="NUMBER_BOX")
     int getMaxPoolSize();
     void setMaxPoolSize(int maxSize);
+
+    @FormItem(defaultValue="5",
+            label="Timeout",
+            formItemTypeForAdd="NUMBER_BOX",
+            formItemTypeForEdit="NUMBER_BOX")
+    long getTimeout();
+    void setTimeout(long timeout);
+
+    @Binding(detypedName="timeout-unit")
+    // @FormItem(defaultValue)
+    String getTimeoutUnit();
+    void setTimeoutUnit(String unit);
 }
