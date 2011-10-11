@@ -19,17 +19,6 @@
 
 package org.jboss.as.console.rebind.forms;
 
-import com.google.gwt.core.ext.Generator;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
-import com.google.gwt.user.rebind.SourceWriter;
-import org.jboss.as.console.client.widgets.forms.Address;
-import org.jboss.as.console.client.widgets.forms.Binding;
-
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -38,6 +27,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.google.gwt.core.ext.Generator;
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
+import com.google.gwt.user.rebind.SourceWriter;
+
+import org.jboss.as.console.client.widgets.forms.Address;
+import org.jboss.as.console.client.widgets.forms.Binding;
 import org.jboss.as.console.client.widgets.forms.FormItem;
 
 /**
@@ -187,7 +188,7 @@ public class PropertyMetaDataGenerator extends Generator{
                         {
                             BindingDeclaration bindDecl = binding.getBindingDeclaration();
                             FormItemDeclaration formDecl = binding.getFormItemDeclaration();
-                            
+
                             if(bindDecl.skip()) continue;
 
                             String labelVar = "label_" + beanTypeClass.getName().replace(".", "_") + "_" + bindDecl.getJavaName();
@@ -205,12 +206,12 @@ public class PropertyMetaDataGenerator extends Generator{
                             sourceWriter.println("registry.get("+beanTypeClass.getName()+".class).add(");
                             sourceWriter.indent();
                             sourceWriter.println("new PropertyBinding(\"" + bindDecl.getJavaName() + "\", \"" + bindDecl.getDetypedName() +
-                                                                      "\", \"" + bindDecl.getJavaTypeName() + 
-                                                                      "\"," + listTypeVar + ", this, " + bindDecl.key() + 
-                                                                      ", \"" + formDecl.defaultValue() + "\", " + labelVar + ", " + 
-                                                                      formDecl.required() + ", \"" + formDecl.formItemTypeForEdit() + 
+                                                                      "\", \"" + bindDecl.getJavaTypeName() +
+                                                                      "\"," + listTypeVar + ", this, " + bindDecl.key() +
+                                                                      ", \"" + formDecl.defaultValue() + "\", " + labelVar + ", " +
+                                                                      formDecl.required() + ", \"" + formDecl.formItemTypeForEdit() +
                                                                       "\", \"" + formDecl.formItemTypeForAdd() + "\", \"" + formDecl.subgroup() +
-                                                                      "\", " + formDecl.order() + ")");
+                                                                      "\", " + formDecl.order() + ", \"" + formDecl.data() + "\")");
                             sourceWriter.outdent();
                             sourceWriter.println(");");
 
@@ -274,7 +275,7 @@ public class PropertyMetaDataGenerator extends Generator{
         sourceWriter.outdent();
         sourceWriter.println("}");
     }
-    
+
     public static class PropBindingDeclarations {
         private BindingDeclaration bindingDecl;
         private FormItemDeclaration formItemDecl;
@@ -285,7 +286,7 @@ public class PropertyMetaDataGenerator extends Generator{
         public BindingDeclaration getBindingDeclaration() { return this.bindingDecl; }
         public FormItemDeclaration getFormItemDeclaration() { return this.formItemDecl; }
     }
-    
+
     public static List<PropBindingDeclarations> mapProperties(Class beanTypeClass) {
 
         List<PropBindingDeclarations> bindings = new ArrayList<PropBindingDeclarations>();
@@ -359,6 +360,7 @@ public class PropertyMetaDataGenerator extends Generator{
         String formItemTypeForAdd = "TEXT_BOX";
         String subgroup = "";
         int order = 100;
+        String data = "";
 
         if(formItemDeclaration!=null)
         {
@@ -370,13 +372,14 @@ public class PropertyMetaDataGenerator extends Generator{
             formItemTypeForAdd = formItemDeclaration.formItemTypeForAdd();
             subgroup = formItemDeclaration.subgroup();
             order = formItemDeclaration.order();
+            data = formItemDeclaration.data();
         }
 
         FormItemDeclaration decl = new FormItemDeclaration(defaultValue, label, localLabel, required,
-                                                         formItemTypeForEdit, formItemTypeForAdd, subgroup, order);
+                                                         formItemTypeForEdit, formItemTypeForAdd, subgroup, order, data);
         return decl;
     }
-    
+
     private static BindingDeclaration createBindingDeclaration(Class beanTypeClass, Method method, String token) {
 
 
@@ -392,7 +395,7 @@ public class PropertyMetaDataGenerator extends Generator{
         Binding bindingDeclaration = method.getAnnotation(Binding.class);
         boolean skip = false;
         boolean key = false;
-        
+
         if(bindingDeclaration!=null)
         {
             detypedName = bindingDeclaration.detypedName()!= null ? bindingDeclaration.detypedName() : "not-set";

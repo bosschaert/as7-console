@@ -20,13 +20,15 @@
 package org.jboss.as.console.rebind.forms;
 
 import java.lang.annotation.Annotation;
+
 import org.jboss.as.console.client.widgets.forms.FormItem;
+
 
 /**
  * @author Stan Silvert
  */
 public class FormItemDeclaration implements FormItem  {
-
+    private String data;
     private String defaultValue;
     private String label;
     private String localLabel;
@@ -35,9 +37,9 @@ public class FormItemDeclaration implements FormItem  {
     private String formItemTypeForAdd;
     private String subgroup;
     private int order;
-    
+
     public FormItemDeclaration(String defaultValue, String label, String localLabel, boolean isRequired,
-                              String formItemTypeForEdit, String formItemTypeForAdd, String subgroup, int order) {
+                              String formItemTypeForEdit, String formItemTypeForAdd, String subgroup, int order, String data) {
         this.defaultValue = defaultValue;
         this.label = label;
         this.localLabel = localLabel;
@@ -46,6 +48,12 @@ public class FormItemDeclaration implements FormItem  {
         this.formItemTypeForAdd = formItemTypeForAdd;
         this.subgroup = subgroup;
         this.order = order;
+        this.data = data;
+    }
+
+    @Override
+    public String data() {
+        return data;
     }
 
     @Override
@@ -62,23 +70,23 @@ public class FormItemDeclaration implements FormItem  {
     public String localLabel() {
         return this.localLabel;
     }
-    
+
 
     @Override
     public boolean required() {
         return this.isRequired;
     }
 
-    @Override 
+    @Override
     public String formItemTypeForEdit() {
         return this.formItemTypeForEdit;
     }
-    
+
     @Override
     public String  formItemTypeForAdd() {
         return this.formItemTypeForAdd;
     }
-    
+
     @Override
     public String subgroup() {
         return this.subgroup;
@@ -88,7 +96,7 @@ public class FormItemDeclaration implements FormItem  {
     public int order() {
         return this.order;
     }
-    
+
     @Override
     public Class<? extends Annotation> annotationType() {
         throw new RuntimeException("not implemented");

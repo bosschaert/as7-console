@@ -35,7 +35,8 @@ public @interface FormItem {
      * to tell the PropertyBinding to set the default value to null.
      */
     public static final String NULL = "FormItem#undefined";
-    
+
+    String data() default "";
     String defaultValue() default "";
     String label() default "";
     String localLabel() default "";
