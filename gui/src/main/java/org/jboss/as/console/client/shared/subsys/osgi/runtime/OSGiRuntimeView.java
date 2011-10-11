@@ -54,6 +54,7 @@ import org.jboss.dmr.client.ModelNode;
 public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiRuntimePresenter.MyView {
     private final FormMetaData formMetaData;
     private final EntityToDmrBridgeImpl<Bundle> bridge;
+    private OSGiRuntimePresenter presenter;
 
     @Inject
     public OSGiRuntimeView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
@@ -69,12 +70,11 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
                 operation.get(ModelDescriptionConstants.INCLUDE_RUNTIME).set(true);
 
                 dispatcher.execute(new DMRAction(operation), new DmrCallback() {
-
                     @Override
                     public void onDmrSuccess(ModelNode response) {
                         List<Bundle> entities = entityAdapter.fromDMRList(response.get(ModelDescriptionConstants.RESULT).asList());
                         // EntityToDmrBridgeImpl.this.entityList = sortEntitties(entities);
-                        // set enabled in entities
+                        // set enabled in entities, possibly change this later as fragments don't want to have this displayed
                         for (Bundle b : entities) {
                             b.setEnabled("ACTIVE".equals(b.getState()));
                         }
@@ -126,8 +126,8 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
 
         table.addColumn(new Columns.EnabledColumn(), "Active");
 
-        class MyColumn extends Column<Bundle,Bundle> {
-            public MyColumn(Cell<Bundle> cell) {
+        class BundleColumn extends Column<Bundle,Bundle> {
+            public BundleColumn(Cell<Bundle> cell) {
                 super(cell);
             }
 
@@ -136,26 +136,23 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
                 return record;
             }
         };
-        ActionCell<Bundle> ac = new ActionCell<Bundle>("Start", new ActionCell.Delegate<Bundle>() {
+        ActionCell<Bundle> startCell = new ActionCell<Bundle>("Start", new ActionCell.Delegate<Bundle>() {
             @Override
             public void execute(Bundle id) {
-                // TODO Auto-generated method stub
-                System.out.println("Start Execute called; " + id);
+                presenter.startBundle(id);
             }
         });
 
-        final ActionCell<Bundle> ac2 = new ActionCell<Bundle>("Stop", new ActionCell.Delegate<Bundle>() {
+        final ActionCell<Bundle> stopCell = new ActionCell<Bundle>("Stop", new ActionCell.Delegate<Bundle>() {
             @Override
             public void execute(Bundle id) {
-                // TODO Auto-generated method stub
-                System.out.println("Stop Execute called; " + id);
+                presenter.stopBundle(id);
             }
         });
         List<HasCell<Bundle,Bundle>> hasCells = new ArrayList<HasCell<Bundle,Bundle>>();
-        hasCells.add(new MyColumn(ac));
-        hasCells.add(new MyColumn(ac2));
-        CompositeCell cc = new CompositeCell(hasCells);
-        MyColumn myColumn = new MyColumn(cc);
+        hasCells.add(new BundleColumn(startCell));
+        hasCells.add(new BundleColumn(stopCell));
+        BundleColumn myColumn = new BundleColumn(new CompositeCell(hasCells));
 
         table.addColumn(myColumn, "Action");
 
@@ -176,5 +173,10 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
     @Override
     protected String getPluralEntityName() {
         return "Bundles";
+    }
+
+    @Override
+    public void setPresenter(OSGiRuntimePresenter presenter) {
+        this.presenter = presenter;
     }
 }

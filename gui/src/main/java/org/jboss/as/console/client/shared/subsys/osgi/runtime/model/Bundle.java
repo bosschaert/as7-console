@@ -32,7 +32,7 @@ public interface Bundle extends NamedEntity, EnabledEntity {
     @Override
     @Binding(detypedName="id", key=true)
     @FormItem(defaultValue="",
-              localLabel="common_label_name",
+              localLabel="Bundle ID",
               required=true,
               formItemTypeForEdit="TEXT",
               formItemTypeForAdd="TEXT_BOX")
