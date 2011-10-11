@@ -19,6 +19,8 @@
 package org.jboss.as.console.client.shared.subsys.osgi.runtime;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -26,6 +28,8 @@ import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.ImageResourceCell;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.inject.Inject;
@@ -44,6 +48,7 @@ import org.jboss.as.console.client.widgets.forms.FormMetaData;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
+import org.jboss.ballroom.client.widgets.icons.Icons;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 import org.jboss.dmr.client.ModelDescriptionConstants;
 import org.jboss.dmr.client.ModelNode;
@@ -73,21 +78,15 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
                     @Override
                     public void onDmrSuccess(ModelNode response) {
                         List<Bundle> entities = entityAdapter.fromDMRList(response.get(ModelDescriptionConstants.RESULT).asList());
-                        // EntityToDmrBridgeImpl.this.entityList = sortEntitties(entities);
-                        // set enabled in entities, possibly change this later as fragments don't want to have this displayed
-                        for (Bundle b : entities) {
-                            b.setEnabled("ACTIVE".equals(b.getState()));
-                        }
+                        Collections.sort(entities, new Comparator<Bundle>() {
+                            @Override
+                            public int compare(Bundle o1, Bundle o2) {
+                                return o1.getName().compareTo(o2.getName());
+                            }
+                        });
                         entityList = entities;
                         view.refresh();
                     }
-
-                    /*
-                    private List<T> sortEntitties(List<T> entities) {
-                        Collections.sort(entities, entityComparator);
-                        return entities;
-                    }
-                    */
                 });
             }
         };
@@ -124,7 +123,19 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
         };
         table.addColumn(versionColumn, "Version");
 
-        table.addColumn(new Columns.EnabledColumn(), "Active");
+        Column<Bundle, ImageResource> startedColumn = new Column<Bundle, ImageResource>(new ImageResourceCell()) {
+            @Override
+            public ImageResource getValue(Bundle bundle) {
+                if ("ACTIVE".equals(bundle.getState()))
+                    return Icons.INSTANCE.statusGreen_small();
+                if ("STARTING".equals(bundle.getState()))
+                    return Icons.INSTANCE.statusYellow_small();
+                if ("RESOLVED".equals(bundle.getState()))
+                    return Icons.INSTANCE.statusBlue_small();
+                return Icons.INSTANCE.statusRed_small();
+            }
+        };
+        table.addColumn(startedColumn, "State");
 
         class BundleColumn extends Column<Bundle,Bundle> {
             public BundleColumn(Cell<Bundle> cell) {

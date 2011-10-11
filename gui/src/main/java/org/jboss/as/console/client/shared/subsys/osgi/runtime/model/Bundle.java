@@ -18,7 +18,6 @@
  */
 package org.jboss.as.console.client.shared.subsys.osgi.runtime.model;
 
-import org.jboss.as.console.client.shared.viewframework.EnabledEntity;
 import org.jboss.as.console.client.shared.viewframework.NamedEntity;
 import org.jboss.as.console.client.widgets.forms.Address;
 import org.jboss.as.console.client.widgets.forms.Binding;
@@ -28,25 +27,17 @@ import org.jboss.as.console.client.widgets.forms.FormItem;
  * @author David Bosschaert
  */
 @Address("/subsystem=osgi/bundle={0}")
-public interface Bundle extends NamedEntity, EnabledEntity {
+public interface Bundle extends NamedEntity {
     @Override
     @Binding(detypedName="id", key=true)
     @FormItem(defaultValue="",
-              localLabel="Bundle ID",
+              label="Bundle ID",
               required=true,
               formItemTypeForEdit="TEXT",
               formItemTypeForAdd="TEXT_BOX")
     public String getName();
     @Override
     public void setName(String name);
-
-    @Override
-    @FormItem(defaultValue="false",
-            formItemTypeForEdit="CHECK_BOX",
-            formItemTypeForAdd="CHECK_BOX")
-    public boolean isEnabled();
-    @Override
-    public void setEnabled(boolean isEnabled);
 
     @FormItem(label="State")
     public String getState();
