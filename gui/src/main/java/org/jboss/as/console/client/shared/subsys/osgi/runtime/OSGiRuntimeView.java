@@ -81,7 +81,7 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
                         Collections.sort(entities, new Comparator<Bundle>() {
                             @Override
                             public int compare(Bundle o1, Bundle o2) {
-                                return o1.getName().compareTo(o2.getName());
+                                return new Long(o1.getName()).compareTo(new Long(o2.getName()));
                             }
                         });
                         entityList = entities;
