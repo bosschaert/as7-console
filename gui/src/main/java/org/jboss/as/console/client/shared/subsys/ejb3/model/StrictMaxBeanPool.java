@@ -47,6 +47,12 @@ public interface StrictMaxBeanPool extends NamedEntity {
     int getMaxPoolSize();
     void setMaxPoolSize(int maxSize);
 
+    @FormItem(label="Timeout",
+              formItemTypeForEdit="UNIT_BOX",
+              formItemTypeForAdd="UNIT_BOX")
+    TimeoutValue getUnitizedValue();
+    void setUnitizedValue(TimeoutValue value);
+    /*
     @FormItem(defaultValue="5",
             label="Timeout",
             formItemTypeForAdd="NUMBER_BOX",
@@ -58,4 +64,5 @@ public interface StrictMaxBeanPool extends NamedEntity {
     // @FormItem(defaultValue)
     String getTimeoutUnit();
     void setTimeoutUnit(String unit);
+    */
 }
