@@ -38,6 +38,7 @@ import org.jboss.as.console.client.shared.viewframework.EntityDetails;
 import org.jboss.as.console.client.shared.viewframework.EntityEditor;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.FrameworkButton;
+import org.jboss.as.console.client.shared.viewframework.SingleEntityToDmrBridgeImpl;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
 import org.jboss.ballroom.client.widgets.forms.ComboBoxItem;
 import org.jboss.ballroom.client.widgets.forms.Form;
@@ -50,7 +51,7 @@ import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
  */
 public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3Presenter.MyView {
     private final EntityToDmrBridge<EJB3Subsystem> bridge;
-    private final PoolsSection poolsSection;
+    private final PoolsView poolsView;
     private final TimerServiceView timerServiceView;
     private ComboBoxItem defaultSLSBPoolItem, defaultMDBPoolItem;
 
@@ -59,7 +60,7 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
         super(EJB3Subsystem.class, propertyMetaData, EnumSet.of(FrameworkButton.ADD));
         bridge = new SingleEntityToDmrBridgeImpl<EJB3Subsystem>(propertyMetaData, EJB3Subsystem.class, this, dispatcher);
 
-        poolsSection = new PoolsSection(propertyMetaData, dispatcher);
+        poolsView = new PoolsView(propertyMetaData, dispatcher);
 
         timerServiceView = new TimerServiceView(propertyMetaData, dispatcher);
     }
@@ -89,7 +90,7 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
         entityEditorWidget.addStyleName("rhs-content-panel");
 
         tabLayoutPanel.add(entityEditorWidget, "Container");
-        tabLayoutPanel.add(poolsSection.asWidget(), "Pools");
+        tabLayoutPanel.add(poolsView.asWidget(), "Pools");
         tabLayoutPanel.add(timerServiceView.asWidget(), "Services");
 
 
@@ -141,12 +142,12 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
 
     @Override
     public void setPoolTimeoutUnits(Collection<String> units, String defaultUnit) {
-        poolsSection.setTimeoutUnits(units, defaultUnit);
+        poolsView.setTimeoutUnits(units, defaultUnit);
     }
 
     @Override
     public void loadPools() {
-        poolsSection.initialLoad();
+        poolsView.initialLoad();
     }
 
     @Override

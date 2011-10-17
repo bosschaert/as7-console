@@ -27,7 +27,7 @@ import org.jboss.as.console.client.widgets.forms.FormItem;
  * @author David Bosschaert
  */
 @Address("/subsystem=osgi/bundle={0}")
-public interface Bundle extends NamedEntity {
+public interface OSGiBundle extends NamedEntity {
     @Override
     @Binding(detypedName="id", key=true)
     @FormItem(label="Bundle ID",

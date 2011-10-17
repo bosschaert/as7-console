@@ -19,6 +19,7 @@
 package org.jboss.as.console.client.shared.subsys.osgi.runtime;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
@@ -27,13 +28,14 @@ import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
 import com.gwtplatform.mvp.client.proxy.Place;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 
+import org.jboss.as.console.client.Console;
 import org.jboss.as.console.client.core.NameTokens;
 import org.jboss.as.console.client.domain.model.SimpleCallback;
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.dispatch.impl.DMRAction;
 import org.jboss.as.console.client.shared.dispatch.impl.DMRResponse;
 import org.jboss.as.console.client.shared.subsys.RevealStrategy;
-import org.jboss.as.console.client.shared.subsys.osgi.runtime.model.Bundle;
+import org.jboss.as.console.client.shared.subsys.osgi.runtime.model.OSGiBundle;
 import org.jboss.as.console.client.shared.viewframework.FrameworkView;
 import org.jboss.as.console.client.widgets.forms.AddressBinding;
 import org.jboss.as.console.client.widgets.forms.BeanMetaData;
@@ -56,6 +58,7 @@ public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView,
 
     public interface MyView extends View, FrameworkView {
         void setPresenter(OSGiRuntimePresenter osGiRuntimePresenter);
+        void loadFramework();
     }
 
     @Inject
@@ -66,7 +69,7 @@ public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView,
 
         this.dispatcher = dispatcher;
         this.revealStrategy = revealStrategy;
-        this.bundleMetaData = propertyMetaData.getBeanMetaData(Bundle.class);
+        this.bundleMetaData = propertyMetaData.getBeanMetaData(OSGiBundle.class);
     }
 
     @Override
@@ -81,6 +84,13 @@ public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView,
 
         getView().initialLoad();
 
+        // Async to speed up loading
+        Console.schedule(new Command() {
+            @Override
+            public void execute() {
+                getView().loadFramework();
+            }
+        });
     }
 
     @Override
@@ -88,15 +98,15 @@ public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView,
         revealStrategy.revealInParent(this);
     }
 
-    void startBundle(Bundle bundle) {
+    void startBundle(OSGiBundle bundle) {
         bundleAction(bundle, "start");
     }
 
-    void stopBundle(Bundle bundle) {
+    void stopBundle(OSGiBundle bundle) {
         bundleAction(bundle, "stop");
     }
 
-    private void bundleAction(Bundle bundle, String operationName) {
+    private void bundleAction(OSGiBundle bundle, String operationName) {
         AddressBinding address = bundleMetaData.getAddress();
         ModelNode operation = address.asResource(bundle.getName());
         operation.get(ModelDescriptionConstants.OP).set(operationName);

@@ -19,8 +19,6 @@
 package org.jboss.as.console.client.shared.subsys.osgi.runtime;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -29,18 +27,18 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.ImageResourceCell;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
-import org.jboss.as.console.client.shared.dispatch.impl.DMRAction;
-import org.jboss.as.console.client.shared.subsys.Baseadress;
-import org.jboss.as.console.client.shared.subsys.osgi.runtime.model.Bundle;
+import org.jboss.as.console.client.shared.subsys.osgi.runtime.model.OSGiBundle;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns;
-import org.jboss.as.console.client.shared.viewframework.DmrCallback;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridgeImpl;
 import org.jboss.as.console.client.shared.viewframework.FrameworkButton;
@@ -49,75 +47,70 @@ import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.icons.Icons;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
-import org.jboss.dmr.client.ModelDescriptionConstants;
-import org.jboss.dmr.client.ModelNode;
 
 /**
  * @author David Bosschaert
  */
-public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiRuntimePresenter.MyView {
-    private final EntityToDmrBridgeImpl<Bundle> bridge;
+public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements OSGiRuntimePresenter.MyView {
+    private final EntityToDmrBridgeImpl<OSGiBundle> bridge;
     private OSGiRuntimePresenter presenter;
+    private FrameworkRuntimeView framework;
 
     @Inject
     public OSGiRuntimeView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
-        super(Bundle.class, propertyMetaData, EnumSet.allOf(FrameworkButton.class));
-        bridge = new EntityToDmrBridgeImpl<Bundle>(propertyMetaData, Bundle.class, this, dispatcher) {
-            @Override
-            public void loadEntities(String name) {
-                nameOfLastEdited = name;
+        super(OSGiBundle.class, propertyMetaData, EnumSet.allOf(FrameworkButton.class));
+        bridge = new BundleToDmrBridge(propertyMetaData, OSGiBundle.class, this, dispatcher);
 
-                ModelNode operation = address.asSubresource(Baseadress.get());
-                operation.get(ModelDescriptionConstants.OP).set(ModelDescriptionConstants.READ_CHILDREN_RESOURCES_OPERATION);
-                operation.get(ModelDescriptionConstants.INCLUDE_RUNTIME).set(true);
-
-                dispatcher.execute(new DMRAction(operation), new DmrCallback() {
-                    @Override
-                    public void onDmrSuccess(ModelNode response) {
-                        List<Bundle> entities = entityAdapter.fromDMRList(response.get(ModelDescriptionConstants.RESULT).asList());
-                        Collections.sort(entities, new Comparator<Bundle>() {
-                            @Override
-                            public int compare(Bundle o1, Bundle o2) {
-                                return new Long(o1.getName()).compareTo(new Long(o2.getName()));
-                            }
-                        });
-                        entityList = entities;
-                        view.refresh();
-                    }
-                });
-            }
-        };
+        framework = new FrameworkRuntimeView(propertyMetaData, dispatcher);
     }
 
     @Override
-    protected EntityToDmrBridge<Bundle> getEntityBridge() {
+    public Widget createWidget() {
+        entityEditor = makeEntityEditor();
+
+        // overall layout
+        TabLayoutPanel tabLayoutPanel = new TabLayoutPanel(25, Style.Unit.PX);
+        tabLayoutPanel.addStyleName("default-tabpanel");
+
+        Widget entityEditorWidget = entityEditor.asWidget();
+        entityEditorWidget.addStyleName("rhs-content-panel");
+
+        tabLayoutPanel.add(framework.asWidget(), "Framework");
+        tabLayoutPanel.add(entityEditorWidget, "Bundles");
+        tabLayoutPanel.selectTab(1);
+
+        return tabLayoutPanel;
+    }
+
+    @Override
+    protected EntityToDmrBridge<OSGiBundle> getEntityBridge() {
         return bridge;
     }
 
     @Override
-    protected DefaultCellTable<Bundle> makeEntityTable() {
-        DefaultCellTable<Bundle> table = new DefaultCellTable<Bundle>(15);
+    protected DefaultCellTable<OSGiBundle> makeEntityTable() {
+        DefaultCellTable<OSGiBundle> table = new DefaultCellTable<OSGiBundle>(15);
 
         table.addColumn(new Columns.NameColumn(), "Bundle ID");
-        TextColumn<Bundle> symbolicNameColumn = new TextColumn<Bundle>() {
+        TextColumn<OSGiBundle> symbolicNameColumn = new TextColumn<OSGiBundle>() {
             @Override
-            public String getValue(Bundle record) {
+            public String getValue(OSGiBundle record) {
                 return record.getSymbolicName();
             }
         };
         table.addColumn(symbolicNameColumn, "Symbolic Name");
 
-        TextColumn<Bundle> versionColumn = new TextColumn<Bundle>() {
+        TextColumn<OSGiBundle> versionColumn = new TextColumn<OSGiBundle>() {
             @Override
-            public String getValue(Bundle record) {
+            public String getValue(OSGiBundle record) {
                 return record.getVersion();
             }
         };
         table.addColumn(versionColumn, "Version");
 
-        Column<Bundle, ImageResource> startedColumn = new Column<Bundle, ImageResource>(new ImageResourceCell()) {
+        Column<OSGiBundle, ImageResource> startedColumn = new Column<OSGiBundle, ImageResource>(new ImageResourceCell()) {
             @Override
-            public ImageResource getValue(Bundle bundle) {
+            public ImageResource getValue(OSGiBundle bundle) {
                 if ("ACTIVE".equals(bundle.getState()))
                     return Icons.INSTANCE.statusGreen_small();
                 if ("STARTING".equals(bundle.getState()))
@@ -129,30 +122,30 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
         };
         table.addColumn(startedColumn, "State");
 
-        class BundleColumn extends Column<Bundle,Bundle> {
-            public BundleColumn(Cell<Bundle> cell) {
+        class BundleColumn extends Column<OSGiBundle,OSGiBundle> {
+            public BundleColumn(Cell<OSGiBundle> cell) {
                 super(cell);
             }
 
             @Override
-            public Bundle getValue(Bundle record) {
+            public OSGiBundle getValue(OSGiBundle record) {
                 return record;
             }
         };
-        ActionCell<Bundle> startCell = new ActionCell<Bundle>("Start", new ActionCell.Delegate<Bundle>() {
+        ActionCell<OSGiBundle> startCell = new ActionCell<OSGiBundle>("Start", new ActionCell.Delegate<OSGiBundle>() {
             @Override
-            public void execute(Bundle id) {
+            public void execute(OSGiBundle id) {
                 presenter.startBundle(id);
             }
         });
 
-        final ActionCell<Bundle> stopCell = new ActionCell<Bundle>("Stop", new ActionCell.Delegate<Bundle>() {
+        final ActionCell<OSGiBundle> stopCell = new ActionCell<OSGiBundle>("Stop", new ActionCell.Delegate<OSGiBundle>() {
             @Override
-            public void execute(Bundle id) {
+            public void execute(OSGiBundle id) {
                 presenter.stopBundle(id);
             }
         });
-        List<HasCell<Bundle,Bundle>> hasCells = new ArrayList<HasCell<Bundle,Bundle>>();
+        List<HasCell<OSGiBundle,OSGiBundle>> hasCells = new ArrayList<HasCell<OSGiBundle,OSGiBundle>>();
         hasCells.add(new BundleColumn(startCell));
         hasCells.add(new BundleColumn(stopCell));
         BundleColumn myColumn = new BundleColumn(new CompositeCell(hasCells));
@@ -164,8 +157,8 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
 
     @Override
     // TODO remove!
-    protected FormAdapter<Bundle> makeAddEntityForm() {
-        Form<Bundle> form = new Form<Bundle>(Bundle.class);
+    protected FormAdapter<OSGiBundle> makeAddEntityForm() {
+        Form<OSGiBundle> form = new Form<OSGiBundle>(OSGiBundle.class);
         form.setNumColumns(1);
         form.setFields(formMetaData.findAttribute("name").getFormItemForAdd());
         return form;
@@ -176,6 +169,11 @@ public class OSGiRuntimeView extends AbstractEntityView<Bundle> implements OSGiR
     @Override
     protected String getPluralEntityName() {
         return "Bundles";
+    }
+
+    @Override
+    public void loadFramework() {
+        framework.initialLoad();
     }
 
     @Override
