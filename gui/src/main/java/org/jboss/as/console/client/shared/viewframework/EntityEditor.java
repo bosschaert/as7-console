@@ -22,12 +22,8 @@ package org.jboss.as.console.client.shared.viewframework;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -146,8 +142,15 @@ public class EntityEditor<T> {
         return toolStrip;
     }
 
+    public ListDataProvider<T> getDataProvider() {
+        return dataProvider;
+    }
+
     public void updateEntityList(List<T> entityList, T lastEdited) {
-        dataProvider.setList(entityList);
+        List<T> list = dataProvider.getList();
+        list.clear();
+        list.addAll(entityList);
+        // dataProvider.setList(entityList);
 
         if (table.isEmpty()) return;
 

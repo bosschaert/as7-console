@@ -19,8 +19,12 @@
 package org.jboss.as.console.client.shared.subsys.osgi.runtime;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.Cell;
@@ -30,6 +34,8 @@ import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.Handler;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -39,7 +45,6 @@ import com.google.inject.Inject;
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.subsys.osgi.runtime.model.OSGiBundle;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
-import org.jboss.as.console.client.shared.viewframework.Columns;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridgeImpl;
 import org.jboss.as.console.client.shared.viewframework.FrameworkButton;
@@ -56,6 +61,14 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
     private final EntityToDmrBridgeImpl<OSGiBundle> bridge;
     private OSGiRuntimePresenter presenter;
     private FrameworkRuntimeView framework;
+    private DefaultCellTable<OSGiBundle> bundleTable;
+    private MyListHandler<OSGiBundle> sortHandler;
+    private Comparator<OSGiBundle> bundleIDComparator = new Comparator<OSGiBundle>() {
+        @Override
+        public int compare(OSGiBundle o1, OSGiBundle o2) {
+            return new Long(o1.getName()).compareTo(new Long(o2.getName()));
+        }
+    };
 
     @Inject
     public OSGiRuntimeView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
@@ -75,6 +88,7 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
 
         Widget entityEditorWidget = entityEditor.asWidget();
         entityEditorWidget.addStyleName("rhs-content-panel");
+        sortHandler.setList(entityEditor.getDataProvider().getList());
 
         tabLayoutPanel.add(framework.asWidget(), "Framework");
         tabLayoutPanel.add(entityEditorWidget, "Bundles");
@@ -90,16 +104,33 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
 
     @Override
     protected DefaultCellTable<OSGiBundle> makeEntityTable() {
-        DefaultCellTable<OSGiBundle> table = new DefaultCellTable<OSGiBundle>(15);
+        bundleTable = new DefaultCellTable<OSGiBundle>(15);
+        sortHandler = new MyListHandler<OSGiBundle>();
 
-        table.addColumn(new Columns.NameColumn(), "Bundle ID");
+        TextColumn<OSGiBundle> idColumn = new TextColumn<OSGiBundle>() {
+            @Override
+            public String getValue(OSGiBundle record) {
+                return record.getName();
+            }
+        };
+        idColumn.setSortable(true);
+        sortHandler.setComparator(idColumn, bundleIDComparator);
+        bundleTable.addColumn(idColumn, "Bundle ID");
+
         TextColumn<OSGiBundle> symbolicNameColumn = new TextColumn<OSGiBundle>() {
             @Override
             public String getValue(OSGiBundle record) {
                 return record.getSymbolicName();
             }
         };
-        table.addColumn(symbolicNameColumn, "Symbolic Name");
+        symbolicNameColumn.setSortable(true);
+        sortHandler.setComparator(symbolicNameColumn, new Comparator<OSGiBundle>() {
+            @Override
+            public int compare(OSGiBundle o1, OSGiBundle o2) {
+                return o1.getSymbolicName().compareTo(o2.getSymbolicName());
+            }
+        });
+        bundleTable.addColumn(symbolicNameColumn, "Symbolic Name");
 
         TextColumn<OSGiBundle> versionColumn = new TextColumn<OSGiBundle>() {
             @Override
@@ -107,7 +138,7 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
                 return record.getVersion();
             }
         };
-        table.addColumn(versionColumn, "Version");
+        bundleTable.addColumn(versionColumn, "Version");
 
         Column<OSGiBundle, ImageResource> startedColumn = new Column<OSGiBundle, ImageResource>(new ImageResourceCell()) {
             @Override
@@ -121,7 +152,7 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
                 return Icons.INSTANCE.statusRed_small();
             }
         };
-        table.addColumn(startedColumn, "State");
+        bundleTable.addColumn(startedColumn, "State");
 
         class BundleColumn extends Column<OSGiBundle,OSGiBundle> {
             public BundleColumn(Cell<OSGiBundle> cell) {
@@ -159,9 +190,12 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
         hasCells.add(new BundleColumn(stopCell));
         BundleColumn myColumn = new BundleColumn(new CompositeCell(hasCells));
 
-        table.addColumn(myColumn, "Action");
+        bundleTable.addColumn(myColumn, "Action");
 
-        return table;
+        bundleTable.addColumnSortHandler(sortHandler);
+        bundleTable.getColumnSortList().push(idColumn); // initial sort is on bundle ID
+
+        return bundleTable;
     }
 
     @Override
@@ -186,7 +220,57 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
     }
 
     @Override
+    public void refresh() {
+        super.refresh();
+
+        // Make sure the new values are properly sorted
+        ColumnSortEvent.fire(bundleTable, bundleTable.getColumnSortList());
+    }
+
+    @Override
     public void setPresenter(OSGiRuntimePresenter presenter) {
         this.presenter = presenter;
+    }
+
+    private static class MyListHandler<T> implements Handler {
+        private final Map<Column<?, ?>, Comparator<T>> comparators = new HashMap<Column<?, ?>, Comparator<T>>();
+        private List<T> list;
+
+        public List<T> getList() {
+            return list;
+        }
+
+        public void setList(List<T> list) {
+            this.list = list;
+        }
+
+        public void onColumnSort(ColumnSortEvent event) {
+            // Get the sorted column.
+            Column<?, ?> column = event.getColumn();
+            if (column == null) {
+                return;
+            }
+
+            // Get the comparator.
+            final Comparator<T> comparator = comparators.get(column);
+            if (comparator == null) {
+                return;
+            }
+
+            // Sort using the comparator.
+            if (event.isSortAscending()) {
+                Collections.sort(list, comparator);
+            } else {
+                Collections.sort(list, new Comparator<T>() {
+                    public int compare(T o1, T o2) {
+                        return -comparator.compare(o1, o2);
+                    }
+                });
+            }
+        }
+
+        public void setComparator(Column<T, ?> column, Comparator<T> comparator) {
+            comparators.put(column, comparator);
+        }
     }
 }

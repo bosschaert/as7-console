@@ -1,45 +1,51 @@
-/* 
- * JBoss, Home of Professional Open Source 
+/*
+ * JBoss, Home of Professional Open Source
  * Copyright 2011 Red Hat Inc. and/or its affiliates and other contributors
- * as indicated by the @author tags. All rights reserved. 
- * See the copyright.txt in the distribution for a 
+ * as indicated by the @author tags. All rights reserved.
+ * See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
- * This copyrighted material is made available to anyone wishing to use, 
- * modify, copy, or redistribute it subject to the terms and conditions 
- * of the GNU Lesser General Public License, v. 2.1. 
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
- * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details. 
- * You should have received a copy of the GNU Lesser General Public License, 
- * v.2.1 along with this distribution; if not, write to the Free Software 
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * This copyrighted material is made available to anyone wishing to use,
+ * modify, copy, or redistribute it subject to the terms and conditions
+ * of the GNU Lesser General Public License, v. 2.1.
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License,
+ * v.2.1 along with this distribution; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  */
 package org.jboss.as.console.client.shared.viewframework;
 
-import org.jboss.as.console.client.widgets.forms.FormMetaData;
+import static org.jboss.dmr.client.ModelDescriptionConstants.ADD;
+import static org.jboss.dmr.client.ModelDescriptionConstants.OP;
+import static org.jboss.dmr.client.ModelDescriptionConstants.READ_CHILDREN_RESOURCES_OPERATION;
+import static org.jboss.dmr.client.ModelDescriptionConstants.REMOVE;
+import static org.jboss.dmr.client.ModelDescriptionConstants.RESULT;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
 import org.jboss.as.console.client.Console;
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.dispatch.impl.DMRAction;
 import org.jboss.as.console.client.shared.subsys.Baseadress;
 import org.jboss.as.console.client.widgets.forms.AddressBinding;
 import org.jboss.as.console.client.widgets.forms.EntityAdapter;
+import org.jboss.as.console.client.widgets.forms.FormMetaData;
 import org.jboss.as.console.client.widgets.forms.Mutator;
 import org.jboss.as.console.client.widgets.forms.PropertyBinding;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.dmr.client.ModelNode;
 
-import static org.jboss.dmr.client.ModelDescriptionConstants.*;
-
 /**
- * This class knows how to do DMR operations and refresh the view.  
- * 
+ * This class knows how to do DMR operations and refresh the view.
+ *
  * @author Stan Silvert ssilvert@redhat.com (C) 2011 Red Hat Inc.
  */
 public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmrBridge<T> {
@@ -51,9 +57,9 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
     protected DispatchAsync dispatcher;
     protected FrameworkView view;
     protected FormMetaData attributes;
-    protected List<T> entityList = Collections.EMPTY_LIST;
+    protected List<T> entityList = new ArrayList<T>();
     protected String nameOfLastEdited;
-    
+
     protected Comparator entityComparator = new Comparator<NamedEntity>() {
         @Override
         public int compare(NamedEntity entity1, NamedEntity entity2) {
@@ -74,7 +80,7 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
 
     /**
      * Make a new Entity WITH ITS DEFAULT VALUES SET.
-     * 
+     *
      * @return An AutoBean<T> for the entity.
      */
     @Override
@@ -84,7 +90,7 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
         for (PropertyBinding prop : propertyMetadata.getBindingsForType(type)) {
             mutator.setValue(entity, prop.getJavaName(), prop.getDefaultValue());
         }
-        
+
         return entity;
     }
 
@@ -96,7 +102,7 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
     @Override
     public T findEntity(String name) {
         for (T entity : getEntityList()) {
-            NamedEntity namedEntity = (NamedEntity) entity;
+            NamedEntity namedEntity = entity;
             if (namedEntity.getName().equals(name)) {
                 return entity;
             }
@@ -122,7 +128,7 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
 
     @Override
     public void onAdd(FormAdapter<T> form) {
-        NamedEntity entity = (NamedEntity) form.getUpdatedEntity();
+        NamedEntity entity = form.getUpdatedEntity();
         String name = entity.getName();
         ModelNode operation = address.asResource(name);
         operation.get(OP).set(ADD);
@@ -146,7 +152,7 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
 
     @Override
     public void onRemove(FormAdapter<T> form) {
-        NamedEntity entity = (NamedEntity) form.getEditedEntity();
+        NamedEntity entity = form.getEditedEntity();
         String name = entity.getName();
         ModelNode operation = address.asResource(name);
         operation.get(OP).set(REMOVE);
@@ -158,17 +164,17 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
     public void onSaveDetails(FormAdapter<T> form) {
         view.setEditingEnabled(false);
 
-        NamedEntity entity = (NamedEntity) form.getEditedEntity();
+        NamedEntity entity = form.getEditedEntity();
         String name = entity.getName();
-        
+
         ModelNode resourceAddress = address.asResource(name);
 
         Map<String, Object> changedValues = form.getChangedValues();
         if (changedValues.isEmpty()) {
             return;
         }
-        
-        ModelNode batch = entityAdapter.fromChangeset(changedValues, resourceAddress); 
+
+        ModelNode batch = entityAdapter.fromChangeset(changedValues, resourceAddress);
 
         execute(batch, name, "Success: Updated " + name);
     }
@@ -185,11 +191,14 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
             @Override
             public void onDmrSuccess(ModelNode response) {
                 List<T> entities = entityAdapter.fromDMRList(response.get(RESULT).asList());
-                EntityToDmrBridgeImpl.this.entityList = sortEntitties(entities);
+
+                // need to keep the list object as it is used for sorting.
+                entityList.clear();
+                entityList.addAll(sortEntities(entities));
                 view.refresh();
             }
 
-            private List<T> sortEntitties(List<T> entities) {
+            private List<T> sortEntities(List<T> entities) {
                 Collections.sort(entities, entityComparator);
                 return entities;
             }
@@ -210,7 +219,7 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
                 super.onDmrFailure(response);
                 loadEntities(nameEditedOrAdded);
             }
-            
+
         });
     }
 }

@@ -18,8 +18,6 @@
  */
 package org.jboss.as.console.client.shared.subsys.osgi.runtime;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
@@ -54,13 +52,17 @@ class BundleToDmrBridge extends EntityToDmrBridgeImpl<OSGiBundle> {
             @Override
             public void onDmrSuccess(ModelNode response) {
                 List<OSGiBundle> entities = entityAdapter.fromDMRList(response.get(ModelDescriptionConstants.RESULT).asList());
+                /*
                 Collections.sort(entities, new Comparator<OSGiBundle>() {
                     @Override
                     public int compare(OSGiBundle o1, OSGiBundle o2) {
                         return new Long(o1.getName()).compareTo(new Long(o2.getName()));
                     }
                 });
-                entityList = entities;
+                */
+                entityList.clear();
+                entityList.addAll(entities);
+                // entityList = entities;
                 view.refresh();
             }
         });
