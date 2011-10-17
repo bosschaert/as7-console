@@ -31,6 +31,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -134,15 +135,23 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
         };
         ActionCell<OSGiBundle> startCell = new ActionCell<OSGiBundle>("Start", new ActionCell.Delegate<OSGiBundle>() {
             @Override
-            public void execute(OSGiBundle id) {
-                presenter.startBundle(id);
+            public void execute(OSGiBundle bundle) {
+                if ("fragment".equals(bundle.getType())) {
+                    Window.alert("Can't start a fragment (" + bundle.getSymbolicName() + ").");
+                } else {
+                    presenter.startBundle(bundle);
+                }
             }
         });
 
         final ActionCell<OSGiBundle> stopCell = new ActionCell<OSGiBundle>("Stop", new ActionCell.Delegate<OSGiBundle>() {
             @Override
-            public void execute(OSGiBundle id) {
-                presenter.stopBundle(id);
+            public void execute(OSGiBundle bundle) {
+                if ("fragment".equals(bundle.getType())) {
+                    Window.alert("Can't stop a fragment (" + bundle.getSymbolicName() + ").");
+                } else {
+                    presenter.stopBundle(bundle);
+                }
             }
         });
         List<HasCell<OSGiBundle,OSGiBundle>> hasCells = new ArrayList<HasCell<OSGiBundle,OSGiBundle>>();
