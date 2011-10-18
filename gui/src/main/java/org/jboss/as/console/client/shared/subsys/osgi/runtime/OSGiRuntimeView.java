@@ -19,6 +19,7 @@
 package org.jboss.as.console.client.shared.subsys.osgi.runtime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -59,16 +60,10 @@ import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
  */
 public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements OSGiRuntimePresenter.MyView {
     private final EntityToDmrBridgeImpl<OSGiBundle> bridge;
+    private final FrameworkRuntimeView framework;
     private OSGiRuntimePresenter presenter;
-    private FrameworkRuntimeView framework;
     private DefaultCellTable<OSGiBundle> bundleTable;
     private MyListHandler<OSGiBundle> sortHandler;
-    private Comparator<OSGiBundle> bundleIDComparator = new Comparator<OSGiBundle>() {
-        @Override
-        public int compare(OSGiBundle o1, OSGiBundle o2) {
-            return new Long(o1.getName()).compareTo(new Long(o2.getName()));
-        }
-    };
 
     @Inject
     public OSGiRuntimeView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
@@ -114,7 +109,12 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
             }
         };
         idColumn.setSortable(true);
-        sortHandler.setComparator(idColumn, bundleIDComparator);
+        sortHandler.setComparator(idColumn, new Comparator<OSGiBundle>() {
+            @Override
+            public int compare(OSGiBundle o1, OSGiBundle o2) {
+                return new Long(o1.getName()).compareTo(new Long(o2.getName()));
+            }
+        });
         bundleTable.addColumn(idColumn, "Bundle ID");
 
         TextColumn<OSGiBundle> symbolicNameColumn = new TextColumn<OSGiBundle>() {
@@ -140,7 +140,7 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
         };
         bundleTable.addColumn(versionColumn, "Version");
 
-        Column<OSGiBundle, ImageResource> startedColumn = new Column<OSGiBundle, ImageResource>(new ImageResourceCell()) {
+        Column<OSGiBundle, ImageResource> stateColumn = new Column<OSGiBundle, ImageResource>(new ImageResourceCell()) {
             @Override
             public ImageResource getValue(OSGiBundle bundle) {
                 if ("ACTIVE".equals(bundle.getState()))
@@ -152,7 +152,18 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
                 return Icons.INSTANCE.statusRed_small();
             }
         };
-        bundleTable.addColumn(startedColumn, "State");
+        stateColumn.setSortable(true);
+        sortHandler.setComparator(stateColumn, new Comparator<OSGiBundle>() {
+            @Override
+            public int compare(OSGiBundle o1, OSGiBundle o2) {
+                List<String> order = Arrays.asList("RESOLVED", "STARTING", "ACTIVE");
+                Integer i1 = order.indexOf(o1.getState());
+                Integer i2 = order.indexOf(o2.getState());
+
+                return i1.compareTo(i2);
+            }
+        });
+        bundleTable.addColumn(stateColumn, "State");
 
         class BundleColumn extends Column<OSGiBundle,OSGiBundle> {
             public BundleColumn(Cell<OSGiBundle> cell) {
@@ -232,6 +243,7 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
         this.presenter = presenter;
     }
 
+    // This handler is similar to ColumnSortEvent.ListHandler except that it allows the list to be set after construction
     private static class MyListHandler<T> implements Handler {
         private final Map<Column<?, ?>, Comparator<T>> comparators = new HashMap<Column<?, ?>, Comparator<T>>();
         private List<T> list;
