@@ -31,7 +31,6 @@ import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.FrameworkButton;
 import org.jboss.as.console.client.shared.viewframework.SingleEntityToDmrBridgeImpl;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
-import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 
@@ -75,10 +74,7 @@ public class FrameworkRuntimeView extends AbstractEntityView<OSGiFramework> {
 
     @Override
     protected FormAdapter<OSGiFramework> makeAddEntityForm() {
-        // TODO delete this!
-        Form<OSGiFramework> form = new Form<OSGiFramework>(OSGiFramework.class);
-        form.setNumColumns(1);
-        return form;
+        return null; // This entity can't be created
     }
 
     @Override

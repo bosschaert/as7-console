@@ -150,7 +150,7 @@ public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView,
         window.center();
 
         AddressBinding address = bundleMetaData.getAddress();
-        ModelNode operation = address.asSubresource();
+        ModelNode operation = address.asSubresource(); // get an operation on the parent address...
         operation.get(ModelDescriptionConstants.OP).set("activate");
 
         dispatcher.execute(new DMRAction(operation), new SimpleCallback<DMRResponse>() {
