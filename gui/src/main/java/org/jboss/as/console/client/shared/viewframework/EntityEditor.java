@@ -147,10 +147,11 @@ public class EntityEditor<T> {
     }
 
     public void updateEntityList(List<T> entityList, T lastEdited) {
+        // cannot do dataProvider.setList(entityList) as this breaks any sorting
         List<T> list = dataProvider.getList();
         list.clear();
         list.addAll(entityList);
-        dataProvider.setList(list); // needed for the table to get refreshed in cases where there is 1 item
+        dataProvider.flush();
 
         if (table.isEmpty()) return;
 

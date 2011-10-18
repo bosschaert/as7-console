@@ -24,7 +24,6 @@ import static org.jboss.dmr.client.ModelDescriptionConstants.READ_CHILDREN_RESOU
 import static org.jboss.dmr.client.ModelDescriptionConstants.REMOVE;
 import static org.jboss.dmr.client.ModelDescriptionConstants.RESULT;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,6 +40,7 @@ import org.jboss.as.console.client.widgets.forms.Mutator;
 import org.jboss.as.console.client.widgets.forms.PropertyBinding;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
+import org.jboss.dmr.client.ModelDescriptionConstants;
 import org.jboss.dmr.client.ModelNode;
 
 /**
@@ -57,7 +57,7 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
     protected DispatchAsync dispatcher;
     protected FrameworkView view;
     protected FormMetaData attributes;
-    protected List<T> entityList = new ArrayList<T>();
+    protected List<T> entityList = Collections.emptyList();
     protected String nameOfLastEdited;
 
     protected Comparator entityComparator = new Comparator<NamedEntity>() {
@@ -185,16 +185,14 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
 
         ModelNode operation = address.asSubresource(Baseadress.get());
         operation.get(OP).set(READ_CHILDREN_RESOURCES_OPERATION);
+        operation.get(ModelDescriptionConstants.INCLUDE_RUNTIME).set(true);
 
         dispatcher.execute(new DMRAction(operation), new DmrCallback() {
 
             @Override
             public void onDmrSuccess(ModelNode response) {
                 List<T> entities = entityAdapter.fromDMRList(response.get(RESULT).asList());
-
-                // need to keep the list object as it is used for sorting.
-                entityList.clear();
-                entityList.addAll(sortEntities(entities));
+                entityList = sortEntities(entities);
                 view.refresh();
             }
 

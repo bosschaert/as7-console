@@ -68,7 +68,7 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
     @Inject
     public OSGiRuntimeView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(OSGiBundle.class, propertyMetaData, EnumSet.allOf(FrameworkButton.class));
-        bridge = new BundleToDmrBridge(propertyMetaData, OSGiBundle.class, this, dispatcher);
+        bridge = new EntityToDmrBridgeImpl<OSGiBundle>(propertyMetaData, OSGiBundle.class, this, dispatcher);
 
         framework = new FrameworkRuntimeView(propertyMetaData, dispatcher);
     }
