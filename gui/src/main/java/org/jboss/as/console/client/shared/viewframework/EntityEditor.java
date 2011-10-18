@@ -150,7 +150,7 @@ public class EntityEditor<T> {
         List<T> list = dataProvider.getList();
         list.clear();
         list.addAll(entityList);
-        // dataProvider.setList(entityList);
+        dataProvider.setList(list); // needed for the table to get refreshed in cases where there is 1 item
 
         if (table.isEmpty()) return;
 
