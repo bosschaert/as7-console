@@ -33,6 +33,8 @@ import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
@@ -54,6 +56,8 @@ import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.icons.Icons;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
+import org.jboss.ballroom.client.widgets.tools.ToolButton;
+import org.jboss.ballroom.client.widgets.tools.ToolStrip;
 
 /**
  * @author David Bosschaert
@@ -76,6 +80,7 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
     @Override
     public Widget createWidget() {
         entityEditor = makeEntityEditor();
+        entityEditor.setIncludeTools(true);
 
         // overall layout
         TabLayoutPanel tabLayoutPanel = new TabLayoutPanel(25, Style.Unit.PX);
@@ -83,6 +88,13 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
 
         Widget entityEditorWidget = entityEditor.asWidget();
         entityEditorWidget.addStyleName("rhs-content-panel");
+        ToolStrip toolStrip = entityEditor.getToolStrip();
+        toolStrip.addToolButtonRight(new ToolButton("Refresh List", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                initialLoad();
+            }
+        }));
         sortHandler.setList(entityEditor.getDataProvider().getList());
 
         tabLayoutPanel.add(framework.asWidget(), "Framework");

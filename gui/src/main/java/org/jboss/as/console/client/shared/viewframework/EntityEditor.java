@@ -52,8 +52,10 @@ public class EntityEditor<T> {
     private boolean doneInitialSelection = false;
     private DefaultPager pager;
     private EnumSet<FrameworkButton> hideButtons;
+    private ToolStrip toolStrip;
 
     private boolean includeTools = true;
+    private boolean alwaysShowTools = true;
 
     /**
      * Create a new Entity.
@@ -84,8 +86,13 @@ public class EntityEditor<T> {
         this.hideButtons = hideButtons;
     }
 
+    public ToolStrip getToolStrip() {
+        return toolStrip;
+    }
+
     public EntityEditor<T> setIncludeTools(boolean includeTools) {
         this.includeTools = includeTools;
+        this.alwaysShowTools = includeTools;
         return this;
     }
 
@@ -99,8 +106,8 @@ public class EntityEditor<T> {
 
         if(includeTools)
         {
-            final ToolStrip toolStrip = createTools();
-            if(toolStrip.hasButtons())
+            toolStrip = createTools();
+            if(toolStrip.hasButtons() || alwaysShowTools)
                 panel.add(toolStrip);
         }
 
