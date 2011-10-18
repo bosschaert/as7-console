@@ -58,6 +58,8 @@ import org.jboss.ballroom.client.widgets.icons.Icons;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 import org.jboss.ballroom.client.widgets.tools.ToolButton;
 import org.jboss.ballroom.client.widgets.tools.ToolStrip;
+import org.jboss.dmr.client.ModelDescriptionConstants;
+import org.jboss.dmr.client.ModelNode;
 
 /**
  * @author David Bosschaert
@@ -72,7 +74,16 @@ public class OSGiRuntimeView extends AbstractEntityView<OSGiBundle> implements O
     @Inject
     public OSGiRuntimeView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(OSGiBundle.class, propertyMetaData, EnumSet.allOf(FrameworkButton.class));
-        bridge = new EntityToDmrBridgeImpl<OSGiBundle>(propertyMetaData, OSGiBundle.class, this, dispatcher);
+        bridge = new EntityToDmrBridgeImpl<OSGiBundle>(propertyMetaData, OSGiBundle.class, this, dispatcher) {
+            @Override
+            protected void onLoadEntitiesSuccess(ModelNode response) {
+                if (response.get(ModelDescriptionConstants.RESULT).asList().isEmpty()) {
+                    presenter.askToActivateSubsystem();
+                } else {
+                    super.onLoadEntitiesSuccess(response);
+                }
+            }
+        };
 
         framework = new FrameworkRuntimeView(propertyMetaData, dispatcher);
     }

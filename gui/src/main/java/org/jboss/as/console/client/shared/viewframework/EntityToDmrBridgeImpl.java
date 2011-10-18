@@ -188,19 +188,23 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
         operation.get(ModelDescriptionConstants.INCLUDE_RUNTIME).set(true);
 
         dispatcher.execute(new DMRAction(operation), new DmrCallback() {
-
             @Override
             public void onDmrSuccess(ModelNode response) {
-                List<T> entities = entityAdapter.fromDMRList(response.get(RESULT).asList());
-                entityList = sortEntities(entities);
-                view.refresh();
-            }
-
-            private List<T> sortEntities(List<T> entities) {
-                Collections.sort(entities, entityComparator);
-                return entities;
+                onLoadEntitiesSuccess(response);
             }
         });
+    }
+
+    protected void onLoadEntitiesSuccess(ModelNode response) {
+        List<T> entities = entityAdapter.fromDMRList(response.get(RESULT).asList());
+        entityList = sortEntities(entities);
+        view.refresh();
+    }
+
+    // Not really needed if the table supports sorting...
+    protected List<T> sortEntities(List<T> entities) {
+        Collections.sort(entities, entityComparator);
+        return entities;
     }
 
     protected void execute(ModelNode operation, final String nameEditedOrAdded, final String successMessage) {
@@ -217,7 +221,6 @@ public class EntityToDmrBridgeImpl<T extends NamedEntity> implements EntityToDmr
                 super.onDmrFailure(response);
                 loadEntities(nameEditedOrAdded);
             }
-
         });
     }
 }

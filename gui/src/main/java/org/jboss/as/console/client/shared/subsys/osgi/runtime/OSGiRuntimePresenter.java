@@ -20,6 +20,8 @@ package org.jboss.as.console.client.shared.subsys.osgi.runtime;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
@@ -34,12 +36,14 @@ import org.jboss.as.console.client.domain.model.SimpleCallback;
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.dispatch.impl.DMRAction;
 import org.jboss.as.console.client.shared.dispatch.impl.DMRResponse;
+import org.jboss.as.console.client.shared.general.MessageWindow;
 import org.jboss.as.console.client.shared.subsys.RevealStrategy;
 import org.jboss.as.console.client.shared.subsys.osgi.runtime.model.OSGiBundle;
 import org.jboss.as.console.client.shared.viewframework.FrameworkView;
 import org.jboss.as.console.client.widgets.forms.AddressBinding;
 import org.jboss.as.console.client.widgets.forms.BeanMetaData;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
+import org.jboss.ballroom.client.widgets.window.DefaultWindow;
 import org.jboss.dmr.client.ModelDescriptionConstants;
 import org.jboss.dmr.client.ModelNode;
 
@@ -114,7 +118,58 @@ public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView,
         dispatcher.execute(new DMRAction(operation), new SimpleCallback<DMRResponse>() {
             @Override
             public void onSuccess(DMRResponse result) {
-                onReset();
+                getView().initialLoad();
+            }
+        });
+    }
+
+    public void askToActivateSubsystem() {
+        final DefaultWindow window = new DefaultWindow("OSGi Subsystem");
+        window.setWidth(320);
+        window.setHeight(140);
+        window.setWidget(new MessageWindow("The OSGi Subsystem is not active. Click 'OK' to activate it now.",
+            new MessageWindow.Result() {
+                @Override
+                public void result(boolean result) {
+                    window.hide();
+                    if (result)
+                        activateSubsystem();
+                }
+            }).asWidget());
+        window.setGlassEnabled(true);
+        window.center();
+    }
+
+    protected void activateSubsystem() {
+        // Since it takes a few moments for the subsystem to activate we're showing a window indicating this
+        final DefaultWindow window = new DefaultWindow("OSGi Subsystem");
+        window.setWidth(320);
+        window.setHeight(140);
+        window.setWidget(new HTML("Activating..."));
+        window.setGlassEnabled(true);
+        window.center();
+
+        AddressBinding address = bundleMetaData.getAddress();
+        ModelNode operation = address.asSubresource();
+        operation.get(ModelDescriptionConstants.OP).set("activate");
+
+        dispatcher.execute(new DMRAction(operation), new SimpleCallback<DMRResponse>() {
+            @Override
+            public void onSuccess(DMRResponse result) {
+                Timer t = new Timer() {
+                    @Override
+                    public void run() {
+                        window.hide();
+                        getView().initialLoad();
+                    }
+                };
+                t.schedule(4000);
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                window.hide();
+                super.onFailure(caught);
             }
         });
     }
