@@ -18,38 +18,41 @@
  */
 package org.jboss.as.console.client.shared.subsys.threads;
 
-import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.user.client.ui.Widget;
+
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.subsys.threads.model.BoundedQueueThreadPool;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns.NameColumn;
+import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridgeImpl;
 import org.jboss.as.console.client.shared.viewframework.FrameworkView;
 import org.jboss.as.console.client.shared.viewframework.NamedEntity;
-import org.jboss.ballroom.client.widgets.forms.ObservableFormItem;
-import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
 import org.jboss.ballroom.client.widgets.forms.ComboBoxItem;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
+import org.jboss.ballroom.client.widgets.forms.ObservableFormItem;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 
 /**
  * Main view class for Bounded Queue Thread Pools
- * 
+ *
  * @author Stan Silvert
  */
 public class BoundedQueueThreadPoolView extends AbstractEntityView<BoundedQueueThreadPool> implements FrameworkView {
 
-    private EntityToDmrBridge threadPoolBridge;
+    private EntityToDmrBridgeImpl<BoundedQueueThreadPool> threadPoolBridge;
     private ComboBoxItem threadFactoryComboForAdd;
     private ComboBoxItem threadFactoryComboForEdit;
 
     public BoundedQueueThreadPoolView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(BoundedQueueThreadPool.class, propertyMetaData); //, FrameworkButton.asSet(FrameworkButton.values()));
         threadPoolBridge = new EntityToDmrBridgeImpl<BoundedQueueThreadPool>(propertyMetaData, BoundedQueueThreadPool.class, this, dispatcher);
+        threadPoolBridge.setRecursive(true);
     }
 
     @Override
