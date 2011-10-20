@@ -24,7 +24,7 @@ import java.util.List;
 import com.google.gwt.user.client.ui.Widget;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
-import org.jboss.as.console.client.shared.subsys.ejb3.model.TimerService;
+import org.jboss.as.console.client.shared.subsys.ejb3.model.AsyncService;
 import org.jboss.as.console.client.shared.viewframework.AbstractSingleEntityView;
 import org.jboss.as.console.client.shared.viewframework.FrameworkButton;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
@@ -34,11 +34,11 @@ import org.jboss.ballroom.client.widgets.forms.ObservableFormItem;
 /**
  * @author David Bosschaert
  */
-public class TimerServiceView extends AbstractSingleEntityView<TimerService> {
+public class AsyncServiceView extends AbstractSingleEntityView<AsyncService> {
     private ComboBoxItem threadPoolItem;
 
-    public TimerServiceView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
-        super(TimerService.class, propertyMetaData, dispatcher, EnumSet.of(FrameworkButton.ADD, FrameworkButton.REMOVE));
+    public AsyncServiceView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
+        super(AsyncService.class, propertyMetaData, dispatcher, EnumSet.of(FrameworkButton.ADD, FrameworkButton.REMOVE));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TimerServiceView extends AbstractSingleEntityView<TimerService> {
 
     @Override
     protected String getEntityDisplayName() {
-        return "Timer Service";
+        return "Async Service";
     }
 
     public void setThreadPoolNames(List<String> threadPoolNames) {

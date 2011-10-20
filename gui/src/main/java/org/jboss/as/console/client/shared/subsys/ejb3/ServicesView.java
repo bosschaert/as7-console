@@ -18,7 +18,8 @@
  */
 package org.jboss.as.console.client.shared.subsys.ejb3;
 
-import com.google.gwt.user.client.ui.HTML;
+import java.util.List;
+
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -32,9 +33,11 @@ import org.jboss.ballroom.client.widgets.ContentGroupLabel;
  * @author David Bosschaert
  */
 public class ServicesView extends SuspendableViewImpl {
+    private final AsyncServiceView asyncServiceView;
     private final TimerServiceView timerServiceView;
 
     public ServicesView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
+        asyncServiceView = new AsyncServiceView(propertyMetaData, dispatcher);
         timerServiceView = new TimerServiceView(propertyMetaData, dispatcher);
     }
 
@@ -47,13 +50,8 @@ public class ServicesView extends SuspendableViewImpl {
         TabPanel bottomPanel = new TabPanel();
         bottomPanel.setStyleName("default-tabpanel");
 
-        VerticalPanel p1 = new VerticalPanel();
-        p1.add(timerServiceView.asWidget());
-        VerticalPanel p2 = new VerticalPanel();
-        p2.add(new HTML("Hello there<p/>hi<p/>ho"));
-
-        bottomPanel.add(p1, timerServiceView.getEntityDisplayName());
-        bottomPanel.add(p2, "Two");
+        bottomPanel.add(timerServiceView.asWidget(), timerServiceView.getEntityDisplayName());
+        bottomPanel.add(asyncServiceView.asWidget(), asyncServiceView.getEntityDisplayName());
         bottomPanel.selectTab(0);
 
         vpanel.add(bottomPanel);
@@ -62,6 +60,12 @@ public class ServicesView extends SuspendableViewImpl {
     }
 
     public void initialLoad() {
+        asyncServiceView.initialLoad();
         timerServiceView.initialLoad();
+    }
+
+    public void setThreadPoolNames(List<String> threadPoolNames) {
+        asyncServiceView.setThreadPoolNames(threadPoolNames);
+        timerServiceView.setThreadPoolNames(threadPoolNames);
     }
 }

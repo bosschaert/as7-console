@@ -127,11 +127,16 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
     }
 
     @Override
-    public void setPoolNames(List<String> poolNames) {
+    public void setBeanPoolNames(List<String> poolNames) {
         if (defaultMDBPoolItem != null)
             defaultMDBPoolItem.setValueMap(poolNames);
         if (defaultSLSBPoolItem != null)
             defaultSLSBPoolItem.setValueMap(poolNames);
+    }
+
+    @Override
+    public void setThreadPoolNames(List<String> threadPoolNames) {
+        servicesView.setThreadPoolNames(threadPoolNames);
     }
 
     @Override

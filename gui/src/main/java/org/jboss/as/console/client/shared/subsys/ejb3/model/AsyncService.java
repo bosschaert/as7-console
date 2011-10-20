@@ -25,21 +25,8 @@ import org.jboss.as.console.client.widgets.forms.FormItem;
 /**
  * @author David Bosschaert
  */
-@Address("/subsystem=ejb3/service=timer-service")
-public interface TimerService {
-    @FormItem(label="Path",
-              required=true,
-              order=20)
-    String getPath();
-    void setPath(String path);
-
-    @Binding(detypedName="relative-to")
-    @FormItem(label="Relative To",
-              required=true,
-              order=25)
-    String getRelativeTo();
-    void setRelativeTo(String location);
-
+@Address("/subsystem=ejb3/service=async")
+public interface AsyncService {
     @Binding(detypedName="thread-pool-name")
     @FormItem(label="Thread Pool",
               required=true,

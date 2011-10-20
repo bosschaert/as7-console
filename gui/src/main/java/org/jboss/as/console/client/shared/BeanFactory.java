@@ -40,6 +40,7 @@ import org.jboss.as.console.client.shared.model.DeploymentRecord;
 import org.jboss.as.console.client.shared.model.SubsystemRecord;
 import org.jboss.as.console.client.shared.properties.PropertyRecord;
 import org.jboss.as.console.client.shared.subsys.deploymentscanner.model.DeploymentScanner;
+import org.jboss.as.console.client.shared.subsys.ejb3.model.AsyncService;
 import org.jboss.as.console.client.shared.subsys.ejb3.model.EJB3Subsystem;
 import org.jboss.as.console.client.shared.subsys.ejb3.model.StrictMaxBeanPool;
 import org.jboss.as.console.client.shared.subsys.ejb3.model.ThreadPool;
@@ -99,6 +100,7 @@ public interface BeanFactory extends AutoBeanFactory {
 
     AutoBean<EJB3Subsystem> ejb3Subsystem();
     AutoBean<StrictMaxBeanPool> strictMaxBeanPool();
+    AutoBean<AsyncService> asyncService();
     AutoBean<TimerService> timerService();
     AutoBean<ThreadPool> ejbThreadPool();
 
