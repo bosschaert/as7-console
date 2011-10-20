@@ -20,10 +20,6 @@ package org.jboss.as.console.client.shared.subsys.ejb3;
 
 import java.util.Collection;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
@@ -32,7 +28,6 @@ import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridgeImpl;
-import org.jboss.as.console.client.widgets.forms.FormMetaData;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
@@ -40,25 +35,23 @@ import org.jboss.ballroom.client.widgets.forms.FormItem;
 import org.jboss.ballroom.client.widgets.forms.ObservableFormItem;
 import org.jboss.ballroom.client.widgets.forms.UnitBoxItem;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
-import org.jboss.ballroom.client.widgets.tools.ToolStrip;
 
 /**
  * @author David Bosschaert
  */
-public class PoolsView extends AbstractEntityView<StrictMaxBeanPool> {
+public class BeanPoolsView extends AbstractEntityView<StrictMaxBeanPool> {
     private final EntityToDmrBridgeImpl<StrictMaxBeanPool> bridge;
-    private final FormMetaData formMetaData;
     private UnitBoxItem<?> timeoutItem;
 
-    public PoolsView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
+    public BeanPoolsView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(StrictMaxBeanPool.class, propertyMetaData);
-
-        formMetaData = propertyMetaData.getBeanMetaData(StrictMaxBeanPool.class).getFormMetaData();
         bridge = new EntityToDmrBridgeImpl<StrictMaxBeanPool>(propertyMetaData, StrictMaxBeanPool.class, this, dispatcher);
     }
 
     @Override
     public Widget createWidget() {
+        return createEmbeddableWidget();
+        /*
         entityEditor = makeEntityEditor();
 
         LayoutPanel layout = new LayoutPanel();
@@ -79,6 +72,7 @@ public class PoolsView extends AbstractEntityView<StrictMaxBeanPool> {
         layout.setWidgetTopHeight(scroll, 28, Style.Unit.PX, 100, Style.Unit.PCT);
 
         return layout;
+        */
     }
 
     @Override
@@ -93,12 +87,6 @@ public class PoolsView extends AbstractEntityView<StrictMaxBeanPool> {
     }
 
     @Override
-    protected FormMetaData getFormMetaData() {
-        return formMetaData;
-    }
-
-    @Override
-
     protected EntityToDmrBridge<StrictMaxBeanPool> getEntityBridge() {
         return bridge;
     }
