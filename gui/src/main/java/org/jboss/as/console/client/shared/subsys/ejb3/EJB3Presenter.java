@@ -63,7 +63,8 @@ public class EJB3Presenter extends Presenter<EJB3Presenter.MyView, EJB3Presenter
 
     public interface MyView extends View, FrameworkView {
         void loadPools();
-        void loadTimerService();
+        void loadThreadPools();
+        void loadServices();
         void setPoolNames(List<String> poolNames);
         void setPoolTimeoutUnits(Collection<String> units, String defaultUnit);
     }
@@ -140,14 +141,8 @@ public class EJB3Presenter extends Presenter<EJB3Presenter.MyView, EJB3Presenter
                 }
 
                 getView().loadPools();
-
-                // Load the rest async to speed things up
-                Console.schedule(new Command() {
-                    @Override
-                    public void execute() {
-                        getView().loadTimerService();
-                    }
-                });
+                getView().loadThreadPools();
+                getView().loadServices();
             }
         });
     }

@@ -28,19 +28,33 @@ import org.jboss.as.console.client.widgets.forms.FormItem;
  */
 @Address("/subsystem=ejb3/thread-pool={0}")
 public interface ThreadPool extends NamedEntity {
+    @Override
+    @Binding(detypedName="name", key=true)
+    @FormItem(defaultValue="",
+              localLabel="common_label_name",
+              required=true,
+              formItemTypeForEdit="TEXT",
+              formItemTypeForAdd="TEXT_BOX",
+              order=1)
+    String getName();
+    @Override
+    void setName(String name);
+
     @Binding(detypedName="keepalive-time")
     @FormItem(defaultValue="0",
               label="Keep-Alive Time",
               required=true,
+              formItemTypeForAdd="NUMBER_BOX",
               formItemTypeForEdit="NUMBER_BOX",
               order=10)
-    int getCoreThreads();
-    void setCoreThreads(int threads);
+    int getKeepAliveTime();
+    void setKeepAliveTime(int millis);
 
     @Binding(detypedName="max-threads")
     @FormItem(defaultValue="4",
               label="Max Threads",
               required=true,
+              formItemTypeForAdd="NUMBER_BOX",
               formItemTypeForEdit="NUMBER_BOX",
               order=5)
     int getMaxThreads();

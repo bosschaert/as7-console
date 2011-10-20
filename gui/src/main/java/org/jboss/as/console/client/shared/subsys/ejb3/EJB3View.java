@@ -46,8 +46,9 @@ import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
  */
 public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3Presenter.MyView {
     private final EntityToDmrBridge<EJB3Subsystem> bridge;
-    private final PoolsView poolsView;
-    private final TimerServiceView timerServiceView;
+    private final BeanPoolsView beanPoolsView;
+    private final ServicesView servicesView;
+    private final ThreadPoolsView threadPoolsView;
     private ComboBoxItem defaultSLSBPoolItem, defaultMDBPoolItem;
 
     @Inject
@@ -55,9 +56,9 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
         super(EJB3Subsystem.class, propertyMetaData, EnumSet.of(FrameworkButton.ADD, FrameworkButton.REMOVE));
         bridge = new SingleEntityToDmrBridgeImpl<EJB3Subsystem>(propertyMetaData, EJB3Subsystem.class, this, dispatcher);
 
-        poolsView = new PoolsView(propertyMetaData, dispatcher);
-
-        timerServiceView = new TimerServiceView(propertyMetaData, dispatcher);
+        servicesView = new ServicesView(propertyMetaData, dispatcher);
+        beanPoolsView = new BeanPoolsView(propertyMetaData, dispatcher);
+        threadPoolsView = new ThreadPoolsView(propertyMetaData, dispatcher);
     }
 
     @Override
@@ -84,9 +85,10 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
         Widget entityEditorWidget = entityEditor.asWidget();
         entityEditorWidget.addStyleName("rhs-content-panel");
 
-        tabLayoutPanel.add(entityEditorWidget, "Container");
-        tabLayoutPanel.add(poolsView.asWidget(), "Bean Pools");
-        tabLayoutPanel.add(timerServiceView.asWidget(), "Services");
+        tabLayoutPanel.add(entityEditorWidget, getEntityDisplayName());
+        tabLayoutPanel.add(servicesView.asWidget(), "Services");
+        tabLayoutPanel.add(beanPoolsView.asWidget(), beanPoolsView.getEntityDisplayName());
+        tabLayoutPanel.add(threadPoolsView.asWidget(), threadPoolsView.getEntityDisplayName());
 
 
         return tabLayoutPanel;
@@ -121,7 +123,7 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
 
     @Override
     protected String getEntityDisplayName() {
-        return "EJB3 Container"; // TODO i18n // is this one used at all?
+        return "Container"; // TODO i18n // is this one used at all?
     }
 
     @Override
@@ -134,16 +136,21 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
 
     @Override
     public void setPoolTimeoutUnits(Collection<String> units, String defaultUnit) {
-        poolsView.setTimeoutUnits(units, defaultUnit);
+        beanPoolsView.setTimeoutUnits(units, defaultUnit);
     }
 
     @Override
     public void loadPools() {
-        poolsView.initialLoad();
+        beanPoolsView.initialLoad();
     }
 
     @Override
-    public void loadTimerService() {
-        timerServiceView.initialLoad();
+    public void loadThreadPools() {
+        threadPoolsView.initialLoad();
+    }
+
+    @Override
+    public void loadServices() {
+        servicesView.initialLoad();
     }
 }

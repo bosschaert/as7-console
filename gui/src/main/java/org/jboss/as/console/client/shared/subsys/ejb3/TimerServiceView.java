@@ -25,12 +25,11 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.subsys.ejb3.model.TimerService;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
-import org.jboss.as.console.client.shared.viewframework.EntityDetails;
-import org.jboss.as.console.client.shared.viewframework.EntityEditor;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.FrameworkButton;
 import org.jboss.as.console.client.shared.viewframework.SingleEntityToDmrBridgeImpl;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
+import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 
@@ -47,18 +46,8 @@ public class TimerServiceView extends AbstractEntityView<TimerService> {
 
     @Override
     public Widget createWidget() {
-
-        return createEmbeddableWidget();
-    }
-
-    @Override
-    protected EntityEditor<TimerService> makeEntityEditor() {
-        EntityDetails<TimerService> details = new EntityDetails<TimerService>(getEntityDisplayName(),
-                                                                              makeEditEntityDetailsForm(),
-                                                                              getEntityBridge(),
-                                                                              getAddress(),
-                                                                              hideButtons);
-        return new EntityEditor<TimerService>(getEntityDisplayName(), null, makeEntityTable(), details, hideButtons);
+        super.createWidget();
+        return entityDetails.asWidget();
     }
 
     @Override
@@ -75,7 +64,7 @@ public class TimerServiceView extends AbstractEntityView<TimerService> {
 
     @Override
     protected FormAdapter<TimerService> makeAddEntityForm() {
-        return null;
+        return new Form<TimerService>(TimerService.class);
     }
 
     @Override
