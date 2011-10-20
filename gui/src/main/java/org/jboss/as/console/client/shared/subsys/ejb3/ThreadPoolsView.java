@@ -16,27 +16,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  */
-package org.jboss.as.console.client.shared.subsys.ejb3.model;
-
-import org.jboss.as.console.client.widgets.forms.Address;
-import org.jboss.as.console.client.widgets.forms.Binding;
-import org.jboss.as.console.client.widgets.forms.FormItem;
+package org.jboss.as.console.client.shared.subsys.ejb3;
 
 /**
  * @author David Bosschaert
  */
-@Address("/subsystem=ejb3/service=timer-service")
-public interface TimerService {
-    @FormItem(label="Path",
-              required=true,
-              order=20)
-    String getPath();
-    void setPath(String path);
+public class ThreadPoolsView {
 
-    @Binding(detypedName="relative-to")
-    @FormItem(label="Relative To",
-              required=true,
-              order=25)
-    String getRelativeTo();
-    void setRelativeTo(String location);
 }

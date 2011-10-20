@@ -41,7 +41,7 @@ public class TimerServiceView extends AbstractEntityView<TimerService> {
     private final EntityToDmrBridge<TimerService> bridge;
 
     public TimerServiceView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
-        super(TimerService.class, propertyMetaData, EnumSet.of(FrameworkButton.ADD));
+        super(TimerService.class, propertyMetaData, EnumSet.of(FrameworkButton.ADD, FrameworkButton.REMOVE));
         bridge = new SingleEntityToDmrBridgeImpl<TimerService>(propertyMetaData, TimerService.class, this, dispatcher);
     }
 

@@ -85,7 +85,7 @@ public class EJB3View extends AbstractEntityView<EJB3Subsystem> implements EJB3P
         entityEditorWidget.addStyleName("rhs-content-panel");
 
         tabLayoutPanel.add(entityEditorWidget, "Container");
-        tabLayoutPanel.add(poolsView.asWidget(), "Pools");
+        tabLayoutPanel.add(poolsView.asWidget(), "Bean Pools");
         tabLayoutPanel.add(timerServiceView.asWidget(), "Services");
 
 
