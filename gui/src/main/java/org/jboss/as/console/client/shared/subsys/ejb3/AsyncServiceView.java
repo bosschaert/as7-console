@@ -18,52 +18,20 @@
  */
 package org.jboss.as.console.client.shared.subsys.ejb3;
 
-import java.util.EnumSet;
-import java.util.List;
-
-import com.google.gwt.user.client.ui.Widget;
-
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.subsys.ejb3.model.AsyncService;
-import org.jboss.as.console.client.shared.viewframework.AbstractSingleEntityView;
-import org.jboss.as.console.client.shared.viewframework.FrameworkButton;
 import org.jboss.as.console.client.widgets.forms.PropertyMetaData;
-import org.jboss.ballroom.client.widgets.forms.ComboBoxItem;
-import org.jboss.ballroom.client.widgets.forms.ObservableFormItem;
 
 /**
  * @author David Bosschaert
  */
-public class AsyncServiceView extends AbstractSingleEntityView<AsyncService> {
-    private ComboBoxItem threadPoolItem;
-
+public class AsyncServiceView extends AbstractThreadPoolView<AsyncService> {
     public AsyncServiceView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
-        super(AsyncService.class, propertyMetaData, dispatcher, EnumSet.of(FrameworkButton.ADD, FrameworkButton.REMOVE));
-    }
-
-    @Override
-    public Widget createWidget() {
-        super.createWidget();
-        return entityDetails.asWidget();
-    }
-
-    @Override
-    public void itemAction(Action action, ObservableFormItem item) {
-        if (action != Action.CREATED)
-            return;
-
-        String javaName = item.getPropertyBinding().getJavaName();
-        if ("threadPoolName".equals(javaName))
-            threadPoolItem = (ComboBoxItem) item.getWrapped();
+        super(AsyncService.class, propertyMetaData, dispatcher);
     }
 
     @Override
     protected String getEntityDisplayName() {
         return "Async Service";
-    }
-
-    public void setThreadPoolNames(List<String> threadPoolNames) {
-        if (threadPoolItem != null)
-            threadPoolItem.setValueMap(threadPoolNames);
     }
 }

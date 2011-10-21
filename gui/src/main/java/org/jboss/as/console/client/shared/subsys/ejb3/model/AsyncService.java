@@ -19,19 +19,10 @@
 package org.jboss.as.console.client.shared.subsys.ejb3.model;
 
 import org.jboss.as.console.client.widgets.forms.Address;
-import org.jboss.as.console.client.widgets.forms.Binding;
-import org.jboss.as.console.client.widgets.forms.FormItem;
 
 /**
  * @author David Bosschaert
  */
 @Address("/subsystem=ejb3/service=async")
-public interface AsyncService {
-    @Binding(detypedName="thread-pool-name")
-    @FormItem(label="Thread Pool",
-              required=true,
-              formItemTypeForEdit="COMBO_BOX",
-              order=10)
-    String getThreadPoolName();
-    void setThreadPoolName(String threadPool);
+public interface AsyncService extends ThreadPoolEntity {
 }

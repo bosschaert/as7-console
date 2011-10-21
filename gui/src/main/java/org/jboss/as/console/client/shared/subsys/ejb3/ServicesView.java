@@ -35,10 +35,12 @@ import org.jboss.ballroom.client.widgets.ContentGroupLabel;
 public class ServicesView extends SuspendableViewImpl {
     private final AsyncServiceView asyncServiceView;
     private final TimerServiceView timerServiceView;
+    private final RemoteServiceView remoteServiceView;
 
     public ServicesView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
         asyncServiceView = new AsyncServiceView(propertyMetaData, dispatcher);
         timerServiceView = new TimerServiceView(propertyMetaData, dispatcher);
+        remoteServiceView = new RemoteServiceView(propertyMetaData, dispatcher);
     }
 
     @Override
@@ -52,6 +54,7 @@ public class ServicesView extends SuspendableViewImpl {
 
         bottomPanel.add(timerServiceView.asWidget(), timerServiceView.getEntityDisplayName());
         bottomPanel.add(asyncServiceView.asWidget(), asyncServiceView.getEntityDisplayName());
+        bottomPanel.add(remoteServiceView.asWidget(), remoteServiceView.getEntityDisplayName());
         bottomPanel.selectTab(0);
 
         vpanel.add(bottomPanel);
@@ -62,10 +65,12 @@ public class ServicesView extends SuspendableViewImpl {
     public void initialLoad() {
         asyncServiceView.initialLoad();
         timerServiceView.initialLoad();
+        remoteServiceView.initialLoad();
     }
 
     public void setThreadPoolNames(List<String> threadPoolNames) {
         asyncServiceView.setThreadPoolNames(threadPoolNames);
         timerServiceView.setThreadPoolNames(threadPoolNames);
+        remoteServiceView.setThreadPoolNames(threadPoolNames);
     }
 }
