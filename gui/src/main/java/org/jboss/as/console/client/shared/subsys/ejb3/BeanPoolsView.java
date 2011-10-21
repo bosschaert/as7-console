@@ -51,28 +51,6 @@ public class BeanPoolsView extends AbstractEntityView<StrictMaxBeanPool> {
     @Override
     public Widget createWidget() {
         return createEmbeddableWidget();
-        /*
-        entityEditor = makeEntityEditor();
-
-        LayoutPanel layout = new LayoutPanel();
-        layout.setStyleName("fill-layout");
-
-        VerticalPanel vpanel = new VerticalPanel();
-        vpanel.setStyleName("rhs-content-panel");
-
-        ToolStrip tools = entityEditor.createTools();
-        layout.add(tools);
-        vpanel.add(entityEditor.setIncludeTools(false).asWidget());
-
-        ScrollPanel scroll = new ScrollPanel();
-        scroll.setWidget(vpanel);
-        layout.add(scroll);
-
-        layout.setWidgetTopHeight(tools, 0, Style.Unit.PX, 28, Style.Unit.PX);
-        layout.setWidgetTopHeight(scroll, 28, Style.Unit.PX, 100, Style.Unit.PCT);
-
-        return layout;
-        */
     }
 
     @Override
@@ -108,7 +86,7 @@ public class BeanPoolsView extends AbstractEntityView<StrictMaxBeanPool> {
 
     @Override
     protected String getEntityDisplayName() {
-        return "EJB3 Pools";
+        return "Bean Pools";
     }
 
     void setTimeoutUnits(Collection<String> units, String defUnit) {
