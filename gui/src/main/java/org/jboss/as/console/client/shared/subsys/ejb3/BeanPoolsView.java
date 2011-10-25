@@ -35,17 +35,25 @@ import org.jboss.ballroom.client.widgets.forms.FormItem;
 import org.jboss.ballroom.client.widgets.forms.ObservableFormItem;
 import org.jboss.ballroom.client.widgets.forms.UnitBoxItem;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
+import org.jboss.dmr.client.ModelNode;
 
 /**
  * @author David Bosschaert
  */
 public class BeanPoolsView extends AbstractEntityView<StrictMaxBeanPool> {
     private final EntityToDmrBridgeImpl<StrictMaxBeanPool> bridge;
+    private EJB3Presenter presenter;
     private UnitBoxItem<?> timeoutItem;
 
     public BeanPoolsView(PropertyMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(StrictMaxBeanPool.class, propertyMetaData);
-        bridge = new EntityToDmrBridgeImpl<StrictMaxBeanPool>(propertyMetaData, StrictMaxBeanPool.class, this, dispatcher);
+        bridge = new EntityToDmrBridgeImpl<StrictMaxBeanPool>(propertyMetaData, StrictMaxBeanPool.class, this, dispatcher) {
+            @Override
+            protected void onLoadEntitiesSuccess(ModelNode response) {
+                super.onLoadEntitiesSuccess(response);
+                presenter.propagateBeanPoolNames(entityList);
+            }
+        };
     }
 
     @Override
@@ -87,6 +95,10 @@ public class BeanPoolsView extends AbstractEntityView<StrictMaxBeanPool> {
     @Override
     protected String getEntityDisplayName() {
         return "Bean Pools";
+    }
+
+    public void setPresenter(EJB3Presenter presenter) {
+        this.presenter = presenter;
     }
 
     void setTimeoutUnits(Collection<String> units, String defUnit) {
