@@ -20,23 +20,24 @@
 package org.jboss.as.console.client.shared.subsys.deploymentscanner;
 
 import javax.inject.Inject;
+
 import org.jboss.as.console.client.Console;
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.subsys.deploymentscanner.model.DeploymentScanner;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns.EnabledColumn;
 import org.jboss.as.console.client.shared.viewframework.Columns.NameColumn;
-import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridgeImpl;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
+import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridgeImpl;
 import org.jboss.as.console.client.widgets.forms.ApplicationMetaData;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 
 /**
- * Main view class for Deployment Scanners.  This class assembles the editor and reacts to 
+ * Main view class for Deployment Scanners.  This class assembles the editor and reacts to
  * FrameworkView callbacks.
- * 
+ *
  * @author Stan Silvert
  */
 public class ScannerView extends AbstractEntityView<DeploymentScanner> implements ScannerPresenter.MyView {
@@ -48,7 +49,7 @@ public class ScannerView extends AbstractEntityView<DeploymentScanner> implement
         super(DeploymentScanner.class, propertyMetaData);
         scannerBridge = new EntityToDmrBridgeImpl<DeploymentScanner>(propertyMetaData, DeploymentScanner.class, this, dispatcher);
     }
-    
+
     @Override
     protected EntityToDmrBridge getEntityBridge() {
         return this.scannerBridge;
@@ -75,11 +76,10 @@ public class ScannerView extends AbstractEntityView<DeploymentScanner> implement
     @Override
     protected DefaultCellTable<DeploymentScanner> makeEntityTable() {
         DefaultCellTable<DeploymentScanner> table = new DefaultCellTable<DeploymentScanner>(4);
-        
+
         table.addColumn(new NameColumn(), NameColumn.LABEL);
         table.addColumn(new EnabledColumn(), EnabledColumn.LABEL);
-        
+
         return table;
     }
-  
 }
