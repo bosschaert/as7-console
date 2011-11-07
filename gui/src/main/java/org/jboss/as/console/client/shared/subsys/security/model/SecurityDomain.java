@@ -38,6 +38,10 @@ public interface SecurityDomain extends NamedEntity {
     @Override
     void setName(String name);
 
+    @FormItem(label="Extends", required=false)
+    String getExtends();
+    void setExtends(String name);
+
     @Binding(detypedName="cache-type")
     @FormItem(label="Cache Type",
               required=false)

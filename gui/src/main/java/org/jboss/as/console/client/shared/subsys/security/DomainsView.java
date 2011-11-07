@@ -67,6 +67,7 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
         Form<SecurityDomain> form = new Form(SecurityDomain.class);
         form.setNumColumns(1);
         form.setFields(formMetaData.findAttribute("name").getFormItemForAdd(),
+                       formMetaData.findAttribute("extends").getFormItemForAdd(),
                        formMetaData.findAttribute("cacheType").getFormItemForAdd());
         return form;
     }
