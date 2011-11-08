@@ -61,7 +61,7 @@ public class OSGiRuntimeView extends SuspendableViewImpl implements OSGiRuntimeP
     public void initialLoad() {
         ModelNode address = Baseadress.get();
         if (address.asObject().get("profile").isDefined()) {
-            Feedback.alert("OSGi Subsystem", "OSGi Subsystem runtime information is not available on the profile level.");
+            Feedback.alert(Console.CONSTANTS.subsys_osgi(), "OSGi Subsystem runtime information is not available on the profile level.");
             return;
         }
 

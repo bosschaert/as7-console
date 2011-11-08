@@ -29,6 +29,7 @@ import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
 import com.gwtplatform.mvp.client.proxy.Place;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 
+import org.jboss.as.console.client.Console;
 import org.jboss.as.console.client.core.NameTokens;
 import org.jboss.as.console.client.domain.model.SimpleCallback;
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
@@ -38,8 +39,8 @@ import org.jboss.as.console.client.shared.general.MessageWindow;
 import org.jboss.as.console.client.shared.subsys.RevealStrategy;
 import org.jboss.as.console.client.shared.subsys.osgi.runtime.model.OSGiBundle;
 import org.jboss.as.console.client.widgets.forms.AddressBinding;
-import org.jboss.as.console.client.widgets.forms.BeanMetaData;
 import org.jboss.as.console.client.widgets.forms.ApplicationMetaData;
+import org.jboss.as.console.client.widgets.forms.BeanMetaData;
 import org.jboss.ballroom.client.widgets.window.DefaultWindow;
 import org.jboss.dmr.client.ModelDescriptionConstants;
 import org.jboss.dmr.client.ModelNode;
@@ -112,7 +113,7 @@ public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView,
     }
 
     public void askToActivateSubsystem() {
-        final DefaultWindow window = new DefaultWindow("OSGi Subsystem");
+        final DefaultWindow window = new DefaultWindow(Console.CONSTANTS.subsys_osgi());
         window.setWidth(320);
         window.setHeight(140);
         window.setWidget(new MessageWindow("The OSGi Subsystem is not active. Click 'OK' to activate it now.",
@@ -130,7 +131,7 @@ public class OSGiRuntimePresenter extends Presenter<OSGiRuntimePresenter.MyView,
 
     protected void activateSubsystem() {
         // Since it takes a few moments for the subsystem to activate we're showing a window indicating this
-        final DefaultWindow window = new DefaultWindow("OSGi Subsystem");
+        final DefaultWindow window = new DefaultWindow(Console.CONSTANTS.subsys_osgi());
         window.setWidth(320);
         window.setHeight(140);
         window.setWidget(new HTML("Activating..."));
