@@ -190,7 +190,7 @@ public class BundleRuntimeView extends AbstractEntityView<OSGiBundle> implements
             @Override
             public void execute(OSGiBundle bundle) {
                 if ("fragment".equals(bundle.getType())) {
-                    Feedback.alert("OSGi Subsystem", "Can't start a fragment (" + bundle.getSymbolicName() + ").");
+                    Feedback.alert(Console.CONSTANTS.subsys_osgi(), Console.MESSAGES.subsys_osgi_cant_start_fragment(bundle.getSymbolicName()));
                 } else {
                     presenter.startBundle(bundle);
                 }
@@ -201,7 +201,7 @@ public class BundleRuntimeView extends AbstractEntityView<OSGiBundle> implements
             @Override
             public void execute(OSGiBundle bundle) {
                 if ("fragment".equals(bundle.getType())) {
-                    Feedback.alert("OSGi Subsystem", "Can't stop a fragment (" + bundle.getSymbolicName() + ").");
+                    Feedback.alert(Console.CONSTANTS.subsys_osgi(), Console.MESSAGES.subsys_osgi_cant_stop_fragment(bundle.getSymbolicName()));
                 } else {
                     presenter.stopBundle(bundle);
                 }
