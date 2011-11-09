@@ -110,7 +110,7 @@ public class SecurityView extends AbstractEntityView<SecuritySubsystem> implemen
     }
 
     @Override
-    public void setAuthorizationPolicyModules(List<AuthorizationPolicyModule> modules) {
-        domainsView.authorizationEditor.setData(modules);
+    public void setAuthorizationPolicyModules(String domainName, List<AuthorizationPolicyModule> modules) {
+        domainsView.authorizationEditor.setData(domainName, modules);
     }
 }

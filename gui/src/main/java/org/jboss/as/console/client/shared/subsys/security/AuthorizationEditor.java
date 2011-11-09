@@ -1,5 +1,6 @@
 package org.jboss.as.console.client.shared.subsys.security;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.cell.client.ActionCell;
@@ -9,11 +10,17 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 import org.jboss.as.console.client.Console;
+import org.jboss.as.console.client.shared.properties.PropertyEditor;
+import org.jboss.as.console.client.shared.properties.PropertyManagement;
+import org.jboss.as.console.client.shared.properties.PropertyRecord;
 import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPolicyModule;
 import org.jboss.as.console.client.shared.subsys.security.wizard.NewAuthorizationPolicyModuleWizard;
 import org.jboss.as.console.client.widgets.tables.ButtonCell;
+import org.jboss.ballroom.client.widgets.ContentGroupLabel;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 import org.jboss.ballroom.client.widgets.tables.DefaultEditTextCell;
 import org.jboss.ballroom.client.widgets.tables.DefaultPager;
@@ -21,11 +28,15 @@ import org.jboss.ballroom.client.widgets.tools.ToolButton;
 import org.jboss.ballroom.client.widgets.tools.ToolStrip;
 import org.jboss.ballroom.client.widgets.window.DefaultWindow;
 
-public class AuthorizationEditor {
+public class AuthorizationEditor implements PropertyManagement {
     private final SecurityPresenter presenter;
+
     private DefaultCellTable<AuthorizationPolicyModule> attributesTable;
     private ListDataProvider<AuthorizationPolicyModule> attributesProvider;
-    protected DefaultWindow window;
+    private String domainName;
+    private ToolButton addModule;
+    private List<AuthorizationPolicyModule> backup;
+    private DefaultWindow window;
 
     AuthorizationEditor(SecurityPresenter presenter) {
         this.presenter = presenter;
@@ -37,11 +48,12 @@ public class AuthorizationEditor {
 
         attributesTable = new DefaultCellTable<AuthorizationPolicyModule>(4);
         attributesTable.getElement().setAttribute("style", "margin-top:5px;");
+        attributesTable.setEnabled(false);
         attributesProvider = new ListDataProvider<AuthorizationPolicyModule>();
         attributesProvider.addDataDisplay(attributesTable);
 
         ToolStrip tableTools = new ToolStrip();
-        ToolButton addModule = new ToolButton(Console.CONSTANTS.common_label_add());
+        addModule = new ToolButton(Console.CONSTANTS.common_label_add());
         addModule.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -87,10 +99,35 @@ public class AuthorizationEditor {
         pager.setDisplay(attributesTable);
         vpanel.add(pager);
 
+        final PropertyEditor propertyEditor = new PropertyEditor(this, true, 5);
+
+        // TODO check that there is no selection model yet
+        final SingleSelectionModel<AuthorizationPolicyModule> ssm = new SingleSelectionModel<AuthorizationPolicyModule>();
+        ssm.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent event) {
+                System.out.println("+++ selection changed");
+                AuthorizationPolicyModule policy = ssm.getSelectedObject();
+                List<PropertyRecord> props = policy.getProperties();
+                if (props == null)
+                    props = new ArrayList<PropertyRecord>();
+                propertyEditor.setProperties("", props);
+            }
+        });
+        attributesTable.setSelectionModel(ssm);
+
+        vpanel.add(new ContentGroupLabel("Properties"));
+        vpanel.add(propertyEditor.asWidget());
+        propertyEditor.setAllowEditProps(false);
+
+        setEditingEnabled(false);
+
         return vpanel;
     }
 
-    void setData(List<AuthorizationPolicyModule> newList) {
+    void setData(String domainName, List<AuthorizationPolicyModule> newList) {
+        this.domainName = domainName;
+
         List<AuthorizationPolicyModule> list = attributesProvider.getList();
         list.clear();
         list.addAll(newList);
@@ -112,5 +149,51 @@ public class AuthorizationEditor {
 
     public void addPolicy(AuthorizationPolicyModule policy) {
         attributesProvider.getList().add(policy);
+    }
+
+    // These are for the property editor
+    @Override
+    public void onCreateProperty(String reference, PropertyRecord prop) {
+    }
+
+    @Override
+    public void onDeleteProperty(String reference, PropertyRecord prop) {
+    }
+
+    @Override
+    public void onChangeProperty(String reference, PropertyRecord prop) {
+    }
+
+    @Override
+    public void launchNewPropertyDialoge(String reference) {
+    }
+
+    @Override
+    public void closePropertyDialoge() {
+    }
+
+    public void setEditingEnabled(boolean isEnabled) {
+        attributesTable.setEnabled(false);
+        addModule.setEnabled(isEnabled);
+    }
+
+    public void onCancel() {
+        setEditingEnabled(false);
+
+        List<AuthorizationPolicyModule> list = attributesProvider.getList();
+        list.clear();
+        list.addAll(backup);
+        backup = null;
+    }
+
+    public void onEdit() {
+        backup = new ArrayList<AuthorizationPolicyModule>(attributesProvider.getList());
+        setEditingEnabled(true);
+    }
+
+    public void onSave() {
+        setEditingEnabled(false);
+
+        presenter.saveAuthorization(domainName, attributesProvider.getList());
     }
 }

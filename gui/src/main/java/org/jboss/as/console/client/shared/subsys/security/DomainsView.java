@@ -49,8 +49,26 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
 
     public DomainsView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(SecurityDomain.class, propertyMetaData);
-        bridge = new EntityToDmrBridgeImpl<SecurityDomain>(propertyMetaData, SecurityDomain.class, this, dispatcher);
+        bridge = new EntityToDmrBridgeImpl<SecurityDomain>(propertyMetaData, SecurityDomain.class, this, dispatcher) {
 
+            @Override
+            public void onEdit() {
+                super.onEdit();
+                authorizationEditor.onEdit();
+            }
+
+            @Override
+            public void onCancel() {
+                super.onCancel();
+                authorizationEditor.onCancel();
+            }
+
+            @Override
+            public void onSaveDetails(FormAdapter<SecurityDomain> form) {
+                super.onSaveDetails(form);
+                authorizationEditor.onSave();
+            }
+        };
     }
 
     @Override
@@ -112,6 +130,12 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
         return "Security Domains";
     }
 
+//    @Override
+//    public void setEditingEnabled(boolean isEnabled) {
+//        super.setEditingEnabled(isEnabled);
+//        authorizationEditor.setEditingEnabled(isEnabled);
+//    }
+//
     void setPresenter(SecurityPresenter presenter) {
         this.presenter = presenter;
     }

@@ -62,7 +62,7 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
     public interface MyView extends View, FrameworkView {
         void setPresenter(SecurityPresenter presenter);
 
-        void setAuthorizationPolicyModules(List<AuthorizationPolicyModule> modules);
+        void setAuthorizationPolicyModules(String domainName, List<AuthorizationPolicyModule> modules);
     }
 
     @Inject
@@ -92,11 +92,11 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
         revealStrategy.revealInParent(this);
     }
 
-    public void updateDomainSelection(SecurityDomain selectedObject) {
+    public void updateDomainSelection(final SecurityDomain domain) {
         // load sub-elements which are not automatically loaded by the framework
 
         ModelNode operation = createOperation(ModelDescriptionConstants.READ_RESOURCE_OPERATION);
-        operation.get(ModelDescriptionConstants.ADDRESS).add("security-domain", selectedObject.getName());
+        operation.get(ModelDescriptionConstants.ADDRESS).add("security-domain", domain.getName());
         operation.get(ModelDescriptionConstants.ADDRESS).add("authorization", "classic");
 
         dispatcher.execute(new DMRAction(operation), new SimpleCallback<DMRResponse>() {
@@ -117,7 +117,33 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
                     }
                 }
 
-                getView().setAuthorizationPolicyModules(modules);
+                getView().setAuthorizationPolicyModules(domain.getName(), modules);
+            }
+        });
+    }
+
+    public void saveAuthorization(String domainName, List<AuthorizationPolicyModule> list) {
+        ModelNode operation = createOperation(ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION);
+        operation.get(ModelDescriptionConstants.ADDRESS).add("security-domain", domainName);
+        operation.get(ModelDescriptionConstants.ADDRESS).add("authorization", "classic");
+        operation.get(ModelDescriptionConstants.NAME).set("policy-modules");
+
+        ModelNode nodeList = new ModelNode();
+        nodeList.setEmptyList();
+        for (AuthorizationPolicyModule pm : list) {
+            ModelNode n = new ModelNode();
+            n.get("code").set(pm.getCode());
+            n.get("flag").set(pm.getFlag());
+            nodeList.add(n);
+        }
+        operation.get("value").set(nodeList);
+
+        dispatcher.execute(new DMRAction(operation), new SimpleCallback<DMRResponse>() {
+            @Override
+            public void onSuccess(DMRResponse result) {
+                // TODO Auto-generated method stub
+                System.out.println("*** Cool");
+
             }
         });
     }
