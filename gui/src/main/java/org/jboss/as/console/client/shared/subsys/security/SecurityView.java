@@ -19,6 +19,7 @@
 package org.jboss.as.console.client.shared.subsys.security;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -26,6 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
+import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPolicyModule;
 import org.jboss.as.console.client.shared.subsys.security.model.SecuritySubsystem;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.EntityDetails;
@@ -46,7 +48,7 @@ public class SecurityView extends AbstractEntityView<SecuritySubsystem> implemen
 
     @Inject
     public SecurityView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
-        super(SecuritySubsystem.class, propertyMetaData, EnumSet.allOf(FrameworkButton.class));
+        super(SecuritySubsystem.class, propertyMetaData, EnumSet.of(FrameworkButton.ADD, FrameworkButton.REMOVE));
         bridge = new SingleEntityToDmrBridgeImpl<SecuritySubsystem>(propertyMetaData, SecuritySubsystem.class, this, dispatcher);
 
         domainsView = new DomainsView(propertyMetaData, dispatcher);
@@ -59,7 +61,7 @@ public class SecurityView extends AbstractEntityView<SecuritySubsystem> implemen
 
         tabLayoutPanel.add(createEmbeddableWidget(), getEntityDisplayName());
         tabLayoutPanel.add(domainsView.asWidget(), domainsView.getEntityDisplayName());
-        tabLayoutPanel.selectTab(0);
+        tabLayoutPanel.selectTab(1);
 
         return tabLayoutPanel;
     }
@@ -100,5 +102,15 @@ public class SecurityView extends AbstractEntityView<SecuritySubsystem> implemen
     @Override
     protected String getEntityDisplayName() {
         return "Security";
+    }
+
+    @Override
+    public void setPresenter(SecurityPresenter presenter) {
+        domainsView.setPresenter(presenter);
+    }
+
+    @Override
+    public void setAuthorizationPolicyModules(List<AuthorizationPolicyModule> modules) {
+        domainsView.authorizationEditor.setData(modules);
     }
 }

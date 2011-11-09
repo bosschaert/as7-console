@@ -33,18 +33,16 @@ public interface SecurityDomain extends NamedEntity {
     @FormItem(label="Name",
               required=true,
               formItemTypeForEdit="TEXT",
-              formItemTypeForAdd="TEXT_BOX")
+              formItemTypeForAdd="TEXT_BOX",
+              tabName="common_label_attributes")
     String getName();
     @Override
     void setName(String name);
 
-    @FormItem(label="Extends", required=false)
-    String getExtends();
-    void setExtends(String name);
-
     @Binding(detypedName="cache-type")
     @FormItem(label="Cache Type",
-              required=false)
+              required=false,
+              tabName="common_label_attributes")
     String getCacheType();
     void setCacheType(String type);
 }

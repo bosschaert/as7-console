@@ -18,7 +18,10 @@
  */
 package org.jboss.as.console.client.shared.subsys.security;
 
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.subsys.security.model.SecurityDomain;
@@ -27,6 +30,7 @@ import org.jboss.as.console.client.shared.viewframework.Columns;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridgeImpl;
 import org.jboss.as.console.client.shared.viewframework.FrameworkView;
+import org.jboss.as.console.client.shared.viewframework.TabbedFormLayoutPanel;
 import org.jboss.as.console.client.widgets.forms.ApplicationMetaData;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
@@ -38,14 +42,46 @@ import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 public class DomainsView extends AbstractEntityView<SecurityDomain> implements FrameworkView {
     private final EntityToDmrBridgeImpl<SecurityDomain> bridge;
 
+    AuthorizationEditor authorizationEditor;
+    private DefaultCellTable<SecurityDomain> table;
+    private TabbedFormLayoutPanel tabBottomPanel;
+    private SecurityPresenter presenter;
+
     public DomainsView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(SecurityDomain.class, propertyMetaData);
         bridge = new EntityToDmrBridgeImpl<SecurityDomain>(propertyMetaData, SecurityDomain.class, this, dispatcher);
+
     }
 
     @Override
     public Widget createWidget() {
-        return createEmbeddableWidget();
+        Widget w = createEmbeddableWidget();
+
+        authorizationEditor = new AuthorizationEditor(presenter);
+        tabBottomPanel.add(new VerticalPanel(), "ACL");
+        tabBottomPanel.add(new VerticalPanel(), "Authentication");
+        tabBottomPanel.add(new VerticalPanel(), "Audit");
+        tabBottomPanel.add(authorizationEditor.asWidget(), "Authorization");
+        tabBottomPanel.add(new VerticalPanel(), "Identity Trust");
+        tabBottomPanel.add(new VerticalPanel(), "JSSE");
+        tabBottomPanel.add(new VerticalPanel(), "Mapping");
+        tabBottomPanel.add(new VerticalPanel(), "Vault");
+
+        table.getSelectionModel().addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent event) {
+                SingleSelectionModel<SecurityDomain> ssm = (SingleSelectionModel<SecurityDomain>) table.getSelectionModel();
+                presenter.updateDomainSelection(ssm.getSelectedObject());
+            }
+        });
+
+        return w;
+    }
+
+    @Override
+    protected FormAdapter<SecurityDomain> makeEditEntityDetailsForm() {
+        tabBottomPanel = new TabbedFormLayoutPanel(beanType, getFormMetaData(), this);
+        return tabBottomPanel;
     }
 
     @Override
@@ -55,7 +91,7 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
 
     @Override
     protected DefaultCellTable<SecurityDomain> makeEntityTable() {
-        DefaultCellTable<SecurityDomain> table = new DefaultCellTable<SecurityDomain>(5);
+        table = new DefaultCellTable<SecurityDomain>(5);
 
         table.addColumn(new Columns.NameColumn(), Columns.NameColumn.LABEL);
 
@@ -67,7 +103,6 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
         Form<SecurityDomain> form = new Form(SecurityDomain.class);
         form.setNumColumns(1);
         form.setFields(formMetaData.findAttribute("name").getFormItemForAdd(),
-                       formMetaData.findAttribute("extends").getFormItemForAdd(),
                        formMetaData.findAttribute("cacheType").getFormItemForAdd());
         return form;
     }
@@ -75,5 +110,9 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
     @Override
     protected String getEntityDisplayName() {
         return "Security Domains";
+    }
+
+    void setPresenter(SecurityPresenter presenter) {
+        this.presenter = presenter;
     }
 }

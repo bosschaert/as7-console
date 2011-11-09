@@ -35,39 +35,4 @@ public interface SecuritySubsystem {
               order=10)
     boolean isDeepCopySubjects();
     void setDeepCopySubjects(boolean value);
-
-    @Binding(detypedName="audit-manager-class-name")
-    @FormItem(label="Audit Manager", required=false, order=20)
-    String getAuditManagerClassName();
-    void setAuditManagerClassName(String name);
-
-    @Binding(detypedName="authentication-manager-class-name")
-    @FormItem(label="Authentication Manager", required=false, order=30)
-    String getAuthenticationManagerClassName();
-    void setAuthenticationManagerClassName(String name);
-
-    @Binding(detypedName="authorization-manager-class-name")
-    @FormItem(label="Authorization Manager", required=false, order=40)
-    String getAuthorizationManagerClassName();
-    void setAuthorizationManagerClassName(String name);
-
-    @Binding(detypedName="default-callback-handler-class-name")
-    @FormItem(label="Default Callback Handler", required=false, order=50)
-    String getDefaultCallbackHandlerClassName();
-    void setDefaultCallbackHandlerClassName(String name);
-
-    @Binding(detypedName="identity-trust-manager-class-name")
-    @FormItem(label="Identity Trust Manager", required=false, order=60)
-    String getIdentityTrustManagerClassName();
-    void setIdentityTrustManagerClassName(String name);
-
-    @Binding(detypedName="mapping-manager-class-name")
-    @FormItem(label="Mapping Manager", required=false, order=70)
-    String getMappingManagerClassName();
-    void setMappingManagerClassName(String name);
-
-    @Binding(detypedName="subject-factory-class-name")
-    @FormItem(label="Subject Factory", required=false, order=15)
-    String getSubjectFactoryClassName();
-    void setSubjectFactoryClassName(String name);
 }
