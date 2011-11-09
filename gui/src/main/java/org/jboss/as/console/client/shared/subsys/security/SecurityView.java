@@ -42,11 +42,14 @@ import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
  */
 public class SecurityView extends AbstractEntityView<SecuritySubsystem> implements SecurityPresenter.MyView {
     private final SingleEntityToDmrBridgeImpl<SecuritySubsystem> bridge;
+    private final DomainsView domainsView;
 
     @Inject
     public SecurityView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(SecuritySubsystem.class, propertyMetaData, EnumSet.allOf(FrameworkButton.class));
         bridge = new SingleEntityToDmrBridgeImpl<SecuritySubsystem>(propertyMetaData, SecuritySubsystem.class, this, dispatcher);
+
+        domainsView = new DomainsView(propertyMetaData, dispatcher);
     }
 
     @Override
@@ -55,9 +58,16 @@ public class SecurityView extends AbstractEntityView<SecuritySubsystem> implemen
         tabLayoutPanel.addStyleName("default-tabpabel");
 
         tabLayoutPanel.add(createEmbeddableWidget(), getEntityDisplayName());
+        tabLayoutPanel.add(domainsView.asWidget(), domainsView.getEntityDisplayName());
         tabLayoutPanel.selectTab(0);
 
         return tabLayoutPanel;
+    }
+
+    @Override
+    public void initialLoad() {
+        super.initialLoad();
+        domainsView.initialLoad();
     }
 
     @Override
