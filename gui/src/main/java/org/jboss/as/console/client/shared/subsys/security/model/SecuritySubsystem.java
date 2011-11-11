@@ -35,9 +35,4 @@ public interface SecuritySubsystem {
               order=10)
     boolean isDeepCopySubjects();
     void setDeepCopySubjects(boolean value);
-
-    @Binding(detypedName="dummy")
-    @FormItem(label="DUmmy", required=false)
-    String getDummy();
-    void setDummy(String d);
 }

@@ -53,6 +53,12 @@ public class SecuritySubsystemPresenter extends Presenter<SecuritySubsystemPrese
     }
 
     @Override
+    protected void onReset() {
+        super.onReset();
+        getView().initialLoad();
+    }
+
+    @Override
     protected void revealInParent() {
         revealStrategy.revealInParent(this);
     }

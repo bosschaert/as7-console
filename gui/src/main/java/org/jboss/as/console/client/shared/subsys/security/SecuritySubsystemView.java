@@ -20,6 +20,9 @@ package org.jboss.as.console.client.shared.subsys.security;
 
 import java.util.EnumSet;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
@@ -44,6 +47,17 @@ public class SecuritySubsystemView extends AbstractEntityView<SecuritySubsystem>
     public SecuritySubsystemView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(SecuritySubsystem.class, propertyMetaData, EnumSet.of(FrameworkButton.ADD, FrameworkButton.REMOVE));
         bridge = new SingleEntityToDmrBridgeImpl<SecuritySubsystem>(propertyMetaData, SecuritySubsystem.class, this, dispatcher);
+    }
+
+    @Override
+    public Widget createWidget() {
+        TabLayoutPanel tabLayoutpanel = new TabLayoutPanel(25, Style.Unit.PX);
+        tabLayoutpanel.addStyleName("default-tabpanel");
+
+        tabLayoutpanel.add(createEmbeddableWidget(), getEntityDisplayName());
+        tabLayoutpanel.selectTab(0);
+
+        return tabLayoutpanel;
     }
 
     @Override
@@ -74,6 +88,6 @@ public class SecuritySubsystemView extends AbstractEntityView<SecuritySubsystem>
 
     @Override
     protected String getEntityDisplayName() {
-        return "Security";
+        return "Security Subsystem";
     }
 }
