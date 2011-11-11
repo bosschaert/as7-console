@@ -19,16 +19,10 @@
 package org.jboss.as.console.client.shared.subsys.security;
 
 import java.util.EnumSet;
-import java.util.List;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
-import org.jboss.as.console.client.shared.subsys.security.model.AuthenticationLoginModule;
-import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPolicyProvider;
 import org.jboss.as.console.client.shared.subsys.security.model.SecuritySubsystem;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.EntityDetails;
@@ -43,18 +37,19 @@ import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 /**
  * @author David Bosschaert
  */
-public class SecurityView extends AbstractEntityView<SecuritySubsystem> implements SecurityPresenter.MyView {
+public class SecuritySubsystemView extends AbstractEntityView<SecuritySubsystem> implements SecuritySubsystemPresenter.MyView {
     private final SingleEntityToDmrBridgeImpl<SecuritySubsystem> bridge;
-    private final DomainsView domainsView;
+    // private final DomainsView domainsView;
 
     @Inject
-    public SecurityView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
+    public SecuritySubsystemView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(SecuritySubsystem.class, propertyMetaData, EnumSet.of(FrameworkButton.ADD, FrameworkButton.REMOVE));
         bridge = new SingleEntityToDmrBridgeImpl<SecuritySubsystem>(propertyMetaData, SecuritySubsystem.class, this, dispatcher);
-
-        domainsView = new DomainsView(propertyMetaData, dispatcher);
+//
+//        domainsView = new DomainsView(propertyMetaData, dispatcher);
     }
 
+    /*
     @Override
     public Widget createWidget() {
         TabLayoutPanel tabLayoutPanel = new TabLayoutPanel(25, Style.Unit.PX);
@@ -72,7 +67,7 @@ public class SecurityView extends AbstractEntityView<SecuritySubsystem> implemen
         super.initialLoad();
         domainsView.initialLoad();
     }
-
+*/
     @Override
     protected EntityEditor<SecuritySubsystem> makeEntityEditor() {
         EntityDetails<SecuritySubsystem> details = new EntityDetails<SecuritySubsystem>(getEntityDisplayName(),
@@ -82,7 +77,6 @@ public class SecurityView extends AbstractEntityView<SecuritySubsystem> implemen
                                                                                         hideButtons);
         return new EntityEditor<SecuritySubsystem>(getEntityDisplayName(), null, makeEntityTable(), details, hideButtons);
     }
-
     @Override
     protected EntityToDmrBridge<SecuritySubsystem> getEntityBridge() {
         return bridge;
@@ -101,21 +95,22 @@ public class SecurityView extends AbstractEntityView<SecuritySubsystem> implemen
     }
 
     @Override
-    public void loadSecurityDomain(String domainName) {
-        domainsView.load(domainName);
-    }
-
-    @Override
     protected String getEntityDisplayName() {
         return "Security";
     }
 
+    /*
     @Override
-    public void setPresenter(SecurityPresenter presenter) {
+    public void setPresenter(SecurityDomainsPresenter presenter) {
         domainsView.setPresenter(presenter);
     }
 
     @Override
+    public void loadSecurityDomain(String domainName) {
+        domainsView.load(domainName);
+    }
+
+  @Override
     public void setAuthenticationLoginModules(String domainName, List<AuthenticationLoginModule> modules, boolean resourceExists) {
         domainsView.authenticationEditor.setData(domainName, modules, resourceExists);
     }
@@ -124,4 +119,5 @@ public class SecurityView extends AbstractEntityView<SecuritySubsystem> implemen
     public void setAuthorizationPolicyProviders(String domainName, List<AuthorizationPolicyProvider> policies, boolean resourceExists) {
         domainsView.authorizationEditor.setData(domainName, policies, resourceExists);
     }
+    */
 }

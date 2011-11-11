@@ -24,7 +24,7 @@ import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPol
  * @author David Bosschaert
  */
 public class AuthorizationEditor extends AuthEditor<AuthorizationPolicyProvider> {
-    AuthorizationEditor(SecurityPresenter presenter) {
+    AuthorizationEditor(SecurityDomainsPresenter presenter) {
         super(presenter);
     }
 

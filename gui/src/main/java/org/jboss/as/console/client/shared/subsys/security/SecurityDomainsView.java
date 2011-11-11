@@ -18,17 +18,21 @@
  */
 package org.jboss.as.console.client.shared.subsys.security;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.inject.Inject;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
+import org.jboss.as.console.client.shared.subsys.security.model.AuthenticationLoginModule;
+import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPolicyProvider;
 import org.jboss.as.console.client.shared.subsys.security.model.SecurityDomain;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridge;
 import org.jboss.as.console.client.shared.viewframework.EntityToDmrBridgeImpl;
-import org.jboss.as.console.client.shared.viewframework.FrameworkView;
 import org.jboss.as.console.client.shared.viewframework.TabbedFormLayoutPanel;
 import org.jboss.as.console.client.widgets.forms.ApplicationMetaData;
 import org.jboss.ballroom.client.widgets.forms.Form;
@@ -38,16 +42,17 @@ import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 /**
  * @author David Bosschaert
  */
-public class DomainsView extends AbstractEntityView<SecurityDomain> implements FrameworkView {
+public class SecurityDomainsView extends AbstractEntityView<SecurityDomain> implements SecurityDomainsPresenter.MyView {
     private final EntityToDmrBridgeImpl<SecurityDomain> bridge;
 
     AuthenticationEditor authenticationEditor;
     AuthorizationEditor authorizationEditor;
     private DefaultCellTable<SecurityDomain> table;
     private TabbedFormLayoutPanel tabBottomPanel;
-    private SecurityPresenter presenter;
+    private SecurityDomainsPresenter presenter;
 
-    public DomainsView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
+    @Inject
+    public SecurityDomainsView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(SecurityDomain.class, propertyMetaData);
         bridge = new EntityToDmrBridgeImpl<SecurityDomain>(propertyMetaData, SecurityDomain.class, this, dispatcher) {
 
@@ -94,7 +99,7 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
 
     @Override
     public Widget createWidget() {
-        Widget w = createEmbeddableWidget();
+        Widget w = super.createWidget();
 
         authenticationEditor = new AuthenticationEditor(presenter);
         authorizationEditor = new AuthorizationEditor(presenter);
@@ -141,16 +146,36 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
         return form;
     }
 
-    void load(String domainName) {
-        bridge.loadEntities(domainName);
-    }
+//    void load(String domainName) {
+//        bridge.loadEntities(domainName);
+//    }
 
     @Override
     protected String getEntityDisplayName() {
         return "Security Domains";
     }
 
-    void setPresenter(SecurityPresenter presenter) {
+//    void setPresenter(SecurityDomainsPresenter presenter) {
+//        this.presenter = presenter;
+//    }
+    @Override
+    public void setPresenter(SecurityDomainsPresenter presenter) {
         this.presenter = presenter;
     }
+
+    @Override
+    public void loadSecurityDomain(String domainName) {
+        bridge.loadEntities(domainName);
+    }
+
+    @Override
+    public void setAuthenticationLoginModules(String domainName, List<AuthenticationLoginModule> modules, boolean resourceExists) {
+        authenticationEditor.setData(domainName, modules, resourceExists);
+    }
+
+    @Override
+    public void setAuthorizationPolicyProviders(String domainName, List<AuthorizationPolicyProvider> policies, boolean resourceExists) {
+        authorizationEditor.setData(domainName, policies, resourceExists);
+    }
+
 }

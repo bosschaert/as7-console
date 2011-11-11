@@ -24,7 +24,7 @@ import org.jboss.as.console.client.shared.subsys.security.model.AuthenticationLo
  * @author David Bosschaert
  */
 public class AuthenticationEditor extends AuthEditor<AuthenticationLoginModule>{
-    AuthenticationEditor(SecurityPresenter presenter) {
+    AuthenticationEditor(SecurityDomainsPresenter presenter) {
         super(presenter);
     }
 

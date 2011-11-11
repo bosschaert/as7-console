@@ -51,7 +51,7 @@ import org.jboss.ballroom.client.widgets.window.DefaultWindow;
  * @author David Bosschaert
  */
 public abstract class AuthEditor <T extends AbstractAuthData> implements PropertyManagement {
-    final SecurityPresenter presenter;
+    final SecurityDomainsPresenter presenter;
 
     DefaultCellTable<T> attributesTable;
     ListDataProvider<T> attributesProvider;
@@ -61,7 +61,7 @@ public abstract class AuthEditor <T extends AbstractAuthData> implements Propert
     List<T> backup;
     DefaultWindow window;
 
-    AuthEditor(SecurityPresenter presenter) {
+    AuthEditor(SecurityDomainsPresenter presenter) {
         this.presenter = presenter;
     }
 

@@ -51,7 +51,7 @@ import org.jboss.dmr.client.ModelNode;
 /**
  * @author David Bosschaert
  */
-public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, SecurityPresenter.MyProxy> {
+public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter.MyView, SecurityDomainsPresenter.MyProxy> {
     public static final String SECURITY_SUBSYSTEM = "security";
 
     private final DispatchAsync dispatcher;
@@ -59,12 +59,12 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
     private final RevealStrategy revealStrategy;
 
     @ProxyCodeSplit
-    @NameToken(NameTokens.SecurityPresenter)
-    public interface MyProxy extends Proxy<SecurityPresenter>, Place {
+    @NameToken(NameTokens.SecurityDomainsPresenter)
+    public interface MyProxy extends Proxy<SecurityDomainsPresenter>, Place {
     }
 
     public interface MyView extends View, FrameworkView {
-        void setPresenter(SecurityPresenter presenter);
+        void setPresenter(SecurityDomainsPresenter presenter);
         void setAuthenticationLoginModules(String domainName, List<AuthenticationLoginModule> modules, boolean resourceExists);
         void setAuthorizationPolicyProviders(String domainName, List<AuthorizationPolicyProvider> providers, boolean resourceExists);
 
@@ -72,7 +72,7 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
     }
 
     @Inject
-    public SecurityPresenter(EventBus eventBus, MyView view, MyProxy proxy,
+    public SecurityDomainsPresenter(EventBus eventBus, MyView view, MyProxy proxy,
         DispatchAsync dispatcher, BeanFactory factory, RevealStrategy revealStrategy) {
         super(eventBus, view, proxy);
 
