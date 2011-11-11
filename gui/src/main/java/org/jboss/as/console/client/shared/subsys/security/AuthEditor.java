@@ -201,7 +201,7 @@ public abstract class AuthEditor <T extends AbstractAuthData> implements Propert
     }
 
     public void setEditingEnabled(boolean isEnabled) {
-        addModule.setEnabled(isEnabled);
+        addModule.setVisible(isEnabled);
     }
 
     public void onCancel() {

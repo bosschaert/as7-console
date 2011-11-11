@@ -23,7 +23,6 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
-import org.jboss.as.console.client.shared.general.MessageWindow;
 import org.jboss.as.console.client.shared.subsys.security.model.SecurityDomain;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns;
@@ -35,7 +34,6 @@ import org.jboss.as.console.client.widgets.forms.ApplicationMetaData;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
-import org.jboss.ballroom.client.widgets.window.DefaultWindow;
 
 /**
  * @author David Bosschaert
@@ -69,24 +67,24 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
 
             @Override
             public void onSaveDetails(final FormAdapter<SecurityDomain> form) {
-                String name = form.getEditedEntity().getName();
-                final DefaultWindow window = new DefaultWindow("Security Domain " + name);
-                window.setWidth(320);
-                window.setHeight(140);
-                window.setWidget(new MessageWindow("Restart security domain '" + name + "' to take changes into effect?",
-                    new MessageWindow.Result() {
-                        @Override
-                        public void result(boolean result) {
-                            window.hide();
-
-                            doSave(form);
-                        }
-                    }).asWidget());
-                window.setGlassEnabled(true);
-                window.center();
-            }
-
-            private void doSave(FormAdapter<SecurityDomain> form) {
+//                String name = form.getEditedEntity().getName();
+//                final DefaultWindow window = new DefaultWindow("Security Domain " + name);
+//                window.setWidth(320);
+//                window.setHeight(140);
+//                window.setWidget(new MessageWindow("Restart security domain '" + name + "' to take changes into effect?",
+//                    new MessageWindow.Result() {
+//                        @Override
+//                        public void result(boolean result) {
+//                            window.hide();
+//
+//                            doSave(form);
+//                        }
+//                    }).asWidget());
+//                window.setGlassEnabled(true);
+//                window.center();
+//            }
+//
+//            private void doSave(FormAdapter<SecurityDomain> form) {
                 super.onSaveDetails(form);
                 authenticationEditor.onSave();
                 authorizationEditor.onSave();
