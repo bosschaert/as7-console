@@ -146,18 +146,11 @@ public class SecurityDomainsView extends AbstractEntityView<SecurityDomain> impl
         return form;
     }
 
-//    void load(String domainName) {
-//        bridge.loadEntities(domainName);
-//    }
-
     @Override
     protected String getEntityDisplayName() {
         return "Security Domains";
     }
 
-//    void setPresenter(SecurityDomainsPresenter presenter) {
-//        this.presenter = presenter;
-//    }
     @Override
     public void setPresenter(SecurityDomainsPresenter presenter) {
         this.presenter = presenter;
@@ -177,5 +170,4 @@ public class SecurityDomainsView extends AbstractEntityView<SecurityDomain> impl
     public void setAuthorizationPolicyProviders(String domainName, List<AuthorizationPolicyProvider> policies, boolean resourceExists) {
         authorizationEditor.setData(domainName, policies, resourceExists);
     }
-
 }

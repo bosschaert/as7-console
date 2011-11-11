@@ -39,35 +39,13 @@ import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
  */
 public class SecuritySubsystemView extends AbstractEntityView<SecuritySubsystem> implements SecuritySubsystemPresenter.MyView {
     private final SingleEntityToDmrBridgeImpl<SecuritySubsystem> bridge;
-    // private final DomainsView domainsView;
 
     @Inject
     public SecuritySubsystemView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(SecuritySubsystem.class, propertyMetaData, EnumSet.of(FrameworkButton.ADD, FrameworkButton.REMOVE));
         bridge = new SingleEntityToDmrBridgeImpl<SecuritySubsystem>(propertyMetaData, SecuritySubsystem.class, this, dispatcher);
-//
-//        domainsView = new DomainsView(propertyMetaData, dispatcher);
     }
 
-    /*
-    @Override
-    public Widget createWidget() {
-        TabLayoutPanel tabLayoutPanel = new TabLayoutPanel(25, Style.Unit.PX);
-        tabLayoutPanel.addStyleName("default-tabpabel");
-
-        tabLayoutPanel.add(createEmbeddableWidget(), getEntityDisplayName());
-        tabLayoutPanel.add(domainsView.asWidget(), domainsView.getEntityDisplayName());
-        tabLayoutPanel.selectTab(1);
-
-        return tabLayoutPanel;
-    }
-
-    @Override
-    public void initialLoad() {
-        super.initialLoad();
-        domainsView.initialLoad();
-    }
-*/
     @Override
     protected EntityEditor<SecuritySubsystem> makeEntityEditor() {
         EntityDetails<SecuritySubsystem> details = new EntityDetails<SecuritySubsystem>(getEntityDisplayName(),
@@ -98,26 +76,4 @@ public class SecuritySubsystemView extends AbstractEntityView<SecuritySubsystem>
     protected String getEntityDisplayName() {
         return "Security";
     }
-
-    /*
-    @Override
-    public void setPresenter(SecurityDomainsPresenter presenter) {
-        domainsView.setPresenter(presenter);
-    }
-
-    @Override
-    public void loadSecurityDomain(String domainName) {
-        domainsView.load(domainName);
-    }
-
-  @Override
-    public void setAuthenticationLoginModules(String domainName, List<AuthenticationLoginModule> modules, boolean resourceExists) {
-        domainsView.authenticationEditor.setData(domainName, modules, resourceExists);
-    }
-
-    @Override
-    public void setAuthorizationPolicyProviders(String domainName, List<AuthorizationPolicyProvider> policies, boolean resourceExists) {
-        domainsView.authorizationEditor.setData(domainName, policies, resourceExists);
-    }
-    */
 }
