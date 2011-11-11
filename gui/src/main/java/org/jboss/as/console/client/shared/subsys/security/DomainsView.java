@@ -18,12 +18,12 @@
  */
 package org.jboss.as.console.client.shared.subsys.security;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
+import org.jboss.as.console.client.shared.general.MessageWindow;
 import org.jboss.as.console.client.shared.subsys.security.model.SecurityDomain;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns;
@@ -35,6 +35,7 @@ import org.jboss.as.console.client.widgets.forms.ApplicationMetaData;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormAdapter;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
+import org.jboss.ballroom.client.widgets.window.DefaultWindow;
 
 /**
  * @author David Bosschaert
@@ -42,6 +43,7 @@ import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 public class DomainsView extends AbstractEntityView<SecurityDomain> implements FrameworkView {
     private final EntityToDmrBridgeImpl<SecurityDomain> bridge;
 
+    AuthenticationEditor authenticationEditor;
     AuthorizationEditor authorizationEditor;
     private DefaultCellTable<SecurityDomain> table;
     private TabbedFormLayoutPanel tabBottomPanel;
@@ -54,18 +56,39 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
             @Override
             public void onEdit() {
                 super.onEdit();
+                authenticationEditor.onEdit();
                 authorizationEditor.onEdit();
             }
 
             @Override
             public void onCancel() {
                 super.onCancel();
+                authenticationEditor.onCancel();
                 authorizationEditor.onCancel();
             }
 
             @Override
-            public void onSaveDetails(FormAdapter<SecurityDomain> form) {
+            public void onSaveDetails(final FormAdapter<SecurityDomain> form) {
+                String name = form.getEditedEntity().getName();
+                final DefaultWindow window = new DefaultWindow("Security Domain " + name);
+                window.setWidth(320);
+                window.setHeight(140);
+                window.setWidget(new MessageWindow("Restart security domain '" + name + "' to take changes into effect?",
+                    new MessageWindow.Result() {
+                        @Override
+                        public void result(boolean result) {
+                            window.hide();
+
+                            doSave(form);
+                        }
+                    }).asWidget());
+                window.setGlassEnabled(true);
+                window.center();
+            }
+
+            private void doSave(FormAdapter<SecurityDomain> form) {
                 super.onSaveDetails(form);
+                authenticationEditor.onSave();
                 authorizationEditor.onSave();
             }
         };
@@ -75,15 +98,10 @@ public class DomainsView extends AbstractEntityView<SecurityDomain> implements F
     public Widget createWidget() {
         Widget w = createEmbeddableWidget();
 
+        authenticationEditor = new AuthenticationEditor(presenter);
         authorizationEditor = new AuthorizationEditor(presenter);
-        tabBottomPanel.add(new VerticalPanel(), "ACL");
-        tabBottomPanel.add(new VerticalPanel(), "Authentication");
-        tabBottomPanel.add(new VerticalPanel(), "Audit");
+        tabBottomPanel.add(authenticationEditor.asWidget(), "Authentication");
         tabBottomPanel.add(authorizationEditor.asWidget(), "Authorization");
-        tabBottomPanel.add(new VerticalPanel(), "Identity Trust");
-        tabBottomPanel.add(new VerticalPanel(), "JSSE");
-        tabBottomPanel.add(new VerticalPanel(), "Mapping");
-        tabBottomPanel.add(new VerticalPanel(), "Vault");
 
         table.getSelectionModel().addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
