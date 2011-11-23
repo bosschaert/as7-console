@@ -44,12 +44,12 @@ import org.jboss.ballroom.client.widgets.window.WindowContentBuilder;
  * @author David Bosschaert
  */
 public class NewAuthPolicyModuleWizard <T extends AbstractAuthData> implements PropertyManagement {
+    private boolean editMode = false;
     private final AuthEditor<T> editor;
     private final Class<T> entityClass;
     private final BeanFactory factory = GWT.create(BeanFactory.class);
     private Form<T> form;
     private final List<PropertyRecord> properties = new ArrayList<PropertyRecord>();
-    private List<PropertyRecord> originalProperties;
     private PropertyEditor propEditor;
 
     public NewAuthPolicyModuleWizard(AuthEditor<T> editor, Class<T> cls) {
@@ -76,18 +76,18 @@ public class NewAuthPolicyModuleWizard <T extends AbstractAuthData> implements P
                 public void onClick(ClickEvent event) {
                     FormValidation validation = form.validate();
                     if (!validation.hasErrors()) {
-                        if (originalProperties == null) {
-                            // it's a new policy
-                            T data = form.getUpdatedEntity();
-                            data.setProperties(properties);
-                            editor.addPolicy(data);
-                        } else {
+                        if (editMode) {
                             T original = form.getEditedEntity();
                             T edited = form.getUpdatedEntity();
                             original.setCode(edited.getCode());
                             original.setFlag(edited.getFlag());
                             original.setProperties(properties);
                             editor.saveData();
+                        } else {
+                            // it's a new policy
+                            T data = form.getUpdatedEntity();
+                            data.setProperties(properties);
+                            editor.addPolicy(data);
                         }
 
                         editor.closeWizard();
@@ -96,9 +96,6 @@ public class NewAuthPolicyModuleWizard <T extends AbstractAuthData> implements P
             }, "Cancel", new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    form.cancel();
-                    form.getEditedEntity().setProperties(originalProperties);
-
                     editor.closeWizard();
                 }
             });
@@ -107,6 +104,7 @@ public class NewAuthPolicyModuleWizard <T extends AbstractAuthData> implements P
     }
 
     public void edit(T object) {
+        editMode = true;
         form.edit(object);
 
         if (object.getProperties() != null) {
@@ -117,10 +115,10 @@ public class NewAuthPolicyModuleWizard <T extends AbstractAuthData> implements P
                 clone.setValue(pr.getValue());
                 copiedProperties.add(clone);
             }
-            originalProperties = object.getProperties();
-            propEditor.setProperties("", new ArrayList<PropertyRecord>(copiedProperties));
-        } else {
-            originalProperties = new ArrayList<PropertyRecord>();
+
+            properties.clear();
+            properties.addAll(copiedProperties);
+            propEditor.setProperties("", copiedProperties);
         }
     }
 
