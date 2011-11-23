@@ -44,7 +44,7 @@ public class AuthenticationEditor extends AuthEditor<AuthenticationLoginModule>{
     }
 
     @Override
-    public void saveData() {
+    void saveData() {
         presenter.saveAuthentication(domainName, attributesProvider.getList(), resourceExists);
     }
 }

@@ -73,7 +73,7 @@ public abstract class AuthEditor <T extends AbstractAuthData> {
     abstract String getEntityName();
     abstract String getStackElementName();
     abstract String getStackName();
-    public abstract void saveData();
+    abstract void saveData();
 
     Widget asWidget() {
         VerticalPanel vpanel = new VerticalPanel();
@@ -200,6 +200,13 @@ public abstract class AuthEditor <T extends AbstractAuthData> {
 
     public void addPolicy(T policy) {
         attributesProvider.getList().add(policy);
+        save(policy);
+    }
+
+    public void save(T policy) {
         saveData();
+
+        // This sometimes selects the right row but not always - is there a more consistent way?
+        attributesTable.getSelectionModel().setSelected(policy, true);
     }
 }

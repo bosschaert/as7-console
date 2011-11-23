@@ -82,7 +82,7 @@ public class NewAuthPolicyModuleWizard <T extends AbstractAuthData> implements P
                             original.setCode(edited.getCode());
                             original.setFlag(edited.getFlag());
                             original.setProperties(properties);
-                            editor.saveData();
+                            editor.save(original);
                         } else {
                             // it's a new policy
                             T data = form.getUpdatedEntity();

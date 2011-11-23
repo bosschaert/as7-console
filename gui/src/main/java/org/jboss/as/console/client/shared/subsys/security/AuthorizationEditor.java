@@ -44,7 +44,7 @@ public class AuthorizationEditor extends AuthEditor<AuthorizationPolicyProvider>
     }
 
     @Override
-    public void saveData() {
+    void saveData() {
         presenter.saveAuthorization(domainName, attributesProvider.getList(), resourceExists);
     }
 }
