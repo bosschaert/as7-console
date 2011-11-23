@@ -43,13 +43,13 @@ import org.jboss.ballroom.client.widgets.window.WindowContentBuilder;
 /**
  * @author David Bosschaert
  */
-public class NewAuthorizationPolicyModuleWizard implements PropertyManagement {
+public class NewAuthPolicyModuleWizard implements PropertyManagement {
     private final AuthEditor editor;
     private final BeanFactory factory = GWT.create(BeanFactory.class);
     private final List<PropertyRecord> properties = new ArrayList<PropertyRecord>();
     private PropertyEditor propEditor;
 
-    public NewAuthorizationPolicyModuleWizard(AuthEditor editor) {
+    public NewAuthPolicyModuleWizard(AuthEditor editor) {
         this.editor = editor;
     }
 

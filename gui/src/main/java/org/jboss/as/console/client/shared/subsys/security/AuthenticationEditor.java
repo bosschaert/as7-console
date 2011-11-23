@@ -29,12 +29,17 @@ public class AuthenticationEditor extends AuthEditor<AuthenticationLoginModule>{
     }
 
     @Override
+    String getEntityName() {
+        return "Authentication";
+    }
+
+    @Override
     String getStackName() {
         return "Login Modules";
     }
 
     @Override
-    void onSaveData() {
+    void saveData() {
         presenter.saveAuthentication(domainName, attributesProvider.getList(), resourceExists);
     }
 }

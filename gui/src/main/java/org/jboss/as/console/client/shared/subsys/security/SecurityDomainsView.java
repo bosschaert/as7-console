@@ -19,7 +19,6 @@
 package org.jboss.as.console.client.shared.subsys.security;
 
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -55,48 +54,7 @@ public class SecurityDomainsView extends AbstractEntityView<SecurityDomain> impl
     @Inject
     public SecurityDomainsView(ApplicationMetaData propertyMetaData, DispatchAsync dispatcher) {
         super(SecurityDomain.class, propertyMetaData);
-        bridge = new EntityToDmrBridgeImpl<SecurityDomain>(propertyMetaData, SecurityDomain.class, this, dispatcher) {
-
-            @Override
-            public void onEdit() {
-                super.onEdit();
-                authenticationEditor.onEdit();
-                authorizationEditor.onEdit();
-            }
-
-            @Override
-            public void onCancel() {
-                super.onCancel();
-                authenticationEditor.onCancel();
-                authorizationEditor.onCancel();
-            }
-
-            @Override
-            public void onSaveDetails(SecurityDomain entity, Map<String, Object> changeset) {
-
-//                String name = form.getEditedEntity().getName();
-//                final DefaultWindow window = new DefaultWindow("Security Domain " + name);
-//                window.setWidth(320);
-//                window.setHeight(140);
-//                window.setWidget(new MessageWindow("Restart security domain '" + name + "' to take changes into effect?",
-//                    new MessageWindow.Result() {
-//                        @Override
-//                        public void result(boolean result) {
-//                            window.hide();
-//
-//                            doSave(form);
-//                        }
-//                    }).asWidget());
-//                window.setGlassEnabled(true);
-//                window.center();
-//            }
-//
-
-                super.onSaveDetails(entity, changeset);
-                authenticationEditor.onSave();
-                authorizationEditor.onSave();
-            }
-        };
+        bridge = new EntityToDmrBridgeImpl<SecurityDomain>(propertyMetaData, SecurityDomain.class, this, dispatcher);
     }
 
     @Override

@@ -29,12 +29,17 @@ public class AuthorizationEditor extends AuthEditor<AuthorizationPolicyProvider>
     }
 
     @Override
+    String getEntityName() {
+        return "Authorization";
+    }
+
+    @Override
     String getStackName() {
         return "Policies";
     }
 
     @Override
-    public void onSaveData() {
+    public void saveData() {
         presenter.saveAuthorization(domainName, attributesProvider.getList(), resourceExists);
     }
 }
