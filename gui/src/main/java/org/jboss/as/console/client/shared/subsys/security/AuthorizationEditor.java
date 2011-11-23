@@ -25,12 +25,17 @@ import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPol
  */
 public class AuthorizationEditor extends AuthEditor<AuthorizationPolicyProvider> {
     AuthorizationEditor(SecurityDomainsPresenter presenter) {
-        super(presenter);
+        super(presenter, AuthorizationPolicyProvider.class);
     }
 
     @Override
     String getEntityName() {
         return "Authorization";
+    }
+
+    @Override
+    String getStackElementName() {
+        return getEntityName() + " Policy";
     }
 
     @Override

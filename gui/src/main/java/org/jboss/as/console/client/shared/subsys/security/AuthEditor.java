@@ -54,6 +54,7 @@ import org.jboss.ballroom.client.widgets.window.Feedback;
  * @author David Bosschaert
  */
 public abstract class AuthEditor <T extends AbstractAuthData> {
+    final Class<T> entityClass;
     final SecurityDomainsPresenter presenter;
 
     DefaultCellTable<T> attributesTable;
@@ -64,13 +65,15 @@ public abstract class AuthEditor <T extends AbstractAuthData> {
     List<T> backup;
     DefaultWindow window;
 
-    AuthEditor(SecurityDomainsPresenter presenter) {
+    AuthEditor(SecurityDomainsPresenter presenter, Class<T> entityClass) {
         this.presenter = presenter;
+        this.entityClass = entityClass;
     }
 
     abstract String getEntityName();
+    abstract String getStackElementName();
     abstract String getStackName();
-    abstract void saveData();
+    public abstract void saveData();
 
     Widget asWidget() {
         VerticalPanel vpanel = new VerticalPanel();
@@ -87,7 +90,7 @@ public abstract class AuthEditor <T extends AbstractAuthData> {
         addModule.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                openWizard();
+                openWizard(null);
             }
         });
         tableTools.addToolButtonRight(addModule);
@@ -112,6 +115,7 @@ public abstract class AuthEditor <T extends AbstractAuthData> {
         ButtonCell<T> editCell = new ButtonCell<T>(Console.CONSTANTS.common_label_edit(), new ActionCell.Delegate<T>() {
             @Override
             public void execute(T object) {
+                openWizard(object);
             }
         });
         ButtonCell<T> removeCell = new ButtonCell<T>(Console.CONSTANTS.common_label_delete(), new ActionCell.Delegate<T>() {
@@ -173,11 +177,18 @@ public abstract class AuthEditor <T extends AbstractAuthData> {
         list.addAll(newList);
     }
 
-    private void openWizard() {
-        window = new DefaultWindow("New Authorization Policy");
+    private void openWizard(T editedObject) {
+        NewAuthPolicyModuleWizard<T> wizard = new NewAuthPolicyModuleWizard<T>(this, entityClass);
+
+        window = new DefaultWindow(
+            (editedObject == null ? Console.CONSTANTS.common_label_add() : Console.CONSTANTS.common_label_edit()) + " " +
+            getStackElementName());
         window.setWidth(480);
         window.setHeight(360);
-        window.setWidget(new NewAuthPolicyModuleWizard(this).asWidget());
+        window.setWidget(wizard.asWidget());
+        if (editedObject != null)
+            wizard.edit(editedObject);
+
         window.setGlassEnabled(true);
         window.center();
     }

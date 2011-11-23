@@ -33,7 +33,7 @@ import org.jboss.as.console.client.shared.properties.PropertyEditor;
 import org.jboss.as.console.client.shared.properties.PropertyManagement;
 import org.jboss.as.console.client.shared.properties.PropertyRecord;
 import org.jboss.as.console.client.shared.subsys.security.AuthEditor;
-import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPolicyProvider;
+import org.jboss.as.console.client.shared.subsys.security.model.AbstractAuthData;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormValidation;
 import org.jboss.ballroom.client.widgets.forms.TextBoxItem;
@@ -43,20 +43,24 @@ import org.jboss.ballroom.client.widgets.window.WindowContentBuilder;
 /**
  * @author David Bosschaert
  */
-public class NewAuthPolicyModuleWizard implements PropertyManagement {
-    private final AuthEditor editor;
+public class NewAuthPolicyModuleWizard <T extends AbstractAuthData> implements PropertyManagement {
+    private final AuthEditor<T> editor;
+    private final Class<T> entityClass;
     private final BeanFactory factory = GWT.create(BeanFactory.class);
+    private Form<T> form;
     private final List<PropertyRecord> properties = new ArrayList<PropertyRecord>();
+    private List<PropertyRecord> originalProperties;
     private PropertyEditor propEditor;
 
-    public NewAuthPolicyModuleWizard(AuthEditor editor) {
+    public NewAuthPolicyModuleWizard(AuthEditor<T> editor, Class<T> cls) {
         this.editor = editor;
+        this.entityClass = cls;
     }
 
     public Widget asWidget() {
         VerticalPanel layout = new VerticalPanel();
         layout.setStyleName("window-content");
-        final Form<AuthorizationPolicyProvider> form = new Form<AuthorizationPolicyProvider>(AuthorizationPolicyProvider.class);
+        form = new Form<T>(entityClass);
 
         TextBoxItem code = new TextBoxItem("code", "Code");
         TextBoxItem flag = new TextBoxItem("flag", "Flag");
@@ -72,16 +76,29 @@ public class NewAuthPolicyModuleWizard implements PropertyManagement {
                 public void onClick(ClickEvent event) {
                     FormValidation validation = form.validate();
                     if (!validation.hasErrors()) {
-                        AuthorizationPolicyProvider data = form.getUpdatedEntity();
-                        data.setProperties(properties);
+                        if (originalProperties == null) {
+                            // it's a new policy
+                            T data = form.getUpdatedEntity();
+                            data.setProperties(properties);
+                            editor.addPolicy(data);
+                        } else {
+                            T original = form.getEditedEntity();
+                            T edited = form.getUpdatedEntity();
+                            original.setCode(edited.getCode());
+                            original.setFlag(edited.getFlag());
+                            original.setProperties(properties);
+                            editor.saveData();
+                        }
 
                         editor.closeWizard();
-                        editor.addPolicy(data);
                     }
                 }
             }, "Cancel", new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
+                    form.cancel();
+                    form.getEditedEntity().setProperties(originalProperties);
+
                     editor.closeWizard();
                 }
             });
@@ -89,8 +106,25 @@ public class NewAuthPolicyModuleWizard implements PropertyManagement {
         return new WindowContentBuilder(layout, options).build();
     }
 
-    // PropertyManagement methods
+    public void edit(T object) {
+        form.edit(object);
 
+        if (object.getProperties() != null) {
+            ArrayList<PropertyRecord> copiedProperties = new ArrayList<PropertyRecord>(object.getProperties().size());
+            for (PropertyRecord pr : object.getProperties()) {
+                PropertyRecord clone = factory.property().as();
+                clone.setKey(pr.getKey());
+                clone.setValue(pr.getValue());
+                copiedProperties.add(clone);
+            }
+            originalProperties = object.getProperties();
+            propEditor.setProperties("", new ArrayList<PropertyRecord>(copiedProperties));
+        } else {
+            originalProperties = new ArrayList<PropertyRecord>();
+        }
+    }
+
+    // PropertyManagement methods
     @Override
     public void onCreateProperty(String reference, PropertyRecord prop) {
         // No need to implement
