@@ -63,6 +63,7 @@ public abstract class AuthEditor <T extends AbstractAuthData> {
     boolean resourceExists;
     ToolButton addModule;
     List<T> backup;
+    List<String> flagValues;
     DefaultWindow window;
 
     AuthEditor(SecurityDomainsPresenter presenter, Class<T> entityClass) {
@@ -165,6 +166,7 @@ public abstract class AuthEditor <T extends AbstractAuthData> {
         vpanel.add(propertyEditor.asWidget());
         propertyEditor.setAllowEditProps(false);
 
+        addModule.setVisible(false); // it will be made visible once the flag value list is populated
         return vpanel;
     }
 
@@ -177,8 +179,13 @@ public abstract class AuthEditor <T extends AbstractAuthData> {
         list.addAll(newList);
     }
 
+    public void setFlagValues(List<String> values) {
+        flagValues = values;
+        addModule.setVisible(true);
+    }
+
     private void openWizard(T editedObject) {
-        NewAuthPolicyModuleWizard<T> wizard = new NewAuthPolicyModuleWizard<T>(this, entityClass);
+        NewAuthPolicyModuleWizard<T> wizard = new NewAuthPolicyModuleWizard<T>(this, entityClass, flagValues);
 
         window = new DefaultWindow(
             (editedObject == null ? Console.CONSTANTS.common_label_add() : Console.CONSTANTS.common_label_edit()) + " " +

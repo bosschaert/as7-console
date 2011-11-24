@@ -36,6 +36,7 @@ import org.jboss.as.console.client.shared.subsys.security.AuthEditor;
 import org.jboss.as.console.client.shared.subsys.security.model.AbstractAuthData;
 import org.jboss.ballroom.client.widgets.forms.Form;
 import org.jboss.ballroom.client.widgets.forms.FormValidation;
+import org.jboss.ballroom.client.widgets.forms.ListBoxItem;
 import org.jboss.ballroom.client.widgets.forms.TextBoxItem;
 import org.jboss.ballroom.client.widgets.window.DialogueOptions;
 import org.jboss.ballroom.client.widgets.window.WindowContentBuilder;
@@ -48,13 +49,15 @@ public class NewAuthPolicyModuleWizard <T extends AbstractAuthData> implements P
     private final AuthEditor<T> editor;
     private final Class<T> entityClass;
     private final BeanFactory factory = GWT.create(BeanFactory.class);
+    private final List<String> flagChoices;
     private Form<T> form;
     private final List<PropertyRecord> properties = new ArrayList<PropertyRecord>();
     private PropertyEditor propEditor;
 
-    public NewAuthPolicyModuleWizard(AuthEditor<T> editor, Class<T> cls) {
+    public NewAuthPolicyModuleWizard(AuthEditor<T> editor, Class<T> cls, List<String> flagChoices) {
         this.editor = editor;
         this.entityClass = cls;
+        this.flagChoices = flagChoices;
     }
 
     public Widget asWidget() {
@@ -63,7 +66,8 @@ public class NewAuthPolicyModuleWizard <T extends AbstractAuthData> implements P
         form = new Form<T>(entityClass);
 
         TextBoxItem code = new TextBoxItem("code", "Code");
-        TextBoxItem flag = new TextBoxItem("flag", "Flag");
+        ListBoxItem flag = new ListBoxItem("flag", "Flag");
+        flag.setChoices(flagChoices, flagChoices.get(0));
         form.setFields(code, flag);
 
         layout.add(form.asWidget());

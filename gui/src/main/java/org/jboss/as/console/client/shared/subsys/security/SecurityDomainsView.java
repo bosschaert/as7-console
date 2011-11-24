@@ -78,6 +78,15 @@ public class SecurityDomainsView extends AbstractEntityView<SecurityDomain> impl
     }
 
     @Override
+    public void setAuthFlagValues(String type, List<String> values) {
+        if (SecurityDomainsPresenter.AUTHENTICATION_IDENTIFIER.equals(type)) {
+            authenticationEditor.setFlagValues(values);
+        } else if (SecurityDomainsPresenter.AUTHORIZATION_IDENTIFIER.equals(type)) {
+            authorizationEditor.setFlagValues(values);
+        }
+    }
+
+    @Override
     protected FormAdapter<SecurityDomain> makeEditEntityDetailsForm() {
         tabBottomPanel = new TabbedFormLayoutPanel(beanType, getFormMetaData(), this);
         return tabBottomPanel;
