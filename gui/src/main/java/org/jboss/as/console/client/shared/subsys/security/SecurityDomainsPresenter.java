@@ -80,7 +80,8 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
         void setPresenter(SecurityDomainsPresenter presenter);
         void setAuthenticationLoginModules(String domainName, List<AuthenticationLoginModule> modules, boolean resourceExists);
         void setAuthorizationPolicyProviders(String domainName, List<AuthorizationPolicyProvider> providers, boolean resourceExists);
-        void setMappingModules(String name, List<MappingModule> modules, boolean resourceExists);
+        void setMappingModules(String domainName, List<MappingModule> modules, boolean resourceExists);
+        void setAuditModules(String domainName, List<GenericSecurityDomainData> modules, boolean resourceExists);
 
         void loadSecurityDomain(String domainName);
         void setAuthFlagValues(String type, List<String> values);
@@ -204,7 +205,18 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
                             getView().setMappingModules(domain.getName(), modules, resourceExists);
                         }
                     });
-                // loadGeneric(model, domain, AUDIT_IDENTIFIER, "provider-modules", GenericSecurityDomainData.class);
+
+                 loadGeneric(model, domain, AUDIT_IDENTIFIER, "provider-modules", GenericSecurityDomainData.class,
+                     new CustomLoadFieldHandler<GenericSecurityDomainData>() {
+                        @Override
+                        public void readFromModel(ModelNode n, GenericSecurityDomainData object) {
+                        }
+
+                        @Override
+                        public void setInView(List<GenericSecurityDomainData> modules, boolean resourceExists) {
+                            getView().setAuditModules(domain.getName(), modules, resourceExists);
+                        }
+                     });
             }
         });
     }
@@ -262,6 +274,11 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
                     n.get("type").set(object.getType());
                 }
             });
+    }
+
+    public void saveAudit(String domainName, List<GenericSecurityDomainData> list, boolean resourceExists) {
+        saveGeneric(domainName, list, AUDIT_IDENTIFIER, "provider-modules", resourceExists,
+            new CustomSaveFieldHandler<GenericSecurityDomainData>());
     }
 
     public <T extends GenericSecurityDomainData> void saveGeneric(final String domainName, List<T> list, String type, String attrName, boolean resourceExists,

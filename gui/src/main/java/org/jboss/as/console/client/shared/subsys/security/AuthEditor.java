@@ -21,11 +21,13 @@ package org.jboss.as.console.client.shared.subsys.security;
 import java.util.List;
 
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
 
 import org.jboss.as.console.client.shared.subsys.security.model.AbstractAuthData;
 import org.jboss.as.console.client.shared.subsys.security.wizard.NewAuthPolicyModuleWizard;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
+import org.jboss.ballroom.client.widgets.window.Feedback;
 
 /**
  * @author David Bosschaert
@@ -54,6 +56,14 @@ public abstract class AuthEditor <T extends AbstractAuthData> extends AbstractDo
 
     @Override
     Wizard<T> getWizard() {
+        if (flagValues == null) {
+            // This sucks a bit, but these values are set asynchronously so there is a very small chance that they aren't
+            // there yet. It would be better to automatically wait but is it worth the complexity?
+            Feedback.alert(getEntityName(),
+                new SafeHtmlBuilder().appendHtmlConstant("Allowed flag values not yet available, please try again later.").toSafeHtml());
+            return null;
+        }
+        // should really wait until flagValues are set.
         return new NewAuthPolicyModuleWizard<T>(this, entityClass, flagValues);
     }
 }

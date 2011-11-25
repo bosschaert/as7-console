@@ -177,6 +177,8 @@ public abstract class AbstractDomainDetailEditor <T extends GenericSecurityDomai
 
     void openWizard(T editedObject) {
         Wizard<T> wizard = getWizard();
+        if (wizard == null)
+            return;
 
         window = new DefaultWindow(
             (editedObject == null ? Console.CONSTANTS.common_label_add() : Console.CONSTANTS.common_label_edit()) + " " +
