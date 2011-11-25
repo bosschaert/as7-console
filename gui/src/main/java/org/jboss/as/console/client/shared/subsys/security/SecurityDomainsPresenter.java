@@ -169,8 +169,19 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
 
                 loadAuth(model, domain, AUTHORIZATION_IDENTIFIER, "policy-modules", AuthorizationPolicyProvider.class);
                 loadAuth(model, domain, AUTHENTICATION_IDENTIFIER, "login-modules", AuthenticationLoginModule.class);
-                loadGeneric(model, domain, MAPPING_IDENTIFIER, "mapping-modules", MappingModule.class);
-                loadGeneric(model, domain, AUDIT_IDENTIFIER, "provider-modules", GenericSecurityDomainData.class);
+                loadGeneric(model, domain, MAPPING_IDENTIFIER, "mapping-modules", MappingModule.class,
+                    new CustomLoadFieldHandler<MappingModule>() {
+                        @Override
+                        public void readFromModel(ModelNode n, MappingModule object) {
+                            object.setType(n.get("type").asString());
+                        }
+
+                        @Override
+                        public void setInView(List<MappingModule> modules, boolean resourceExists) {
+                            getView().setMappingModules(domain.getName(), modules, resourceExists);
+                        }
+                    });
+                // loadGeneric(model, domain, AUDIT_IDENTIFIER, "provider-modules", GenericSecurityDomainData.class);
             }
         });
     }
@@ -207,7 +218,8 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
         }
     }
 
-    private <T extends GenericSecurityDomainData> void loadGeneric(ModelNode model, SecurityDomain domain, String type, String attrName, Class<T> cls) {
+    private <T extends GenericSecurityDomainData> void loadGeneric(ModelNode model, SecurityDomain domain, String type, String attrName, Class<T> cls,
+            CustomLoadFieldHandler<T> customHandler) {
         List<T> modules = new ArrayList<T>();
         boolean resourceExists = false;
         if (model.hasDefined(type)) {
@@ -216,25 +228,10 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
 
             if (resourceExists) {
                 for (ModelNode node : subModel.get(attrName).asList()) {
-                    AutoBean<T> autoBean = factory.create(cls);
-                    T pm = autoBean.as();
+                    T pm = factory.create(cls).as();
 
                     pm.setCode(node.get("code").asString());
-                    /*
-                    if (typeFlagName != null) {
-                        autoBean.accept(new AutoBeanVisitor() {
-
-                            @Override
-                            public boolean visitValueProperty(String propertyName, Object value, PropertyContext ctx) {
-                                // TODO Auto-generated method stub
-                                return super.visitValueProperty(propertyName, value, ctx);
-                            }
-
-                        });
-//                        cls.getMethod("set" + , parameterTypes)
-                    }
-                    // pm.setFlag(node.get("flag").asString());
-                    */
+                    customHandler.readFromModel(node, pm);
 
                     if (node.hasDefined("module-options")) {
                         List<Property> pl = node.require("module-options").asPropertyList();
@@ -246,17 +243,7 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
             }
         }
 
-        // Call the specific setters on the view
-        /*
-        if (AuthorizationPolicyProvider.class.equals(cls)) {
-            getView().setAuthorizationPolicyProviders(domain.getName(), (List<AuthorizationPolicyProvider>) modules, resourceExists);
-        } else if (AuthenticationLoginModule.class.equals(cls)) {
-            getView().setAuthenticationLoginModules(domain.getName(), (List<AuthenticationLoginModule>) modules, resourceExists);
-        }
-        */
-        if (MappingModule.class.equals(cls)) {
-            getView().setMappingModules(domain.getName(), (List<MappingModule>) modules, resourceExists);
-        }
+        customHandler.setInView(modules, resourceExists);
     }
 
     public void saveAuthorization(String domainName, List<AuthorizationPolicyProvider> list, boolean resourceExists) {
@@ -265,6 +252,16 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
 
     public void saveAuthentication(String domainName, List<AuthenticationLoginModule> list, boolean resourceExists) {
         saveAuth(domainName, list, AUTHENTICATION_IDENTIFIER, "login-modules", resourceExists);
+    }
+
+    public void saveMapping(String domainName, List<MappingModule> list, boolean resourceExists) {
+        saveGeneric(domainName, list, MAPPING_IDENTIFIER, "mapping-modules", resourceExists,
+            new CustomSaveFieldHandler<MappingModule>() {
+                @Override
+                public void setInModel(ModelNode n, MappingModule object) {
+                    n.get("type").set(object.getType());
+                }
+            });
     }
 
     public <T extends AbstractAuthData> void saveAuth(final String domainName, List<T> list, String type, String attrName, boolean resourceExists) {
@@ -310,11 +307,67 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
             }));
     }
 
+    public <T extends GenericSecurityDomainData> void saveGeneric(final String domainName, List<T> list, String type, String attrName, boolean resourceExists,
+            CustomSaveFieldHandler<T> customHandler) {
+        if (list.size() == 0)
+            return;
+
+        ModelNode operation = null;
+
+        ModelNode valueList = new ModelNode();
+        valueList.setEmptyList();
+        for (T pm : list) {
+            ModelNode n = new ModelNode();
+            n.get("code").set(pm.getCode());
+
+            if (customHandler != null) {
+                customHandler.setInModel(n, pm);
+            }
+
+            List<PropertyRecord> props = pm.getProperties();
+            if (props != null)
+                n.get("module-options").set(entityAdapter.fromEntityPropertyList(props));
+
+            valueList.add(n);
+        }
+
+        if (resourceExists) {
+            operation = createOperation(ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION);
+            operation.get(ModelDescriptionConstants.ADDRESS).add("security-domain", domainName);
+            operation.get(ModelDescriptionConstants.ADDRESS).add(type, "classic");
+            operation.get(ModelDescriptionConstants.NAME).set(attrName);
+
+            operation.get("value").set(valueList);
+        } else {
+            operation = createOperation(ModelDescriptionConstants.ADD);
+            operation.get(ModelDescriptionConstants.ADDRESS).add("security-domain", domainName);
+            operation.get(ModelDescriptionConstants.ADDRESS).add(type, "classic");
+            operation.get(attrName).set(valueList);
+        }
+
+        dispatcher.execute(new DMRAction(operation), new SimpleDMRResponseHandler(ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION,
+            attrName, domainName, new Command() {
+                @Override
+                public void execute() {
+                    getView().loadSecurityDomain(domainName);
+                }
+            }));
+    }
+
     private ModelNode createOperation(String operator) {
         ModelNode operation = new ModelNode();
         operation.get(ModelDescriptionConstants.OP).set(operator);
         operation.get(ModelDescriptionConstants.ADDRESS).set(Baseadress.get());
         operation.get(ModelDescriptionConstants.ADDRESS).add(ModelDescriptionConstants.SUBSYSTEM, SECURITY_SUBSYSTEM);
         return operation;
+    }
+
+    private interface CustomLoadFieldHandler<P> {
+        void readFromModel(ModelNode n, P object);
+        void setInView(List<P> modules, boolean resourceExists);
+    }
+
+    private interface CustomSaveFieldHandler<P> {
+        void setInModel(ModelNode n, P object);
     }
 }

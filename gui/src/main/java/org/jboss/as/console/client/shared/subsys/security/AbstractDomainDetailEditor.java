@@ -196,7 +196,7 @@ public abstract class AbstractDomainDetailEditor <T extends GenericSecurityDomai
             window.hide();
     }
 
-    public void addPolicy(T policy) {
+    public void addAttribute(T policy) {
         attributesProvider.getList().add(policy);
         save(policy);
     }

@@ -62,8 +62,7 @@ public class MappingEditor extends AbstractDomainDetailEditor<MappingModule> {
 
     @Override
     void saveData() {
-        // TODO Auto-generated method stub
-
+        presenter.saveMapping(domainName, attributesProvider.getList(), resourceExists);
     }
 
     @Override

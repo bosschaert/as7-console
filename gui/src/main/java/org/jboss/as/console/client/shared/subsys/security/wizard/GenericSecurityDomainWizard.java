@@ -91,7 +91,7 @@ public class GenericSecurityDomainWizard <T extends GenericSecurityDomainData> i
                             // it's a new policy
                             T data = form.getUpdatedEntity();
                             data.setProperties(properties);
-                            editor.addPolicy(data);
+                            editor.addAttribute(data);
                         }
 
                         editor.closeWizard();
