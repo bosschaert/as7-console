@@ -21,6 +21,7 @@ package org.jboss.as.console.client.shared.subsys.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.autobean.shared.AutoBean;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.inject.Inject;
@@ -45,6 +46,8 @@ import org.jboss.as.console.client.shared.subsys.RevealStrategy;
 import org.jboss.as.console.client.shared.subsys.security.model.AbstractAuthData;
 import org.jboss.as.console.client.shared.subsys.security.model.AuthenticationLoginModule;
 import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPolicyProvider;
+import org.jboss.as.console.client.shared.subsys.security.model.GenericSecurityDomainData;
+import org.jboss.as.console.client.shared.subsys.security.model.MappingModule;
 import org.jboss.as.console.client.shared.subsys.security.model.SecurityDomain;
 import org.jboss.as.console.client.shared.viewframework.FrameworkView;
 import org.jboss.as.console.client.widgets.forms.ApplicationMetaData;
@@ -57,8 +60,10 @@ import org.jboss.dmr.client.Property;
  * @author David Bosschaert
  */
 public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter.MyView, SecurityDomainsPresenter.MyProxy> {
+    static final String AUDIT_IDENTIFIER = "audit";
     static final String AUTHENTICATION_IDENTIFIER = "authentication";
     static final String AUTHORIZATION_IDENTIFIER = "authorization";
+    static final String MAPPING_IDENTIFIER = "mapping";
 
     public static final String SECURITY_SUBSYSTEM = "security";
 
@@ -76,6 +81,7 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
         void setPresenter(SecurityDomainsPresenter presenter);
         void setAuthenticationLoginModules(String domainName, List<AuthenticationLoginModule> modules, boolean resourceExists);
         void setAuthorizationPolicyProviders(String domainName, List<AuthorizationPolicyProvider> providers, boolean resourceExists);
+        void setMappingModules(String name, List<MappingModule> modules, boolean resourceExists);
 
         void loadSecurityDomain(String domainName);
         void setAuthFlagValues(String type, List<String> values);
@@ -163,6 +169,8 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
 
                 loadAuth(model, domain, AUTHORIZATION_IDENTIFIER, "policy-modules", AuthorizationPolicyProvider.class);
                 loadAuth(model, domain, AUTHENTICATION_IDENTIFIER, "login-modules", AuthenticationLoginModule.class);
+                loadGeneric(model, domain, MAPPING_IDENTIFIER, "mapping-modules", MappingModule.class);
+                loadGeneric(model, domain, AUDIT_IDENTIFIER, "provider-modules", GenericSecurityDomainData.class);
             }
         });
     }
@@ -191,10 +199,63 @@ public class SecurityDomainsPresenter extends Presenter<SecurityDomainsPresenter
             }
         }
 
+        // Call the specific setters on the view
         if (AuthorizationPolicyProvider.class.equals(cls)) {
             getView().setAuthorizationPolicyProviders(domain.getName(), (List<AuthorizationPolicyProvider>) modules, resourceExists);
         } else if (AuthenticationLoginModule.class.equals(cls)) {
             getView().setAuthenticationLoginModules(domain.getName(), (List<AuthenticationLoginModule>) modules, resourceExists);
+        }
+    }
+
+    private <T extends GenericSecurityDomainData> void loadGeneric(ModelNode model, SecurityDomain domain, String type, String attrName, Class<T> cls) {
+        List<T> modules = new ArrayList<T>();
+        boolean resourceExists = false;
+        if (model.hasDefined(type)) {
+            ModelNode subModel = model.get(type, "classic");
+            resourceExists = subModel.hasDefined(attrName);
+
+            if (resourceExists) {
+                for (ModelNode node : subModel.get(attrName).asList()) {
+                    AutoBean<T> autoBean = factory.create(cls);
+                    T pm = autoBean.as();
+
+                    pm.setCode(node.get("code").asString());
+                    /*
+                    if (typeFlagName != null) {
+                        autoBean.accept(new AutoBeanVisitor() {
+
+                            @Override
+                            public boolean visitValueProperty(String propertyName, Object value, PropertyContext ctx) {
+                                // TODO Auto-generated method stub
+                                return super.visitValueProperty(propertyName, value, ctx);
+                            }
+
+                        });
+//                        cls.getMethod("set" + , parameterTypes)
+                    }
+                    // pm.setFlag(node.get("flag").asString());
+                    */
+
+                    if (node.hasDefined("module-options")) {
+                        List<Property> pl = node.require("module-options").asPropertyList();
+                        pm.setProperties(entityAdapter.fromDMRPropertyList(pl));
+                    }
+
+                    modules.add(pm);
+                }
+            }
+        }
+
+        // Call the specific setters on the view
+        /*
+        if (AuthorizationPolicyProvider.class.equals(cls)) {
+            getView().setAuthorizationPolicyProviders(domain.getName(), (List<AuthorizationPolicyProvider>) modules, resourceExists);
+        } else if (AuthenticationLoginModule.class.equals(cls)) {
+            getView().setAuthenticationLoginModules(domain.getName(), (List<AuthenticationLoginModule>) modules, resourceExists);
+        }
+        */
+        if (MappingModule.class.equals(cls)) {
+            getView().setMappingModules(domain.getName(), (List<MappingModule>) modules, resourceExists);
         }
     }
 

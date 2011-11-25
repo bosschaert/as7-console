@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 import org.jboss.as.console.client.shared.dispatch.DispatchAsync;
 import org.jboss.as.console.client.shared.subsys.security.model.AuthenticationLoginModule;
 import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPolicyProvider;
+import org.jboss.as.console.client.shared.subsys.security.model.MappingModule;
 import org.jboss.as.console.client.shared.subsys.security.model.SecurityDomain;
 import org.jboss.as.console.client.shared.viewframework.AbstractEntityView;
 import org.jboss.as.console.client.shared.viewframework.Columns;
@@ -47,6 +48,7 @@ public class SecurityDomainsView extends AbstractEntityView<SecurityDomain> impl
 
     AuthenticationEditor authenticationEditor;
     AuthorizationEditor authorizationEditor;
+    MappingEditor mappingEditor;
     private DefaultCellTable<SecurityDomain> table;
     private TabbedFormLayoutPanel tabBottomPanel;
     private SecurityDomainsPresenter presenter;
@@ -63,8 +65,10 @@ public class SecurityDomainsView extends AbstractEntityView<SecurityDomain> impl
 
         authenticationEditor = new AuthenticationEditor(presenter);
         authorizationEditor = new AuthorizationEditor(presenter);
-        tabBottomPanel.add(authenticationEditor.asWidget(), "Authentication");
-        tabBottomPanel.add(authorizationEditor.asWidget(), "Authorization");
+        mappingEditor = new MappingEditor(presenter);
+        tabBottomPanel.add(authenticationEditor.asWidget(), authenticationEditor.getEntityName());
+        tabBottomPanel.add(authorizationEditor.asWidget(), authorizationEditor.getEntityName());
+        tabBottomPanel.add(mappingEditor.asWidget(), mappingEditor.getEntityName());
 
         table.getSelectionModel().addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
@@ -138,5 +142,10 @@ public class SecurityDomainsView extends AbstractEntityView<SecurityDomain> impl
     @Override
     public void setAuthorizationPolicyProviders(String domainName, List<AuthorizationPolicyProvider> policies, boolean resourceExists) {
         authorizationEditor.setData(domainName, policies, resourceExists);
+    }
+
+    @Override
+    public void setMappingModules(String domainName, List<MappingModule> modules, boolean resourceExists) {
+        mappingEditor.setData(domainName, modules, resourceExists);
     }
 }

@@ -18,42 +18,56 @@
  */
 package org.jboss.as.console.client.shared.subsys.security;
 
-import java.util.List;
-
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
 
-import org.jboss.as.console.client.shared.subsys.security.model.AbstractAuthData;
-import org.jboss.as.console.client.shared.subsys.security.wizard.NewAuthPolicyModuleWizard;
+import org.jboss.as.console.client.shared.subsys.security.model.MappingModule;
+import org.jboss.as.console.client.shared.subsys.security.wizard.NewMappingModuleWizard;
 import org.jboss.ballroom.client.widgets.tables.DefaultCellTable;
 
 /**
  * @author David Bosschaert
  */
-public abstract class AuthEditor <T extends AbstractAuthData> extends AbstractDomainDetailEditor<T> {
-    List<String> flagValues;
+public class MappingEditor extends AbstractDomainDetailEditor<MappingModule> {
 
-    AuthEditor(SecurityDomainsPresenter presenter, Class<T> entityClass) {
-        super(presenter, entityClass);
+    public MappingEditor(SecurityDomainsPresenter presenter) {
+        super(presenter, MappingModule.class);
     }
 
     @Override
-    void addCustomColumns(DefaultCellTable<T> table) {
-        Column<T, String> flagColumn = new Column<T, String>(new TextCell()) {
+    void addCustomColumns(DefaultCellTable<MappingModule> table) {
+        Column<MappingModule, String> typeColumn = new Column<MappingModule, String>(new TextCell()) {
             @Override
-            public String getValue(T record) {
-                return record.getFlag();
+            public String getValue(MappingModule record) {
+                return record.getType();
             }
         };
-        table.addColumn(flagColumn, "Flag");
-    }
-
-    public void setFlagValues(List<String> values) {
-        flagValues = values;
+        table.addColumn(typeColumn, "Type");
     }
 
     @Override
-    Wizard<T> getWizard() {
-        return new NewAuthPolicyModuleWizard<T>(this, entityClass, flagValues);
+    String getEntityName() {
+        return "Mapping";
+    }
+
+    @Override
+    String getStackElementName() {
+        return getEntityName() + " Module";
+    }
+
+    @Override
+    String getStackName() {
+        return "Modules";
+    }
+
+    @Override
+    void saveData() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    Wizard<MappingModule> getWizard() {
+        return new NewMappingModuleWizard(this);
     }
 }
