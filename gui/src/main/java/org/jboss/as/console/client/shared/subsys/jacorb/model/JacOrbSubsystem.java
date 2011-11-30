@@ -165,5 +165,95 @@ public interface JacOrbSubsystem extends NamedEntity {
     public String getMonitoring();
     public void setMonitoring(String value);
 
+    @Binding(detypedName="queue-wait")
+    @FormItem(defaultValue="off",
+              label="Queue Waiting")
+    public String getQueueWait();
+    public void setQueueWait(String value);
 
+    @Binding(detypedName="queue-min")
+    @FormItem(defaultValue="10",
+              label="Queue Minimum",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getQueueMin();
+    public void setQueueMin(int value);
+
+    @Binding(detypedName="queue-max")
+    @FormItem(defaultValue="100",
+              label="Queue Maximum",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getQueueMax();
+    public void setQueueMax(int value);
+
+    @Binding(detypedName="pool-size")
+    @FormItem(defaultValue="5",
+              label="Thread Pool Size",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getPoolSize();
+    public void setPoolSize(int value);
+
+    @Binding(detypedName="max-threads")
+    @FormItem(defaultValue="32",
+    		  label="Max Pool Threads",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getMaxThreads();
+    public void setMaxThreads(int value);
+
+    @Binding(detypedName="root-context")
+    @FormItem(defaultValue="JBoss/Naming/root",
+              label="Naming Service Root Context")
+    public String getRootContext();
+    public void setRootContext(String value);
+
+    @Binding(detypedName="export-corbaloc")
+    @FormItem(defaultValue="on",
+              label="Export Root Context Corbaloc")
+    public String getExportCorbaloc();
+    public void setExportCorbaloc(String value);
+
+    @Binding(detypedName="sun")
+    @FormItem(defaultValue="on",
+              label="Sun ORB Interoperability")
+    public String getSun();
+    public void setSun(String value);
+
+    @Binding(detypedName="comet")
+    @FormItem(defaultValue="off",
+              label="Comet ORB Interoperability")
+    public String getComet();
+    public void setComet(String value);
+
+    @Binding(detypedName="iona")
+    @FormItem(defaultValue="off",
+              label="IONA ORB Interoperability")
+    public String getIona();
+    public void setIona(String value);
+
+    @Binding(detypedName="chunk-custom-rmi-valuetypes")
+    @FormItem(defaultValue="on",
+              label="Chunk Custom RMI Value Types")
+    public String getChunkCustomRMIValueTypes();
+    public void setChunkCustomRMIValueTypes(String value);
+
+    @Binding(detypedName="lax-boolean-encoding")
+    @FormItem(defaultValue="off",
+              label="Lax Boolean Encoding")
+    public String getLaxBooleanEncoding();
+    public void setLaxBooleanEncoding(String value);
+
+    @Binding(detypedName="indirection-encoding-disable")
+    @FormItem(defaultValue="off",
+              label="Indirection Encoding Disabled")
+    public String getIndirectionEncodingDisable();
+    public void setIndirectionEncodingDisable(String value);
+
+    @Binding(detypedName="strict-check-on-tc-creation")
+    @FormItem(defaultValue="off",
+              label="Strict TC Creation Check")
+    public String getStrictCheckOnTCCreation();
+    public void setStrictCheckOnTCCreation(String value);
 }
