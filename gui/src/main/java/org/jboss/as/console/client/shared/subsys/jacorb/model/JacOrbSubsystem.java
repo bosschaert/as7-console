@@ -132,4 +132,38 @@ public interface JacOrbSubsystem extends NamedEntity {
               formItemTypeForEdit="NUMBER_BOX")
     public int getOutbufSize();
     public void setOutbufSize(int value);
+
+    @Binding(detypedName="outbuf-cache-timeout")
+    @FormItem(defaultValue="-1",
+              label="Outgoing Buffer Cache Timeout",
+              formItemTypeForAdd="NUMBER_BOX_ALLOW_NEGATIVE",
+              formItemTypeForEdit="NUMBER_BOX_ALLOW_NEGATIVE")
+    public int getOutbufCacheTimeout();
+    public void setOutbufCacheTimeout(int value);
+
+    @Binding(detypedName="codebase")
+    @FormItem(defaultValue="on",
+    		  label="Codebase Interceptor")
+    public String getCodebase();
+    public void setCodebase(String value);
+
+    @Binding(detypedName="security")
+    @FormItem(defaultValue="off",
+              label="Security Interceptors")
+    public String getSecurity();
+    public void setSecurity(String value);
+
+    @Binding(detypedName="transactions")
+    @FormItem(defaultValue="off",
+              label="Transaction Interceptors")
+    public String getTransactions();
+    public void setTransactions(String value);
+
+    @Binding(detypedName="monitoring")
+    @FormItem(defaultValue="off",
+              label="Monitoring GUI")
+    public String getMonitoring();
+    public void setMonitoring(String value);
+
+
 }
