@@ -256,4 +256,48 @@ public interface JacOrbSubsystem extends NamedEntity {
               label="Strict TC Creation Check")
     public String getStrictCheckOnTCCreation();
     public void setStrictCheckOnTCCreation(String value);
+
+    @Binding(detypedName="support-ssl")
+    @FormItem(defaultValue="off",
+              label="Support SSL")
+    public String getSupportSSL();
+    public void setSupportSSL(String value);
+
+    @Binding(detypedName="add-component-via-interceptor")
+    @FormItem(defaultValue="on",
+              label="SSL Components via Interceptor")
+    public String getAddComponentViaInterceptor();
+    public void setAddComponentViaInterceptor(String value);
+
+    @Binding(detypedName="client-supports")
+    @FormItem(defaultValue="60",
+              label="SSL Client Support",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getClientSupports();
+    public void setClientSupports(int value);
+
+    @Binding(detypedName="client-requires")
+    @FormItem(defaultValue="0",
+              label="SSL Client Requirement",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getClientRequires();
+    public void setClientRequires(int value);
+
+    @Binding(detypedName="server-supports")
+    @FormItem(defaultValue="60",
+              label="SSL Server Support",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getServerSupports();
+    public void setServerSupports(int value);
+
+    @Binding(detypedName="server-requires")
+    @FormItem(defaultValue="0",
+              label="SSL Server Requirement",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getServerRequires();
+    public void setServerRequires(int value);
 }
