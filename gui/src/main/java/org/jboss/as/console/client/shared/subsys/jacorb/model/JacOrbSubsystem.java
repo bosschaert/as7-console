@@ -300,4 +300,16 @@ public interface JacOrbSubsystem extends NamedEntity {
               formItemTypeForEdit="NUMBER_BOX")
     public int getServerRequires();
     public void setServerRequires(int value);
+
+    @Binding(detypedName="use-domain-socket-factory")
+    @FormItem(defaultValue="off",
+              label="Use Domain Socket Factory")
+    public String getUseDomainSocketFactory();
+    public void setUseDomainSocketFactory(String value);
+
+    @Binding(detypedName="use-domain-server-socket-factory")
+    @FormItem(defaultValue="off",
+              label="Use Domain Server Socket Factory")
+    public String getUseDomainServerSocketFactory();
+    public void setUseDomainServerSocketFactory(String value);
 }
