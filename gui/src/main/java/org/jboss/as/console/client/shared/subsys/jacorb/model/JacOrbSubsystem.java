@@ -76,4 +76,60 @@ public interface JacOrbSubsystem extends NamedEntity {
               formItemTypeForEdit="NUMBER_BOX")
     public int getGiopMinorVersion();
     public void setGiopMinorVersion(int value);
+
+    @Binding(detypedName="retries")
+    @FormItem(defaultValue="5",
+              label="Retries",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getRetries();
+    public void setRetries(int value);
+
+    @Binding(detypedName="retry-interval")
+    @FormItem(defaultValue="500",
+              label="Retry Interval",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getRetryInterval();
+    public void setRetryInterval(int value);
+
+    @Binding(detypedName="client-timeout")
+    @FormItem(defaultValue="0",
+              label="Client Timeout",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getClientTimeout();
+    public void setClientTimeout(int value);
+
+    @Binding(detypedName="server-timeout")
+    @FormItem(defaultValue="0",
+              label="Server Timeout",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getServerTimeout();
+    public void setServerTimeout(int value);
+
+    @Binding(detypedName="max-server-connections")
+    @FormItem(defaultValue="2147483647",
+              label="Maximum Server Connections",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getMaxServerConnections();
+    public void setMaxServerConnections(int value);
+
+    @Binding(detypedName="max-managed-buf-size")
+    @FormItem(defaultValue="24",
+              label="Maximum Buffer Size",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getMaxManagedBufSize();
+    public void setMaxManagedBufSize(int value);
+
+    @Binding(detypedName="outbuf-size")
+    @FormItem(defaultValue="2048",
+              label="Outgoing Buffer Size",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getOutbufSize();
+    public void setOutbufSize(int value);
 }
