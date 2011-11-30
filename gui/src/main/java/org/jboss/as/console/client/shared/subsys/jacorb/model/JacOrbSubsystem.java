@@ -44,4 +44,36 @@ public interface JacOrbSubsystem extends NamedEntity {
               label="Print Version")
     public String getPrintVersion();
     public void setPrintVersion(String value);
+
+    @Binding(detypedName="use-imr")
+    @FormItem(defaultValue="off",
+              label="Use IMR")
+    public String getUseIMR();
+    public void setUseIMR(String value);
+
+    @Binding(detypedName="use-bom")
+    @FormItem(defaultValue="off",
+              label="Use GIOP 1.2 BOMs")
+    public String getUseBOM();
+    public void setUseBOM(String value);
+
+    @Binding(detypedName="cache-typecodes")
+    @FormItem(defaultValue="off",
+              label="Cache Typecodes")
+    public String getCacheTypecodes();
+    public void setCacheTypecodes(String value);
+
+    @Binding(detypedName="cache-poa-names")
+    @FormItem(defaultValue="off",
+              label="Cache POA Names")
+    public String getCachePOANames();
+    public void setCachePOANames(String value);
+
+    @Binding(detypedName="giop-minor-version")
+    @FormItem(defaultValue="2",
+              label="GIOP Minor Version",
+              formItemTypeForAdd="NUMBER_BOX",
+              formItemTypeForEdit="NUMBER_BOX")
+    public int getGiopMinorVersion();
+    public void setGiopMinorVersion(int value);
 }
