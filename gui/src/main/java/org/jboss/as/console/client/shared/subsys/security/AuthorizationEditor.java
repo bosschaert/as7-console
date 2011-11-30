@@ -20,6 +20,7 @@ package org.jboss.as.console.client.shared.subsys.security;
 
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
+import org.jboss.as.console.client.Console;
 import org.jboss.as.console.client.shared.subsys.security.model.AuthorizationPolicyProvider;
 import org.jboss.as.console.client.shared.subsys.security.wizard.NewAuthPolicyModuleWizard;
 import org.jboss.ballroom.client.widgets.window.Feedback;
@@ -34,17 +35,17 @@ public class AuthorizationEditor extends AuthEditor<AuthorizationPolicyProvider>
 
     @Override
     String getEntityName() {
-        return "Authorization";
+        return Console.CONSTANTS.subsys_security_authorization();
     }
 
     @Override
     String getStackElementName() {
-        return getEntityName() + " Policy";
+        return Console.CONSTANTS.subsys_security_authorizationPolicy();
     }
 
     @Override
     String getStackName() {
-        return "Policies";
+        return Console.CONSTANTS.subsys_security_policies();
     }
 
     @Override

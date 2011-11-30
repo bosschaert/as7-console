@@ -102,7 +102,7 @@ public abstract class AbstractDomainDetailEditor <T extends GenericSecurityDomai
                 return record.getCode();
             }
         };
-        attributesTable.addColumn(codeColumn, "Code");
+        attributesTable.addColumn(codeColumn, Console.CONSTANTS.subsys_security_codeField());
 
         addCustomColumns(attributesTable);
 
@@ -158,7 +158,7 @@ public abstract class AbstractDomainDetailEditor <T extends GenericSecurityDomai
         });
         attributesTable.setSelectionModel(ssm);
 
-        vpanel.add(new ContentGroupLabel("Properties"));
+        vpanel.add(new ContentGroupLabel(Console.CONSTANTS.common_label_properties()));
         vpanel.add(propertyEditor.asWidget());
         propertyEditor.setAllowEditProps(false);
 
