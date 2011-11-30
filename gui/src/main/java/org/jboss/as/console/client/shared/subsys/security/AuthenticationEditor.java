@@ -59,7 +59,7 @@ public class AuthenticationEditor extends AuthEditor<AuthenticationLoginModule>{
             // This sucks a bit, but these values are set asynchronously so there is a very small chance that they aren't
             // there yet. It would be better to automatically wait but is it worth the complexity?
             Feedback.alert(getEntityName(),
-                new SafeHtmlBuilder().appendHtmlConstant("Allowed flag values not yet available, please try again later.").toSafeHtml());
+                new SafeHtmlBuilder().appendEscaped(Console.MESSAGES.temporarilyUnavailable()).toSafeHtml());
             return null;
         }
         // should really wait until flagValues are set.

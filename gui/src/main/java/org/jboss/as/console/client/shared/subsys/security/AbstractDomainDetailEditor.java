@@ -115,7 +115,7 @@ public abstract class AbstractDomainDetailEditor <T extends GenericSecurityDomai
         ButtonCell<T> removeCell = new ButtonCell<T>(Console.CONSTANTS.common_label_delete(), new ActionCell.Delegate<T>() {
             @Override
             public void execute(final T object) {
-                Feedback.confirm(getEntityName(), "Remove this entry: " + object.getCode() + "?",
+                Feedback.confirm(getEntityName(), Console.MESSAGES.deleteConfirm(object.getCode()),
                     new Feedback.ConfirmationHandler() {
                         @Override
                         public void onConfirmation(boolean isConfirmed) {
