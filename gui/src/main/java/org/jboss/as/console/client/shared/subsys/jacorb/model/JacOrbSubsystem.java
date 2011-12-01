@@ -18,6 +18,10 @@
  */
 package org.jboss.as.console.client.shared.subsys.jacorb.model;
 
+import java.util.List;
+
+import org.jboss.as.console.client.shared.properties.PropertyRecord;
+import org.jboss.as.console.client.shared.viewframework.HasProperties;
 import org.jboss.as.console.client.shared.viewframework.NamedEntity;
 import org.jboss.as.console.client.widgets.forms.Address;
 import org.jboss.as.console.client.widgets.forms.Binding;
@@ -27,7 +31,7 @@ import org.jboss.as.console.client.widgets.forms.FormItem;
  * @author David Bosschaert
  */
 @Address("/subsystem=jacorb")
-public interface JacOrbSubsystem extends NamedEntity {
+public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @Override
     @Binding(detypedName="name", key=true)
     @FormItem(defaultValue="",
@@ -312,4 +316,16 @@ public interface JacOrbSubsystem extends NamedEntity {
               label="Use Domain Server Socket Factory")
     public String getUseDomainServerSocketFactory();
     public void setUseDomainServerSocketFactory(String value);
+
+    @Override
+    @Binding(detypedName="properties",
+             listType="org.jboss.as.console.client.shared.properties.PropertyRecord")
+    @FormItem(defaultValue="",
+            label="Properties",
+              required=false,
+              formItemTypeForEdit="PROPERTY_EDITOR",
+              formItemTypeForAdd="PROPERTY_EDITOR",
+              tabName="CUSTOM")
+    List<PropertyRecord> getProperties();
+    void setProperties(List<PropertyRecord> properties);
 }
