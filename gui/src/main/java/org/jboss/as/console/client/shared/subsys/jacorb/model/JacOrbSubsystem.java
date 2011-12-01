@@ -57,19 +57,22 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
 
     @Binding(detypedName="use-bom")
     @FormItem(defaultValue="off",
-              label="Use GIOP 1.2 BOMs")
+              label="Use GIOP 1.2 BOMs",
+              subgroup="Encoding")
     public String getUseBOM();
     public void setUseBOM(String value);
 
     @Binding(detypedName="cache-typecodes")
     @FormItem(defaultValue="off",
-              label="Cache Typecodes")
+              label="Cache Typecodes",
+              subgroup="Caching")
     public String getCacheTypecodes();
     public void setCacheTypecodes(String value);
 
     @Binding(detypedName="cache-poa-names")
     @FormItem(defaultValue="off",
-              label="Cache POA Names")
+              label="Cache POA Names",
+              subgroup="Caching")
     public String getCachePOANames();
     public void setCachePOANames(String value);
 
@@ -77,7 +80,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="2",
               label="GIOP Minor Version",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Encoding")
     public int getGiopMinorVersion();
     public void setGiopMinorVersion(int value);
 
@@ -85,7 +89,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="5",
               label="Retries",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Connections and Sockets")
     public int getRetries();
     public void setRetries(int value);
 
@@ -93,7 +98,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="500",
               label="Retry Interval",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Connections and Sockets")
     public int getRetryInterval();
     public void setRetryInterval(int value);
 
@@ -101,7 +107,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="0",
               label="Client Timeout",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Connections and Sockets")
     public int getClientTimeout();
     public void setClientTimeout(int value);
 
@@ -109,7 +116,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="0",
               label="Server Timeout",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Connections and Sockets")
     public int getServerTimeout();
     public void setServerTimeout(int value);
 
@@ -117,7 +125,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="2147483647",
               label="Maximum Server Connections",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Connections and Sockets")
     public int getMaxServerConnections();
     public void setMaxServerConnections(int value);
 
@@ -125,7 +134,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="24",
               label="Maximum Buffer Size",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Buffers")
     public int getMaxManagedBufSize();
     public void setMaxManagedBufSize(int value);
 
@@ -133,7 +143,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="2048",
               label="Outgoing Buffer Size",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Buffers")
     public int getOutbufSize();
     public void setOutbufSize(int value);
 
@@ -141,25 +152,29 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="-1",
               label="Outgoing Buffer Cache Timeout",
               formItemTypeForAdd="NUMBER_BOX_ALLOW_NEGATIVE",
-              formItemTypeForEdit="NUMBER_BOX_ALLOW_NEGATIVE")
+              formItemTypeForEdit="NUMBER_BOX_ALLOW_NEGATIVE",
+              subgroup="Buffers")
     public int getOutbufCacheTimeout();
     public void setOutbufCacheTimeout(int value);
 
     @Binding(detypedName="codebase")
     @FormItem(defaultValue="on",
-    		  label="Codebase Interceptor")
+    		  label="Codebase Interceptor",
+              subgroup="Interceptors")
     public String getCodebase();
     public void setCodebase(String value);
 
     @Binding(detypedName="security")
     @FormItem(defaultValue="off",
-              label="Security Interceptors")
+              label="Security Interceptors",
+              subgroup="Interceptors")
     public String getSecurity();
     public void setSecurity(String value);
 
     @Binding(detypedName="transactions")
     @FormItem(defaultValue="off",
-              label="Transaction Interceptors")
+              label="Transaction Interceptors",
+              subgroup="Interceptors")
     public String getTransactions();
     public void setTransactions(String value);
 
@@ -171,7 +186,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
 
     @Binding(detypedName="queue-wait")
     @FormItem(defaultValue="off",
-              label="Queue Waiting")
+              label="Queue Waiting",
+              subgroup="Queue")
     public String getQueueWait();
     public void setQueueWait(String value);
 
@@ -179,7 +195,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="10",
               label="Queue Minimum",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Queue")
     public int getQueueMin();
     public void setQueueMin(int value);
 
@@ -187,7 +204,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="100",
               label="Queue Maximum",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Queue")
     public int getQueueMax();
     public void setQueueMax(int value);
 
@@ -195,7 +213,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="5",
               label="Thread Pool Size",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Thread Pool")
     public int getPoolSize();
     public void setPoolSize(int value);
 
@@ -203,7 +222,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="32",
     		  label="Max Pool Threads",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="Thread Pool")
     public int getMaxThreads();
     public void setMaxThreads(int value);
 
@@ -221,55 +241,64 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
 
     @Binding(detypedName="sun")
     @FormItem(defaultValue="on",
-              label="Sun ORB Interoperability")
+              label="Sun ORB Interoperability",
+              subgroup="Interoperability")
     public String getSun();
     public void setSun(String value);
 
     @Binding(detypedName="comet")
     @FormItem(defaultValue="off",
-              label="Comet ORB Interoperability")
+              label="Comet ORB Interoperability",
+              subgroup="Interoperability")
     public String getComet();
     public void setComet(String value);
 
     @Binding(detypedName="iona")
     @FormItem(defaultValue="off",
-              label="IONA ORB Interoperability")
+              label="IONA ORB Interoperability",
+              subgroup="Interoperability")
     public String getIona();
     public void setIona(String value);
 
     @Binding(detypedName="chunk-custom-rmi-valuetypes")
     @FormItem(defaultValue="on",
-              label="Chunk Custom RMI Value Types")
+              label="Chunk Custom RMI Value Types",
+              subgroup="Encoding")
     public String getChunkCustomRMIValueTypes();
     public void setChunkCustomRMIValueTypes(String value);
 
     @Binding(detypedName="lax-boolean-encoding")
     @FormItem(defaultValue="off",
-              label="Lax Boolean Encoding")
+              label="Lax Boolean Encoding",
+              subgroup="Encoding")
     public String getLaxBooleanEncoding();
     public void setLaxBooleanEncoding(String value);
 
     @Binding(detypedName="indirection-encoding-disable")
     @FormItem(defaultValue="off",
-              label="Indirection Encoding Disabled")
+              label="Indirection Encoding Disabled",
+              subgroup="Encoding")
     public String getIndirectionEncodingDisable();
     public void setIndirectionEncodingDisable(String value);
 
     @Binding(detypedName="strict-check-on-tc-creation")
     @FormItem(defaultValue="off",
-              label="Strict TC Creation Check")
+              label="Strict TC Creation Check",
+              subgroup="Encoding")
     public String getStrictCheckOnTCCreation();
     public void setStrictCheckOnTCCreation(String value);
 
     @Binding(detypedName="support-ssl")
     @FormItem(defaultValue="off",
-              label="Support SSL")
+              label="Support SSL",
+              subgroup="SSL")
     public String getSupportSSL();
     public void setSupportSSL(String value);
 
     @Binding(detypedName="add-component-via-interceptor")
     @FormItem(defaultValue="on",
-              label="SSL Components via Interceptor")
+              label="SSL Components via Interceptor",
+              subgroup="SSL")
     public String getAddComponentViaInterceptor();
     public void setAddComponentViaInterceptor(String value);
 
@@ -277,7 +306,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="60",
               label="SSL Client Support",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="SSL")
     public int getClientSupports();
     public void setClientSupports(int value);
 
@@ -285,7 +315,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="0",
               label="SSL Client Requirement",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="SSL")
     public int getClientRequires();
     public void setClientRequires(int value);
 
@@ -293,7 +324,8 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="60",
               label="SSL Server Support",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="SSL")
     public int getServerSupports();
     public void setServerSupports(int value);
 
@@ -301,28 +333,29 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @FormItem(defaultValue="0",
               label="SSL Server Requirement",
               formItemTypeForAdd="NUMBER_BOX",
-              formItemTypeForEdit="NUMBER_BOX")
+              formItemTypeForEdit="NUMBER_BOX",
+              subgroup="SSL")
     public int getServerRequires();
     public void setServerRequires(int value);
 
     @Binding(detypedName="use-domain-socket-factory")
     @FormItem(defaultValue="off",
-              label="Use Domain Socket Factory")
+              label="Use Domain Socket Factory",
+              subgroup="Connections and Sockets")
     public String getUseDomainSocketFactory();
     public void setUseDomainSocketFactory(String value);
 
     @Binding(detypedName="use-domain-server-socket-factory")
     @FormItem(defaultValue="off",
-              label="Use Domain Server Socket Factory")
+              label="Use Domain Server Socket Factory",
+              subgroup="Connections and Sockets")
     public String getUseDomainServerSocketFactory();
     public void setUseDomainServerSocketFactory(String value);
 
     @Override
     @Binding(detypedName="properties",
              listType="org.jboss.as.console.client.shared.properties.PropertyRecord")
-    @FormItem(defaultValue="",
-            label="Properties",
-              required=false,
+    @FormItem(label="Properties",
               formItemTypeForEdit="PROPERTY_EDITOR",
               formItemTypeForAdd="PROPERTY_EDITOR",
               tabName="CUSTOM")
