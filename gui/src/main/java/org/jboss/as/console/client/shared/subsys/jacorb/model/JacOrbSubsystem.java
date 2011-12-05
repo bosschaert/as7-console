@@ -97,7 +97,6 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
               localLabel="subsys_jacorb_retries",
               formItemTypeForAdd="NUMBER_BOX",
               formItemTypeForEdit="NUMBER_BOX",
-              subgroup="Connections and Sockets",
               tabName="subsys_jacorb_network")
     public int getRetries();
     public void setRetries(int value);
@@ -107,7 +106,6 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
               localLabel="subsys_jacorb_retryInterval",
               formItemTypeForAdd="NUMBER_BOX",
               formItemTypeForEdit="NUMBER_BOX",
-              subgroup="Connections and Sockets",
               tabName="subsys_jacorb_network")
     public int getRetryInterval();
     public void setRetryInterval(int value);
@@ -117,7 +115,6 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
               localLabel="subsys_jacorb_clientTimeout",
               formItemTypeForAdd="NUMBER_BOX",
               formItemTypeForEdit="NUMBER_BOX",
-              subgroup="Connections and Sockets",
               tabName="subsys_jacorb_network")
     public int getClientTimeout();
     public void setClientTimeout(int value);
@@ -127,7 +124,6 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
               localLabel="subsys_jacorb_serverTimeout",
               formItemTypeForAdd="NUMBER_BOX",
               formItemTypeForEdit="NUMBER_BOX",
-              subgroup="Connections and Sockets",
               tabName="subsys_jacorb_network")
     public int getServerTimeout();
     public void setServerTimeout(int value);
@@ -137,7 +133,6 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
               localLabel="subsys_jacorb_maxServerConnections",
               formItemTypeForAdd="NUMBER_BOX",
               formItemTypeForEdit="NUMBER_BOX",
-              subgroup="Connections and Sockets",
               tabName="subsys_jacorb_network")
     public int getMaxServerConnections();
     public void setMaxServerConnections(int value);
@@ -363,7 +358,6 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @Binding(detypedName="use-domain-socket-factory")
     @FormItem(defaultValue="off",
               localLabel="subsys_jacorb_useDomainSocketFactory",
-              subgroup="Connections and Sockets",
               tabName="subsys_jacorb_network")
     public String getUseDomainSocketFactory();
     public void setUseDomainSocketFactory(String value);
@@ -371,7 +365,6 @@ public interface JacOrbSubsystem extends NamedEntity, HasProperties {
     @Binding(detypedName="use-domain-server-socket-factory")
     @FormItem(defaultValue="off",
               localLabel="subsys_jacorb_useDomainServerSocketFactory",
-              subgroup="Connections and Sockets",
               tabName="subsys_jacorb_network")
     public String getUseDomainServerSocketFactory();
     public void setUseDomainServerSocketFactory(String value);
