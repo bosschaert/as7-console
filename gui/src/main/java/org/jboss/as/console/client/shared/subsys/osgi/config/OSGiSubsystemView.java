@@ -38,18 +38,18 @@ public class OSGiSubsystemView extends SuspendableViewImpl implements OSGiConfig
 
     private OSGiConfigurationPresenter presenter;
     private FrameworkEditor frameworkEditor;
-    private ConfigAdminEditor configAdminEditor;
+    // private ConfigAdminEditor configAdminEditor;
 
     @Override
     public Widget createWidget() {
         frameworkEditor = new FrameworkEditor(presenter);
-        configAdminEditor = new ConfigAdminEditor(presenter);
+        // configAdminEditor = new ConfigAdminEditor(presenter);
 
         TabLayoutPanel tabLayoutPanel = new TabLayoutPanel(40, Style.Unit.PX);
         tabLayoutPanel.addStyleName("default-tabpanel");
 
         tabLayoutPanel.add(frameworkEditor.asWidget(), Console.CONSTANTS.subsys_osgi_framework());
-        tabLayoutPanel.add(configAdminEditor.asWidget(), Console.CONSTANTS.subsys_osgi_configAdmin());
+        // tabLayoutPanel.add(configAdminEditor.asWidget(), Console.CONSTANTS.subsys_osgi_configAdmin());
 
         tabLayoutPanel.selectTab(0);
 
@@ -78,6 +78,6 @@ public class OSGiSubsystemView extends SuspendableViewImpl implements OSGiConfig
 
     @Override
     public void updateConfigurationAdmin(List<OSGiConfigAdminData> casDataList, String selectPid) {
-        configAdminEditor.update(casDataList, selectPid);
+        //configAdminEditor.update(casDataList, selectPid);
     }
 }
