@@ -88,7 +88,6 @@ import org.jboss.as.console.client.shared.subsys.messaging.model.Queue;
 import org.jboss.as.console.client.shared.subsys.messaging.model.SecurityPattern;
 import org.jboss.as.console.client.shared.subsys.messaging.model.Topic;
 import org.jboss.as.console.client.shared.subsys.osgi.config.model.OSGiCapability;
-import org.jboss.as.console.client.shared.subsys.osgi.config.model.OSGiConfigAdminData;
 import org.jboss.as.console.client.shared.subsys.osgi.config.model.OSGiSubsystem;
 import org.jboss.as.console.client.shared.subsys.osgi.runtime.model.OSGiBundle;
 import org.jboss.as.console.client.shared.subsys.osgi.runtime.model.OSGiFramework;
@@ -180,7 +179,6 @@ public interface BeanFactory extends AutoBeanFactory {
     AutoBean<ConfigAdminData> configAdminData();
     AutoBean<OSGiSubsystem> osgiSubsystem();
     AutoBean<OSGiCapability> osgiCapability();
-    AutoBean<OSGiConfigAdminData> osgiConfigAdminData();
     AutoBean<OSGiFramework> osgiFramework();
     AutoBean<OSGiBundle> osgiBundle();
 
