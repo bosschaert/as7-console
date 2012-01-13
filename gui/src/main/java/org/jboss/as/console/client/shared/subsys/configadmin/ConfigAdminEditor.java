@@ -136,16 +136,14 @@ public class ConfigAdminEditor implements PropertyManagement {
         dialog.hide();
         ConfigAdminData data = findData(reference);
         data.getProperties().add(prop);
-        presenter.onDeleteConfigurationAdminData(data.getPid());
-        presenter.onAddConfigurationAdminData(data);
+        presenter.onUpdateConfigurationAdminData(data);
     }
 
     @Override
     public void onDeleteProperty(String reference, PropertyRecord prop) {
         ConfigAdminData data = findData(reference);
         data.getProperties().remove(prop);
-        presenter.onDeleteConfigurationAdminData(data.getPid());
-        presenter.onAddConfigurationAdminData(data);
+        presenter.onUpdateConfigurationAdminData(data);
     }
 
     @Override

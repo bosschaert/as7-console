@@ -164,6 +164,20 @@ public class ConfigAdminPresenter extends Presenter<ConfigAdminPresenter.MyView,
                 }));
     }
 
+    public void onUpdateConfigurationAdminData(final ConfigAdminData data) {
+        ModelNode operation = createOperation(REMOVE);
+        operation.get(ADDRESS).add("configuration", data.getPid());
+
+        dispatcher.execute(new DMRAction(operation),
+            new SimpleDMRResponseHandler(REMOVE, Console.CONSTANTS.subsys_osgi_configAdminPID(), data.getPid(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        onAddConfigurationAdminData(data);
+                    }
+                }));
+    }
+
     private ModelNode createOperation(String operator) {
         ModelNode operation = new ModelNode();
         operation.get(OP).set(operator);
